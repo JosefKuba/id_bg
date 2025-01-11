@@ -1,0 +1,5 @@
+#! /bin/bash
+
+ls data/database/friends_tmp | awk '{print $1}' >  tmp
+
+echo "ID 已经写入 tmp 文件中"
