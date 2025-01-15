@@ -14,7 +14,7 @@ class FishService implements ServiceInterface
 
     private $chunkNumber  = 2000;
 
-    private $markTimes = 30;
+    private $markTimes = 5;
 
     public function load(App $app): void
     {
@@ -181,7 +181,9 @@ class FishService implements ServiceInterface
                 $endTime - $startTime
             ));
 
-            sleep(3);
+            if ($_key >= 450) {
+                sleep(3);
+            }
         }
 
         $percent = number_format(count($collectIds) * 100 / count($idLines), "1") . '%';

@@ -13,8 +13,8 @@ class RedisService implements ServiceInterface
 
     // 台湾地区刷脸ID库
     // 由于刷脸筛掉的太多，重新刷脸，重新建立一个库进行排重
-    // private const ID_DB_NUMBER = 0;
-    private const ID_DB_NUMBER = 10;
+    private const ID_DB_NUMBER = 0;
+    // private const ID_DB_NUMBER = 10;
 
     // 整理备份时用的库
     private const BACKUP_DB_NUMBER = 0;

@@ -51,6 +51,7 @@ class LinkService implements ServiceInterface
                 str_contains($link, '/stories/') ||
                 str_contains($link, 'story_fbid') ||
                 str_contains($link, 'com/%') ||
+                str_contains($link, '/media/') ||
                 str_contains($link, 'com/@')
             ) {
                 $otherLinks[] = $link;

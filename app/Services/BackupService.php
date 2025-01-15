@@ -51,6 +51,9 @@ class BackupService implements ServiceInterface
             case LINK_INPUT_PATH:
                 $backup_path = LINK_BACKUP_PATH;
                 break;
+            case POST_INPUT_PATH:
+                $backup_path = POST_BACKUP_PATH;
+                break;
         }
 
         foreach ($files as $file) {

@@ -61,6 +61,15 @@ const GROUP_OUTPUT_FUNSLOWER_PATH = ROOT_PATH . "data/group/output/funslower/";
 const GROUP_OUTPUT_EXCLUDE_PATH = ROOT_PATH . "data/group/output/exclude/";
 
 
+// post const
+
+const POST_INPUT_PATH = ROOT_PATH . "data/post/input/";
+
+const POST_OUTPUT_PATH = ROOT_PATH . "data/post/output/";
+
+const POST_BACKUP_PATH = ROOT_PATH . "data/post/backup/";
+
+
 // 好友的好友
 const FRIEND_INPUT_PATH = ROOT_PATH . "data/friend/input/";
 

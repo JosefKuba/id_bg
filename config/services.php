@@ -25,6 +25,7 @@ return [
         'faith'     => \App\Services\FaithService::class,
         'area'      => \App\Services\AreaService::class,
         'link'      => \App\Services\LinkService::class,
-        'rc'      => \App\Services\RcService::class,
+        'rc'        => \App\Services\RcService::class,
+        'post'      => \App\Services\PostService::class,
     ],
 ];
