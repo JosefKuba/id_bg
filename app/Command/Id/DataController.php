@@ -14,7 +14,7 @@ class DataController extends CommandController
 {
     public function handle(): void
     {
-        $redis = $this->getApp()->redis->getBackUpClient();
+        $redis = $this->getApp()->redis->getIdClient();
 
         $files = glob(ID_INPUT_PATH . "*");
         $file  = $files[0];

@@ -181,9 +181,7 @@ class FishService implements ServiceInterface
                 $endTime - $startTime
             ));
 
-            if ($_key >= 450) {
-                sleep(3);
-            }
+            sleep(3);
         }
 
         $percent = number_format(count($collectIds) * 100 / count($idLines), "1") . '%';
