@@ -45,7 +45,8 @@ class FishService implements ServiceInterface
 
         $this->app->info(sprintf("开始查询彩球标记，共需查询 %s 次", count($chunks)));
 
-        $endpoint = "http://localhost:1752/query";
+        $endpoint = $_ENV['FISH_URL'];
+
         foreach ($chunks as $_key => $chunk) {
 
             $startTime = time();

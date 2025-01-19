@@ -19,7 +19,8 @@
     "minicli/command-help": "^1.0",
     "minicli/curly": "^0.2.2",
     "predis/predis": "^2.2",
-    "landrok/language-detector": "^1.4"
+    "landrok/language-detector": "^1.4",
+    "vlucas/phpdotenv": "^5.6"
   },
   "require-dev": {
     "pestphp/pest": "^1.23",

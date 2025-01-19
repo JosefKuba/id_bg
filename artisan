@@ -10,6 +10,9 @@ require __DIR__ . '/vendor/autoload.php';
 use Minicli\App;
 use Minicli\Exception\CommandNotFoundException;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 $app = new App();
 
 try {
