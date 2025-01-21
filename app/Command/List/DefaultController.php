@@ -29,9 +29,17 @@ class DefaultController extends CommandController
                 \App\Command\Id\DefaultController::class,
                 \App\Command\Id\CollectController::class,
                 \App\Command\Id\FriendController::class,
-                // \App\Command\Id\GroupController::class,
+                \App\Command\Id\GroupController::class,
                 \App\Command\Id\RmSelfController::class,
                 \App\Command\Id\RepeatController::class,
+            ],
+            'page'     => [
+                \App\Command\Page\DefaultController::class,
+                \App\Command\Page\TypeController::class,
+            ],
+            'group'     => [
+                \App\Command\Group\DefaultController::class,
+                \App\Command\Group\TypeController::class,
             ],
             'faith' => [
                 \App\Command\Faith\DefaultController::class,
@@ -53,10 +61,6 @@ class DefaultController extends CommandController
             ],
             'rc'     => [
                 \App\Command\RC\DefaultController::class,
-            ],
-            'group'     => [
-                \App\Command\Group\DefaultController::class,
-                \App\Command\Group\TypeController::class,
             ],
             'redis'     => [
                 \App\Command\Redis\DefaultController::class,

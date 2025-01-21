@@ -2,23 +2,24 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Group;
+namespace App\Command\Page;
 
 use Minicli\Command\CommandController;
 
-class DefaultController extends CommandController
+class TypeController extends CommandController
 {
+
     public function desc()
     {
         return [
-            'command'   => 'php artisan group',
-            'desc'      => '将闪电导出的小组和总库 去重 入库',
+            'command'   => 'php artisan page type',
+            'desc'      => '将闪电导出的专页数据分类, 方便排查',
         ];
     }
 
     public function help()
     {
-        echo "这是帮助手册" . PHP_EOL;
+        echo "处理专页链接，按照专页类型和粉丝量进行分类\n";
     }
 
     public function handle(): void
@@ -33,7 +34,7 @@ class DefaultController extends CommandController
     public function exec(): void
     {
         /*
-            文件格式 tsv
+        文件格式 tsv
         */
 
         $startTime = time();
@@ -41,18 +42,19 @@ class DefaultController extends CommandController
         // 合并文件
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
-        $backupService->backupInput(GROUP_INPUT_PATH);
+        $backupService->backupInput(PAGE_INPUT_PATH);
 
         // 2. 将数据文件汇总
         $fileService = $this->getApp()->file;
-        $fileService->merge(GROUP_INPUT_PATH);
+        $fileService->merge(PAGE_INPUT_PATH);
 
         // 3. 处理数据文件
-        $groupServce = $this->getApp()->group;
-        $groupServce->handleUserGroups();
+        $pageServce = $this->getApp()->page;
+        // 区分是否是处理粉丝少的专页
+        $pageServce->handleLikePage();
 
         // 4. 清空 input 文件夹
-        $fileService->clearFolder(GROUP_INPUT_PATH);
+        $fileService->clearFolder(PAGE_INPUT_PATH);
 
         $endTime = time();
 

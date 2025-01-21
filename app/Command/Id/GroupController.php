@@ -17,7 +17,7 @@ class GroupController extends CommandController
     {
         return [
             'command'   => 'php artisan id group',
-            'desc'      => '已导出加入小组的用户ID',
+            'desc'      => '已导出 [用户的小组] 的用户ID库',
         ];
     }
 
