@@ -32,7 +32,6 @@ class PageService implements ServiceInterface
         $this->app = $app;
     }
 
-
     public function init()
     {
         $this->redisClient  = $this->app->redis->getPageClient();
@@ -488,5 +487,57 @@ class PageService implements ServiceInterface
         }
 
         return false;
+    }
+
+    // 处理导出的专页
+    public function handleUserPages() {
+        
+        $this->init();
+
+        $files = glob(PAGE_INPUT_PATH . "*");
+
+        if (empty($files)) {
+            $this->app->error("input 目录下缺少文件");
+            exit;
+        }
+
+        $pages = file_get_contents($files[0]);
+
+        // 1. 替换链接
+        $pages = str_replace("https://facebook", "https://www.facebook", $pages);
+        $pages = str_replace("com/1000", "com/profile.php?id=1000", $pages);
+        $pages = str_replace("com/615", "com/profile.php?id=615", $pages);
+
+        // 2. 自身排重
+        $pages = str_replace("\r", "", $pages);
+        $pages = explode(PHP_EOL, $pages);
+
+        $pagesCount = count($pages);
+
+        $pages = array_unique($pages);
+        
+        // 3. 总库排重
+        $newPageIds = [];
+        $newPages = [];
+        foreach ($pages as $page) {
+            $pageArr = explode("\t", $page);
+            $pageId  = str_replace("'", "", $pageArr[1]);
+            
+            if ($this->redisClient->exists($pageId)) {
+                continue;
+            }
+
+            $newPages[] = $page;
+            $newPageIds[] = $pageId;
+        }
+
+        // 4. 保存文件
+        $this->addPageIntoTotal($newPageIds);
+
+        // 5. 将新的专页写入 output 目录
+        $output = PAGE_OUTPUT_PATH .  CURRENT_TIME . " new pages";
+        file_put_contents($output, implode(PHP_EOL, $newPages));
+
+        $this->app->info(sprintf("专页共计 %d 个, 新专页 %d 个", $pagesCount, count($newPages)));
     }
 }
