@@ -11,18 +11,7 @@ use Minicli\Output\Filter\ColorOutputFilter;
 class DefaultController extends CommandController
 {
 
-    private $db = [
-        // '2'  => '深宗好友 检测信仰库',
-        '0' => '保加 刷脸库',
-        // '11' => '马来刷脸库',
-
-        // '1' => '专页库           停用',
-        // '8' => '找深宗账号库   导个人详细信息，找深宗账号',
-        // '3' => '小组库',
-        // '4' => '导用户加入的小组的用户库',
-        // '5' => '检测信仰的库   台湾',
-        // '7' => '检测信仰的库   马来',
-    ];
+    private $db;
 
     public function desc()
     {
@@ -54,6 +43,8 @@ class DefaultController extends CommandController
     public function exec(): void
     {
         $redisClient = $this->app->redis->getClient();
+
+        $this->db =  $this->app->redis->getDesc();
 
         $table = new TableHelper();
         $table->addHeader(['编号', ' 数据量', '   描述']);
