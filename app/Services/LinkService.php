@@ -28,6 +28,13 @@ class LinkService implements ServiceInterface
                 continue;
             }
 
+            // 替换 https://www.facebook.com/100046331054273
+            // 替换 https://www.facebook.com/61550491010352
+
+            $link = str_replace("https://facebook", "https://www.facebook", $link);
+            $link = str_replace("com/1000", "com/profile.php?id=1000", $link);
+            $link = str_replace("com/615", "com/profile.php?id=615", $link);
+
             // 去掉 &__cft__[0]
             $link = preg_replace("/(\?|&)__cft__.*$/", '', $link);
 

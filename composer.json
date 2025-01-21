@@ -20,7 +20,8 @@
     "minicli/curly": "^0.2.2",
     "predis/predis": "^2.2",
     "landrok/language-detector": "^1.4",
-    "vlucas/phpdotenv": "^5.6"
+    "vlucas/phpdotenv": "^5.6",
+    "yooper/php-text-analysis": "^1.9"
   },
   "require-dev": {
     "pestphp/pest": "^1.23",

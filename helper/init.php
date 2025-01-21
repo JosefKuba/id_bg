@@ -98,6 +98,14 @@ const LINK_OUTPUT_PATH = ROOT_PATH . "data/link/output/";
 
 const LINK_BACKUP_PATH = ROOT_PATH . "data/link/backup/";
 
+// 处理关键词
+const KEYWORD_INPUT_PATH = ROOT_PATH . "data/keyword/input/";
+
+const KEYWORD_OUTPUT_PATH = ROOT_PATH . "data/keyword/output/";
+
+const KEYWORD_BACKUP_PATH = ROOT_PATH . "data/keyword/backup/";
+
+
 // RC库
 const RC_INPUT_PATH = ROOT_PATH . "data/rc/input/";
 
