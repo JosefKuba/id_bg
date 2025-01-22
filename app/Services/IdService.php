@@ -116,7 +116,7 @@ class IdService implements ServiceInterface
         $totalCount = count($ids);
 
         // 如果是 my 或者是 tw 需要和另一个库去重
-        if (in_array($this->type, ["", "my"])) {
+        if (in_array($this->type, ["", "my"]) && $_ENV['IS_DUBLE_FACE_DB'] == 'true') {
             switch ($this->type) {
                 case 'my':
                     $_redis = $this->app->redis->getIdClient();
@@ -125,19 +125,10 @@ class IdService implements ServiceInterface
                     $_redis = $this->app->redis->getMyIdClient();
             }
 
-            $faceIds = [];
             $_removeCount = 0;
             foreach ($ids as $key => $id) {
                 $id = str_replace(["\r", "\n", "\r\n"], "", $id);
                 if ($_redis->exists($id)) {
-                    // 得到另一个库中ID的状态
-                    if ($_redis->get($id) == "2") {
-                        $faceIds[] = $id;
-
-                        // 获取一次之后，将值改为3，避免下次重复匹配
-                        $_redis->set($id, "3");
-                    }
-
                     unset($ids[$key]);
                     $_removeCount++;
                 }
@@ -145,12 +136,6 @@ class IdService implements ServiceInterface
 
             // 重建索引
             $ids = array_values($ids);
-
-            // 将之前刷脸合格的ID写入文件
-            if ($faceIds) {
-                $facePath = ID_OUTPUT_PATH . CURRENT_TIME . " face.csv";
-                file_put_contents($facePath, implode(PHP_EOL, $faceIds));
-            }
 
             // 必须要写入文件，因为入库时，是读取的文件
             file_put_contents($path, implode(PHP_EOL, $ids));
