@@ -58,6 +58,6 @@ class DefaultController extends CommandController
 
         unlink($files[0]);
 
-        $this->success("分类完成");
+        // $this->success("分类完成");
     }
 }

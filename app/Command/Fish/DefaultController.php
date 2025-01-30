@@ -76,10 +76,10 @@ class DefaultController extends CommandController
         $exclude_file_name = ID_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " " . basename($outputFileName);
         file_put_contents($exclude_file_name, implode(PHP_EOL, $fishResult['exclude']));
 
-        // unlink($outputFileName);
+        unlink($outputFileName);
 
         $endTime = time();
 
-        $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
+        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
     }
 }

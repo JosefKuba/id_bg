@@ -51,6 +51,6 @@ class AddController extends CommandController
 
         unlink($files[0]);
 
-        $this->success("地区ID分类完成");
+        // $this->success("地区ID分类完成");
     }
 }
