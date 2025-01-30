@@ -16,15 +16,16 @@ class DataController extends CommandController
     {
         $ids = getLine(GROUP_INPUT_PATH . "ids");
 
-        $redis = $this->getApp()->redis->getGroupClient();
+        $redis = $this->getApp()->redis->getUserGroupClient();
 
         $count = 0;
         foreach ($ids as $id) {
-            if (!$redis->exists($id)) {
+            if ($redis->exists($id)) {
+                $redis->del($id);
                 $count++;
             }
         }
 
-        $this->info((string)$count);
+        $this->info(sprintf("新ID %d 个" ,$count));
     }
 }

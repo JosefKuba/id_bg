@@ -123,8 +123,13 @@ const FRIENDS_DB_FILE = ROOT_PATH . "data/database/ids_friends";
 // 专页的文本备份文件
 const PAGE_DB_FILE = ROOT_PATH . "data/database/pages";
 
-// 小组的文本备份文件
-const GROUPS_DB_FILE = ROOT_PATH . "data/database/groups";
+// 用户小组的文本备份文件
+const USER_GROUPS_DB_FILE = ROOT_PATH . "data/database/groups_user";
+
+// 查考小组的备份文件
+const SEARCH_GROUPS_DB_FILE = ROOT_PATH . "data/database/groups_search";
+
+
 
 // 导用户的好友，用户ID备份文件
 const GROUPS_USER_ID_DB_FILE = ROOT_PATH . "data/database/ids_groups";

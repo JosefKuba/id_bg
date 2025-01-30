@@ -14,11 +14,13 @@ class RedisService implements ServiceInterface
     // 刷脸ID库
     private $ID_DB_NUMBER;
     
-    // 专页库
+    // 用户的专页库
     private $PAGE_DB_NUMBER;
 
-    // 小组库
-    private $GROUP_DB_NUMBER;
+    // 用户的小组库
+    private $USER_GROUP_DB_NUMBER;
+
+    private $SEARCH_GROUP_DB_NUMBER;
 
     // 整理备份时用的库
     // private const BACKUP_DB_NUMBER = 0;
@@ -47,7 +49,8 @@ class RedisService implements ServiceInterface
         // 初始化数据库编号
         $this->ID_DB_NUMBER = $_ENV['ID_DB_NUMBER'];
         $this->PAGE_DB_NUMBER = $_ENV['PAGE_DB_NUMBER'];
-        $this->GROUP_DB_NUMBER = $_ENV['GROUP_DB_NUMBER'];
+        $this->USER_GROUP_DB_NUMBER = $_ENV['USER_GROUP_DB_NUMBER'];
+        $this->SEARCH_GROUP_DB_NUMBER = $_ENV['SEARCH_GROUP_DB_NUMBER'];
 
         $this->app = $app;
         $this->client = new \Predis\Client();
@@ -57,7 +60,8 @@ class RedisService implements ServiceInterface
         return [
             $_ENV['ID_DB_NUMBER'] => $_ENV['ID_DB_DESC'],
             $_ENV['PAGE_DB_NUMBER'] => $_ENV['PAGE_DB_DESC'],
-            $_ENV['GROUP_DB_NUMBER'] => $_ENV['GROUP_DB_DESC'],
+            $_ENV['USER_GROUP_DB_NUMBER'] => $_ENV['USER_GROUP_DB_DESC'],
+            $_ENV['SEARCH_GROUP_DB_NUMBER'] => $_ENV['SEARCH_GROUP_DB_DESC'],
         ];
     }
 
@@ -80,13 +84,20 @@ class RedisService implements ServiceInterface
         return $this->client;
     }
 
-    // 获取 小组 客户端
-    public function getGroupClient()
+    // 获取 用户的小组 客户端
+    public function getUserGroupClient()
     {
-        $this->client->select($this->GROUP_DB_NUMBER);
+        $this->client->select($this->USER_GROUP_DB_NUMBER);
         return $this->client;
     }
     
+    // 获取 用户的小组 客户端
+    public function getSearchGroupClient()
+    {
+        $this->client->select($this->SEARCH_GROUP_DB_NUMBER);
+        return $this->client;
+    }
+
     // ----------------------------------------
 
 

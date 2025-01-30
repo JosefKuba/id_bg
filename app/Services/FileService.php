@@ -47,7 +47,8 @@ class FileService implements ServiceInterface
                 if ($skipTwoLines) {
                     array_shift($fileContentLines);
                 }
-                $fileContent = implode(PHP_EOL, $fileContentLines);
+                // 多个文件合并时，在每个文件前加空行
+                $fileContent = PHP_EOL . implode(PHP_EOL, $fileContentLines);
             }
 
             $mergeName = $path . CURRENT_TIME . " merge";
