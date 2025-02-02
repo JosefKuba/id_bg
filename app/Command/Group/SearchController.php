@@ -11,7 +11,7 @@ class SearchController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan group',
+            'command'   => 'php artisan group search',
             'desc'      => '将查考组的小组去重 入库',
         ];
     }

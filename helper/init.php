@@ -5,7 +5,7 @@ error_reporting(E_ALL & ~E_DEPRECATED);
 
 date_default_timezone_set('Europe/Amsterdam');
 
-define("CURRENT_TIME",  date("Y-m-d H:i:s"));
+define("CURRENT_TIME",  date("Y-m-d H-i-s"));
 define("CURRENT_DATE",  date("Y-m-d"));
 
 const ROOT_PATH = __DIR__ . "/../";

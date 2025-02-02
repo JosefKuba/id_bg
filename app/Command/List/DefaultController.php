@@ -39,6 +39,7 @@ class DefaultController extends CommandController
             ],
             'group'     => [
                 \App\Command\Group\DefaultController::class,
+                \App\Command\Group\SearchController::class,
                 \App\Command\Group\TypeController::class,
             ],
             'faith' => [

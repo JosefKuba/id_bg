@@ -207,7 +207,7 @@ class GroupService implements ServiceInterface
         foreach ($checkGroups as $key => $group) {
             // group
             $groupArr   = explode("\t", $group);
-            $funsCount  = $groupArr[4] ?? "";
+            $funsCount  = $groupArr[3] ?? "";
             // $sect       = str_replace(["\r", "\n", "\r\n"], "", $groupArr[0] ?? "");
 
             // 先把佛教挑出来
