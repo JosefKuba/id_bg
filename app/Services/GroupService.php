@@ -69,15 +69,38 @@ class GroupService implements ServiceInterface
         // 3. 总库排重
         $newGroupIds = [];
         $newGroups = [];
+
+        $funcsFewerCount = 0;
+        $privateCount = 0;
         foreach ($groups as $group) {
             $groupArr = explode("\t", $group);
+
+            if (!isset($groupArr[1])) {
+                continue;
+            }
+
             $groupId  = str_replace("'", "", $groupArr[1]);
             
             if ($this->redisClient->exists($groupId)) {
                 continue;
             }
 
-            $newGroups[] = $group;
+            // 过滤掉人数少的小组
+            $funs = $groupArr[3];
+            if ($funs < 100) {
+                $funcsFewerCount++;
+                continue;
+            }
+
+            // 挑选出来私密小组和人数太少的小组
+            $type = $this->getPublic($groupArr[4]);
+            if ($type !== '公开') {
+                $privateCount++;
+                continue;
+            }
+
+            // 小组头像会导致卡，去掉小组头像
+            $newGroups[] = implode("\t", [$groupArr[0], $groupArr[1], $groupArr[2], $groupArr[3], $groupArr[4], $groupArr[5]]);
             $newGroupIds[] = $groupId;
         }
 
