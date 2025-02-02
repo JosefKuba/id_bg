@@ -57,7 +57,10 @@ class RedisService implements ServiceInterface
         $this->SEARCH_GROUP_DB_NUMBER = $_ENV['SEARCH_GROUP_DB_NUMBER'];
 
         $this->app = $app;
-        $this->client = new \Predis\Client();
+
+        $this->client = new \Predis\Client([
+            'port'   => $_ENV['REDIS_PORT']
+        ]);
     }
 
     public function getDesc () {

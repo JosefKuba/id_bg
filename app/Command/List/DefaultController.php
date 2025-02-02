@@ -65,6 +65,7 @@ class DefaultController extends CommandController
             ],
             'redis'     => [
                 \App\Command\Redis\DefaultController::class,
+                \App\Command\Redis\StartController::class,
             ],
         ];
 

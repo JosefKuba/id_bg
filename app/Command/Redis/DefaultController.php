@@ -23,7 +23,6 @@ class DefaultController extends CommandController
 
     public function help()
     {
-        echo "\n";
         echo "各个库的作用说明如下：\n";
         foreach ($this->db as $dbNumber => $dbDesc) {
             echo "\t{$dbNumber}号库：{$dbDesc}\n";
@@ -47,6 +46,9 @@ class DefaultController extends CommandController
         $this->db =  $this->app->redis->getDesc();
 
         $table = new TableHelper();
+        
+        $this->app->success(sprintf("目前使用的是 %s 数据库，端口: %d", $_ENV['REDIS_DESC'], $_ENV['REDIS_PORT'])); 
+
         $table->addHeader(['编号', ' 数据量', '   描述']);
 
         // 获取各个库中的数据量
