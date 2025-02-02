@@ -15,8 +15,11 @@ class IdService implements ServiceInterface
 
     private $type;
 
+    private $secondFaceDBCode;
+
     public function load(App $app): void
     {
+        $this->secondFaceDBCode = $_ENV["SECOND_FACE_DB_CODE"] ?? 'my';
         $this->app = $app;
     }
 
@@ -42,8 +45,8 @@ class IdService implements ServiceInterface
                 $this->db_file      = GROUPS_USER_ID_DB_FILE;
                 break;
 
-            case "my":
-                $this->redisClient  = $this->app->redis->getMyIdClient();
+            case $this->secondFaceDBCode:
+                $this->redisClient  = $this->app->redis->getIdClient_2();
                 $this->db_file      = MY_ID_DB_FILE;
                 break;
 
@@ -116,13 +119,13 @@ class IdService implements ServiceInterface
         $totalCount = count($ids);
 
         // 如果是 my 或者是 tw 需要和另一个库去重
-        if (in_array($this->type, ["", "my"]) && $_ENV['IS_DUBLE_FACE_DB'] == 'true') {
+        if (in_array($this->type, ["", $this->secondFaceDBCode]) && $_ENV['IS_DUBLE_FACE_DB'] == 'true') {
             switch ($this->type) {
-                case 'my':
+                case $this->secondFaceDBCode:
                     $_redis = $this->app->redis->getIdClient();
                     break;
                 default:
-                    $_redis = $this->app->redis->getMyIdClient();
+                    $_redis = $this->app->redis->getIdClient_2();
             }
 
             $_removeCount = 0;
@@ -194,7 +197,7 @@ class IdService implements ServiceInterface
         // 两个检测信仰库互相检测重复
         $otherRepeatCount = 0;
         switch ($type) {
-            case "my":
+            case $this->secondFaceDBCode:
                 $_redisClient = $this->app->redis->getTestingFaithClient();
                 break;
 
@@ -215,7 +218,7 @@ class IdService implements ServiceInterface
 
 
         switch ($type) {
-            case "my":
+            case $this->secondFaceDBCode:
                 $this->redisClient  = $this->app->redis->getTestingMyFaithClient();
                 break;
 

@@ -14,7 +14,7 @@ class FishService implements ServiceInterface
 
     private $chunkNumber  = 2000;
 
-    private $markTimes = 5;
+    private $markTimes = 6;
 
     public function load(App $app): void
     {

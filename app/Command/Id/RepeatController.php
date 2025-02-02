@@ -60,7 +60,7 @@ class RepeatController extends CommandController
         }
 
         $_newIds = [];
-        $redis  = $this->getApp()->redis->getMyIdClient();
+        $redis  = $this->getApp()->redis->getIdClient_2();
         foreach ($newIds as $id) {
             if (!$redis->exists($id)) {
                 $_newIds[] = $id;
