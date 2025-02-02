@@ -13,6 +13,9 @@ class RedisService implements ServiceInterface
 
     // 刷脸ID库
     private $ID_DB_NUMBER;
+
+    // 刷脸ID库
+    private $ID_DB_NUMBER_2;
     
     // 专页库
     private $PAGE_DB_NUMBER;
@@ -46,6 +49,7 @@ class RedisService implements ServiceInterface
     {
         // 初始化数据库编号
         $this->ID_DB_NUMBER = $_ENV['ID_DB_NUMBER'];
+        $this->ID_DB_NUMBER_2 = $_ENV['ID_DB_NUMBER_2'];
         $this->PAGE_DB_NUMBER = $_ENV['PAGE_DB_NUMBER'];
         $this->GROUP_DB_NUMBER = $_ENV['GROUP_DB_NUMBER'];
 
@@ -56,6 +60,7 @@ class RedisService implements ServiceInterface
     public function getDesc () {
         return [
             $_ENV['ID_DB_NUMBER'] => $_ENV['ID_DB_DESC'],
+            $_ENV['ID_DB_NUMBER_2'] => $_ENV['ID_DB_DESC_2'],
             $_ENV['PAGE_DB_NUMBER'] => $_ENV['PAGE_DB_DESC'],
             $_ENV['GROUP_DB_NUMBER'] => $_ENV['GROUP_DB_DESC'],
         ];
@@ -70,6 +75,13 @@ class RedisService implements ServiceInterface
     public function getIdClient()
     {
         $this->client->select($this->ID_DB_NUMBER);
+        return $this->client;
+    }
+
+    // 获取马来ID客户端
+    public function getIdClient_2()
+    {
+        $this->client->select($this->ID_DB_NUMBER_2);
         return $this->client;
     }
 
@@ -88,14 +100,6 @@ class RedisService implements ServiceInterface
     }
     
     // ----------------------------------------
-
-
-    // 获取马来ID客户端
-    // public function getMyIdClient()
-    // {
-    //     $this->client->select(self::MY_DB_NUMBER);
-    //     return $this->client;
-    // }
 
     // 获取 深宗好友 客户端
     // public function getFriendsClient()
