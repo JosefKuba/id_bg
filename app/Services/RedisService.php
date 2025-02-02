@@ -51,7 +51,11 @@ class RedisService implements ServiceInterface
     {
         // 初始化数据库编号
         $this->ID_DB_NUMBER = $_ENV['ID_DB_NUMBER'];
-        $this->ID_DB_NUMBER_2 = $_ENV['ID_DB_NUMBER_2'];
+        
+        if ($_ENV['IS_DUBLE_FACE_DB'] == "true") {
+            $this->ID_DB_NUMBER_2 = $_ENV['ID_DB_NUMBER_2'];
+        }
+
         $this->PAGE_DB_NUMBER = $_ENV['PAGE_DB_NUMBER'];
         $this->USER_GROUP_DB_NUMBER = $_ENV['USER_GROUP_DB_NUMBER'];
         $this->SEARCH_GROUP_DB_NUMBER = $_ENV['SEARCH_GROUP_DB_NUMBER'];
@@ -64,13 +68,20 @@ class RedisService implements ServiceInterface
     }
 
     public function getDesc () {
-        return [
-            $_ENV['ID_DB_NUMBER'] => $_ENV['ID_DB_DESC'],
-            $_ENV['ID_DB_NUMBER_2'] => $_ENV['ID_DB_DESC_2'],
-            $_ENV['PAGE_DB_NUMBER'] => $_ENV['PAGE_DB_DESC'],
-            $_ENV['USER_GROUP_DB_NUMBER'] => $_ENV['USER_GROUP_DB_DESC'],
-            $_ENV['SEARCH_GROUP_DB_NUMBER'] => $_ENV['SEARCH_GROUP_DB_DESC'],
-        ];
+        
+        $result = [];
+
+        $result[$_ENV['ID_DB_NUMBER']] = $_ENV['ID_DB_DESC'];
+
+        if ($_ENV['IS_DUBLE_FACE_DB'] == "true") {
+            $result[$_ENV['ID_DB_NUMBER_2']] = $_ENV['ID_DB_DESC_2'];
+        }
+
+        $result[$_ENV['PAGE_DB_NUMBER']] = $_ENV['PAGE_DB_DESC'];
+        $result[$_ENV['USER_GROUP_DB_NUMBER']] = $_ENV['USER_GROUP_DB_DESC'];
+        $result[$_ENV['SEARCH_GROUP_DB_NUMBER']] = $_ENV['SEARCH_GROUP_DB_DESC'];
+
+        return $result;
     }
 
     public function getClient()
