@@ -22,9 +22,6 @@ class BackupService implements ServiceInterface
      */
     public function backupInput($path = ID_INPUT_PATH)
     {
-        // 打印开始
-        $this->app->info("备份开始...");
-
         // 1. 获取所有要备份的文件
         $files = glob($path . "*");
 
@@ -76,8 +73,6 @@ class BackupService implements ServiceInterface
 
             copy($file, $backup_path . $newName);
         }
-
-        $this->app->info("备份结束...");
     }
 
     public function test()

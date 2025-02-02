@@ -20,14 +20,79 @@ class GroupService implements ServiceInterface
         $this->app = $app;
     }
 
-    public function init()
+    public function init($type)
     {
-        $this->redisClient  = $this->app->redis->getGroupClient();
-        $this->db_file      = GROUPS_DB_FILE;
+        switch ($type) {
+            case 'user':
+                $this->redisClient  = $this->app->redis->getUserGroupClient();
+                $this->db_file      = USER_GROUPS_DB_FILE;
+                break;
+            
+            case 'search':
+                $this->redisClient  = $this->app->redis->getSearchGroupClient();
+                $this->db_file      = SEARCH_GROUPS_DB_FILE;
+                break;
+
+            default:
+                $this->app->error("未设置 redis 客户端");
+                exit;
+        }
     }
 
-    // 处理合并之后的点赞专页，tsv 文件
-    public function handleUserGroups()
+    // 处理导出的小组
+    public function handleUserGroups() {
+        
+        $this->init("user");
+
+        $files = glob(GROUP_INPUT_PATH . "*");
+
+        if (empty($files)) {
+            $this->app->error("input 目录下缺少文件");
+            exit;
+        }
+
+        $groups = file_get_contents($files[0]);
+
+        // 1. 替换链接
+        $groups = str_replace("https://facebook", "https://www.facebook", $groups);
+        $groups = str_replace("com/1000", "com/profile.php?id=1000", $groups);
+        $groups = str_replace("com/615", "com/profile.php?id=615", $groups);
+
+        // 2. 自身排重
+        $groups = str_replace("\r", "", $groups);
+        $groups = explode(PHP_EOL, $groups);
+
+        $groupsCount = count($groups);
+
+        $groups = array_unique($groups);
+        
+        // 3. 总库排重
+        $newGroupIds = [];
+        $newGroups = [];
+        foreach ($groups as $group) {
+            $groupArr = explode("\t", $group);
+            $groupId  = str_replace("'", "", $groupArr[1]);
+            
+            if ($this->redisClient->exists($groupId)) {
+                continue;
+            }
+
+            $newGroups[] = $group;
+            $newGroupIds[] = $groupId;
+        }
+
+        // 4. 保存文件
+        $this->addGroupsIntoTotal($newGroupIds);
+
+        // 5. 将新的专页写入 output 目录
+        $output = GROUP_OUTPUT_PATH .  CURRENT_TIME . " new groups";
+        file_put_contents($output, implode(PHP_EOL, $newGroups));
+
+        $this->app->info(sprintf("小组共计 %d 个, 新小组 %d 个", $groupsCount, count($newGroups)));
+    }
+
+    // 处理搜索的小组
+    public function handleSearchGroups()
     {
         /*
             1. 删除掉 小闪电 ✖️ 的小组
@@ -35,7 +100,7 @@ class GroupService implements ServiceInterface
             3. 剩下的小组分为 公开、私密、人数少
         */
 
-        $this->init();
+        $this->init("search");
 
         $files = glob(GROUP_INPUT_PATH . "*");
 
@@ -67,13 +132,13 @@ class GroupService implements ServiceInterface
 
         // 收集统计数据
         $funcsFewerGroups = [];
-        $funcsFewerGroups400 = [];
-        $excludeGroups = [];
+        // $funcsFewerGroups400 = [];
+        // $excludeGroups = [];
         $checkGroups = [];
         $checkGroupIds = [];
 
         $repeatGroupsCount = 0;
-        $notChineseGroupsCount = 0;
+        // $notChineseGroupsCount = 0;
 
         foreach ($groups as $group) {
 
@@ -96,16 +161,16 @@ class GroupService implements ServiceInterface
             }
 
             // 排除掉标题中没有中文的专页 或者 标题中有日文的专页
-            if (!$this->isChinese($title)) {
-                $notChineseGroupsCount++;
-                continue;
-            }
+            // if (!$this->isChinese($title)) {
+            //     $notChineseGroupsCount++;
+            //     continue;
+            // }
 
             // 过滤掉不传到教派 & 反面关键词
-            if ($this->isNegative($title)) {
-                $excludeGroups[] = $group;
-                continue;
-            }
+            // if ($this->isNegative($title)) {
+            //     $excludeGroups[] = $group;
+            //     continue;
+            // }
 
             $checkGroups[]   = $group;
             $checkGroupIds[] = $id;
@@ -125,47 +190,52 @@ class GroupService implements ServiceInterface
             $link       = $groupArr[2] ?? "";
             $funs       = $groupArr[3] ?? "";
             $public     = $groupArr[4] ?? "";
-            $type       = "";
+            // $type       = "";
 
             // 统一 public
             $public = $this->getPublic($public);
 
             // 判断 小组类别
-            $type = $this->getType($title);
+            // $type = $this->getType($title);
 
             // 重新构建 checkGroups
-            $checkGroups[$key] = implode("\t", [$type, $title, $id, $link, $funs, $public]);
+            $checkGroups[$key] = implode("\t", [$title, $id, $link, $funs, $public]);
         }
 
         // 把人数少的小组挑出来
-        $buddhistGroups = [];
+        // $buddhistGroups = [];
         foreach ($checkGroups as $key => $group) {
             // group
             $groupArr   = explode("\t", $group);
             $funsCount  = $groupArr[4] ?? "";
-            $sect       = str_replace(["\r", "\n", "\r\n"], "", $groupArr[0] ?? "");
+            // $sect       = str_replace(["\r", "\n", "\r\n"], "", $groupArr[0] ?? "");
 
             // 先把佛教挑出来
-            if ($sect === "佛教") {
-                $buddhistGroups[] = $group;
-                unset($checkGroups[$key]);
-                continue;
-            }
+            // if ($sect === "佛教") {
+            //     $buddhistGroups[] = $group;
+            //     unset($checkGroups[$key]);
+            //     continue;
+            // }
 
-            $isChristren = in_array($sect, ["基督教", "天主教"]);
+            // $isChristren = in_array($sect, ["基督教", "天主教"]);
 
-            if ($isChristren && $funsCount < 500) {
+            // if ($isChristren && $funsCount < 500) {
+            //     $funcsFewerGroups[] = $group;
+            //     unset($checkGroups[$key]);
+            // }
+
+            // if (!$isChristren && $funsCount < 2000) {
+            //     if ($funsCount < 400) {
+            //         $funcsFewerGroups400[] = $group;
+            //     } else {
+            //         $funcsFewerGroups[] = $group;
+            //     }
+
+            //     unset($checkGroups[$key]);
+            // }
+
+            if ($funsCount < 2000) {
                 $funcsFewerGroups[] = $group;
-                unset($checkGroups[$key]);
-            }
-
-            if (!$isChristren && $funsCount < 2000) {
-                if ($funsCount < 400) {
-                    $funcsFewerGroups400[] = $group;
-                } else {
-                    $funcsFewerGroups[] = $group;
-                }
-
                 unset($checkGroups[$key]);
             }
         }
@@ -179,36 +249,37 @@ class GroupService implements ServiceInterface
             file_put_contents($newGroupsPath, implode(PHP_EOL, $checkGroups));
         }
 
-        if ($excludeGroups) {
-            $excludeGroupsPath = GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . ".tsv";
-            file_put_contents($excludeGroupsPath, implode(PHP_EOL, $excludeGroups));
-        }
+        // if ($excludeGroups) {
+        //     $excludeGroupsPath = GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . ".tsv";
+        //     file_put_contents($excludeGroupsPath, implode(PHP_EOL, $excludeGroups));
+        // }
 
-        if ($buddhistGroups) {
-            $buddhistGroupsPath =  GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " buddhist.tsv";
-            file_put_contents($buddhistGroupsPath, implode(PHP_EOL, $buddhistGroups));
-        }
+        // if ($buddhistGroups) {
+        //     $buddhistGroupsPath =  GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " buddhist.tsv";
+        //     file_put_contents($buddhistGroupsPath, implode(PHP_EOL, $buddhistGroups));
+        // }
 
         if ($funcsFewerGroups) {
             $funcsGroupsPath = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . ".tsv";
             file_put_contents($funcsGroupsPath, implode(PHP_EOL, $funcsFewerGroups));
         }
 
-        if ($funcsFewerGroups400) {
-            $funcsGroupsPath400 = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " 400.tsv";
-            file_put_contents($funcsGroupsPath400, implode(PHP_EOL, $funcsFewerGroups400));
-        }
+        // if ($funcsFewerGroups400) {
+        //     $funcsGroupsPath400 = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " 400.tsv";
+        //     file_put_contents($funcsGroupsPath400, implode(PHP_EOL, $funcsFewerGroups400));
+        // }
 
         // 打印结果
         $percent = number_format($uniqueGroupsCount / $totalGroupsCount * 100, "1") . "%";
         $this->app->info(sprintf("小组共计 %d 个，自身去重后 %d 个，不重复比例 %s", $totalGroupsCount, $uniqueGroupsCount, $percent));
 
         $this->app->info(sprintf("和总库重复小组共计 %d 个", $repeatGroupsCount));
-        $this->app->info(sprintf("不合格小组共计 %d 个", count($excludeGroups)));
-        $this->app->info(sprintf("佛教小组共计 %d 个", count($buddhistGroups)));
+        
+        // $this->app->info(sprintf("不合格小组共计 %d 个", count($excludeGroups)));
+        // $this->app->info(sprintf("佛教小组共计 %d 个", count($buddhistGroups)));
+        // $this->app->info(sprintf("外文小组共计 %d 个", $notChineseGroupsCount));
 
-        $this->app->info(sprintf("外文小组共计 %d 个", $notChineseGroupsCount));
-        $this->app->info(sprintf("2000以下小组共计 %d 个", count($funcsFewerGroups) + count($funcsFewerGroups400)));
+        $this->app->info(sprintf("2000以下新小组共计 %d 个", count($funcsFewerGroups)));
 
         $percent = number_format(count($checkGroups) / $uniqueGroupsCount * 100, "1") . "%";
         $this->app->info(sprintf("2000以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
@@ -345,7 +416,7 @@ class GroupService implements ServiceInterface
             }
 
             if (empty($type)) {
-                $type = "其余";
+                $type = "";
             }
         }
 

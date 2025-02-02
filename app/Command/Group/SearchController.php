@@ -6,13 +6,13 @@ namespace App\Command\Group;
 
 use Minicli\Command\CommandController;
 
-class DefaultController extends CommandController
+class SearchController extends CommandController
 {
     public function desc()
     {
         return [
             'command'   => 'php artisan group',
-            'desc'      => '将闪电导出的小组和总库 去重 入库',
+            'desc'      => '将查考组的小组去重 入库',
         ];
     }
 
@@ -32,10 +32,6 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
-        /*
-            文件格式 tsv
-        */
-
         $startTime = time();
 
         // 合并文件
@@ -49,7 +45,7 @@ class DefaultController extends CommandController
 
         // 3. 处理数据文件
         $groupServce = $this->getApp()->group;
-        $groupServce->handleUserGroups();
+        $groupServce->handleSearchGroups();
 
         // 4. 清空 input 文件夹
         $fileService->clearFolder(GROUP_INPUT_PATH);

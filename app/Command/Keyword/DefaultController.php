@@ -47,8 +47,6 @@ class DefaultController extends CommandController
         $keywordServices = $this->getApp()->keyword;
         $keywordServices->parse($files[0]);
 
-        // unlink($files[0]);
-
-        $this->success("关键词处理完成");
+        unlink($files[0]);
     }
 }

@@ -43,6 +43,6 @@ class FanaticController extends CommandController
         $fishService->getFanatic(ID_OUTPUT_PATH . "result");
         $endTime = time();
 
-        $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
+        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
     }
 }
