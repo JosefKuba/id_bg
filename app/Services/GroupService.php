@@ -64,8 +64,14 @@ class GroupService implements ServiceInterface
 
         $groupsCount = count($groups);
 
-        $groups = array_unique($groups);
-        
+        $_groups = [];
+        foreach ($groups as $group) {
+            $groupArr       = explode("\t", $group);
+            $id             = str_replace(["\r", "\n", "\r\n", "'"], "", $groupArr[1] ?? "");
+            $_groups[$id]   = $group;
+        }
+        $groups = array_values($_groups);
+
         // 3. 总库排重
         $newGroupIds = [];
         $newGroups = [];
@@ -100,7 +106,7 @@ class GroupService implements ServiceInterface
             }
 
             // 小组头像会导致卡，去掉小组头像
-            $newGroups[] = implode("\t", [$groupArr[0], $groupArr[1], $groupArr[2], $groupArr[3], $groupArr[4], $groupArr[5]]);
+            $newGroups[] = implode("\t", [$groupArr[0], $groupArr[1], $groupArr[2], $groupArr[3], $groupArr[4]]);
             $newGroupIds[] = $groupId;
         }
 
