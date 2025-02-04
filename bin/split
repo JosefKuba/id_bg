@@ -1,0 +1,27 @@
+#! /bin/bash
+
+# 删除前三行
+sed -i '1,3d' data/id/input/names.tsv
+
+# 每两列分割成一个文件
+cut -f1,2 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_1
+cut -f3,4 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_2
+cut -f5,6 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_3
+cut -f7,8 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_4
+cut -f9,10 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_5
+cut -f11,12 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_6
+cut -f13,14 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_7
+cut -f15,16 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_8
+cut -f17,18 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_9
+cut -f19,20 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_10
+
+# 合并
+arg=$1
+clean_arg=${arg#--}
+
+# 判断参数是否为 'merge'
+if [ "$clean_arg" = "merge" ]; then
+  cat data/id/input/names_[1-10] | sort -u > data/id/input/names_u.tsv
+fi
+
+echo "ID处理完成"
