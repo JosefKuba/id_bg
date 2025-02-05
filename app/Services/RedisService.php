@@ -11,6 +11,8 @@ class RedisService implements ServiceInterface
 
     public $client;
 
+    public $avaterClient;
+
     // 刷脸ID库
     private $ID_DB_NUMBER;
 
@@ -62,8 +64,14 @@ class RedisService implements ServiceInterface
 
         $this->app = $app;
 
+        // 
         $this->client = new \Predis\Client([
             'port'   => $_ENV['REDIS_PORT']
+        ]);
+
+        // 头像库的客户端
+        $this->avaterClient = new \Predis\Client([
+            'port'   => $_ENV['REDIS_AVATER_PORT']
         ]);
     }
 
@@ -94,9 +102,19 @@ class RedisService implements ServiceInterface
         return $result;
     }
 
+    public function getAvaterDesc() {
+        return [
+            $_ENV['AVATER_DB_NUMBER'] => $_ENV['AVATER_DB_DESC'],
+        ];
+    }
+
     public function getClient()
     {
         return $this->client;
+    }
+
+    public function getAvaterClient(){
+        return $this->avaterClient;
     }
 
     // 获取 ID 客户端

@@ -41,9 +41,13 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
-        $redisClient = $this->app->redis->getClient();
-
-        $this->db =  $this->app->redis->getDesc();
+        if ($this->hasFlag("avater")) {
+            $redisClient = $this->app->redis->getAvaterClient();
+            $this->db =  $this->app->redis->getAvaterDesc();
+        } else {
+            $redisClient = $this->app->redis->getClient();
+            $this->db =  $this->app->redis->getDesc();
+        }
 
         $table = new TableHelper();
         
