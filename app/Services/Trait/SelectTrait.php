@@ -4352,11 +4352,48 @@ trait SelectTrait
     // todo 安哥拉城市
     private $aoCitys = [
         "wifi_good"  => [
-            "Luanda",
             "罗安达",
+            "Luanda",
+
+            "塔拉托纳",
+            "Talatona",
         ],
         "wifi_average" => [
             "卢班戈",
+            "Lubango",
+            
+            "万博",
+            "Huambo",
+            
+            "本格拉",
+            "Benguela",
+                        
+            "卡宾达",
+            "Cabinda",
+                        
+            "洛比托",
+            "Lobito",
+                        
+            "维亚纳",
+            "Viana",
+                        
+            "卡夸科",
+            "Cacuaco",
+                        
+            "卡曾加",
+            "Cazenga",
+                        
+            "大豆",
+            "Soyo",
+                        
+            "卡通贝拉",
+            "Catumbela",
+                        
+            "奇塔托",
+            "Chitato",
+                                    
+            "法塔湾",
+            "Baía Farta",
         ],
     ];
 
@@ -4364,13 +4401,32 @@ trait SelectTrait
     private $mzCitys = [
         "wifi_good"  => [
             "马普托",
+            "Maputo",
+            
             "马托拉",
+            "Matola",
+            
             "贝拉",
+            "Beira",
         ],
-        "wifi_average" => [
-            "利欣加",
-            "楠普拉",
+        "wifi_average" => [       
+            "赛赛",
+            "Xai-Xai",
+
+            "伊尼扬巴内",
+            "Inhambane",
+
+            "纳卡拉",
+            "Nacala",
+
+            "希莫尤",
+            "Chimoio",
+
+            "克利马内",
+            "Quelimane",
+
             "太特",
+            "Tete",
         ],
     ];
 
