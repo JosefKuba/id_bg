@@ -41,16 +41,10 @@ class DefaultController extends CommandController
         }
 
         foreach ($csvFiles as $file) {
-            $startTime = time();
-
             $rcServce = $this->getApp()->rc;
             $rcServce->parse($file);
 
             unlink($file);
-
-            $endTime = time();
-
-            // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
         }
     }
 }

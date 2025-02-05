@@ -32,6 +32,10 @@ class LibController extends CommandController
 
     public function exec(): void
     {
+        // 1. 备份原始文件
+        $backupService = $this->getApp()->backup;
+        $backupService->backupInput(RC_INPUT_PATH);
+
         $fileService = $this->getApp()->file;
         $csvFiles = $fileService->getCsvFiles(RC_INPUT_PATH);
 
@@ -45,10 +49,10 @@ class LibController extends CommandController
         // 根据文件类型自动选择 $type
         $type = $this->autoType($file);
 
-        // var_dump($type);die;
-
         $rcServce = $this->getApp()->rc;
         $rcServce->ASLib($file, $type);
+
+        unlink($file);
     }
 
     // 根据来源渠道自动选择 type
@@ -106,5 +110,5 @@ class LibController extends CommandController
             }
         }
     }
-
 }
+
