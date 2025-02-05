@@ -127,7 +127,6 @@ class RcService implements ServiceInterface
 
         $wifiGoodLines = [];
         $wifiAverageLines = [];
-        $wifiBadLines = [];
         $otherCityLines = [];
 
         foreach ($lines as $line) {
@@ -143,32 +142,153 @@ class RcService implements ServiceInterface
                 continue;
             }
 
-            $preg = "/" . implode("|", $cities['wifi_bad']) . "/";
-            if (preg_match($preg, $line)) {
-                $wifiBadLines[] = $line;
-                continue;
-            }
-
+            // 包括网络差的地区ID 和 跑不出来地区的ID
             $otherCityLines[] = $line;
         }
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $type . " self page.tsv";
+        // 再从 otherCityLines 中，挑选出来 另一个国家的ID
+        $otherCities = match ($type) {
+            'ao' => $this->mzCitys,
+            'mz' => $this->aoCitys,
+        };
+
+        $otherCountryWifiGoodLines    = [];
+        $otherCountryWifiAverageLines = [];
+
+        foreach ($otherCityLines as $key => $line) {
+            $preg = "/" . implode("|", $otherCities['wifi_good']) . "/";
+            if (preg_match($preg, $line)) {
+                $otherCountryWifiGoodLines[] = $line;
+                unset($otherCityLines[$key]);
+                continue;
+            }
+
+            $preg = "/" . implode("|", $otherCities['wifi_average']) . "/";
+            if (preg_match($preg, $line)) {
+                $otherCountryWifiAverageLines[] = $line;
+                unset($otherCityLines[$key]);
+                continue;
+            }
+        }
+
+
+        // todo 如果两边同时筛选自家专页，怎么办？
+        $country = match ($type) {
+            'ao' => '安哥拉',
+            'mz' => '莫桑比克',
+        };
+
+        $otherCountry = match ($type) {
+            'ao' => '莫桑比克',
+            'mz' => '安哥拉',
+        };
+
+
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " 自家专页.tsv";
         file_put_contents($path, implode(PHP_EOL, $selfPageLines));
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $type . " post early.tsv";
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 时间早.tsv";
         file_put_contents($path, implode(PHP_EOL, $postEarlyLines));
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $type . " wifi good.tsv";
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络好.tsv";
         file_put_contents($path, implode(PHP_EOL, $wifiGoodLines));
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $type . " wifi average.tsv";
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络一般.tsv";
         file_put_contents($path, implode(PHP_EOL, $wifiAverageLines));
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $type . " wifi bad.tsv";
-        file_put_contents($path, implode(PHP_EOL, $wifiBadLines));
-
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $type . " wifi other.tsv";
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 其余地区.tsv";
         file_put_contents($path, implode(PHP_EOL, $otherCityLines));
+
+
+        // 挑选出来另一个国家的ID 
+        // 对于自家专页的旧库，是可以这样挑选的
+        // 对于自家专页的新ID，这样挑选会有一些问题：其余地区的ID不一定是这个国家的
+        // 但是没有更好的办法给区分开，只能用来源渠道来分开了
+
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络好.tsv";
+        file_put_contents($path, implode(PHP_EOL, $otherCountryWifiGoodLines));
+
+        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络一般.tsv";
+        file_put_contents($path, implode(PHP_EOL, $otherCountryWifiAverageLines));
     }
 
+    // 将 安哥拉 和 莫桑比克 两批ID 合并 & 压缩
+    public function zip () {
+
+        // 先检测 php 扩展是否安装
+        if (!extension_loaded('zip')) {
+            $this->app->error("Zip 扩展未安装, 请按照以下步骤按照 php-zip 扩展");
+            echo 'sudo apt-get update' . PHP_EOL;
+            echo 'sudo apt-get install php-zip' . PHP_EOL;
+            exit;
+        }
+
+        // 检查要打包的格式，避免错误打包
+        $files = glob(RC_OUTPUT_PATH . "*.tsv");
+        
+        foreach ($files as $file) {
+            $basename = basename($file);
+            $times[] = substr($basename, 0, 19);
+        }
+
+        $times = array_unique($times);
+        if (count($times) > 2) {
+            $this->app->error("打包时间点多于2个");
+            exit;
+        }
+
+        // 合并文件
+        $types = [
+            "自家专页",
+
+            "安哥拉 网络好",
+            "安哥拉 网络一般",
+            "安哥拉 其余地区",
+            "安哥拉 时间早",
+            
+            "莫桑比克 网络好",
+            "莫桑比克 网络一般",
+            "莫桑比克 其余地区",
+            "莫桑比克 时间早",
+        ];
+
+        $zipFolder = RC_OUTPUT_PATH . CURRENT_TIME . " merge/";
+        if (!file_exists($zipFolder)) {
+            mkdir($zipFolder);
+        }
+
+        foreach ($types as $type) {
+            $files = glob(RC_OUTPUT_PATH . "*" . $type . ".tsv");
+
+            // 将内容合并
+            $outputName = $zipFolder . $type . ".tsv";
+            $content = "";
+            foreach ($files as $file) {
+                $content .= file_get_contents($file) . PHP_EOL;
+            }
+            if ($content) {
+                file_put_contents($outputName, $content);
+            }
+
+            echo sprintf("%s : 合并文件个数为 %d 个", $type, count($files)) . PHP_EOL;
+        }
+
+        // 压缩
+        $zip = new \ZipArchive();
+
+        foreach (["安哥拉", "莫桑比克"] as $country) {
+            $zipFilename = $zipFolder . $country . " " . CURRENT_TIME . ".zip";
+
+            if ($zip->open($zipFilename, \ZipArchive::CREATE) !== TRUE) {
+                exit("无法打开 <$zipFilename>\n");
+            }
+
+            $files = glob($zipFolder . $country . "*");
+            foreach ($files as $file) {
+                $zip->addFile($file, basename($file));
+            }
+
+            $zip->close();
+        }
+    }
 }

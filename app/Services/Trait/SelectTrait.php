@@ -4358,21 +4358,15 @@ trait SelectTrait
         "wifi_average" => [
             "卢班戈",
         ],
-        "wifi_bad"   => [
-            "比莱尼",
-        ],
     ];
 
     // 莫桑比克城市
     private $mzCitys = [
         "wifi_good"  => [
-
+            '马普托'
         ],
         "wifi_average" => [
-
-        ],
-        "wifi_bad"   => [
-
+            '万达'
         ],
     ];
 
