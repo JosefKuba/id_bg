@@ -3530,6 +3530,7 @@ trait SelectTrait
         "嘉義市",
     ];
 
+    // 英国城市关键词
     private $ukCitys = [
         "阿尔弗雷顿",
         "阿克菲尔德",
@@ -4335,4 +4336,44 @@ trait SelectTrait
         "英國",
         "UK",
     ];
+
+
+    // 刷脸人员
+    private $facePersion = [
+        "新晓",
+        "建峰",
+        "海燕",
+        "小玉",
+        "媛媛",
+        "磨练",
+        "//",
+    ];
+
+    // 安哥拉城市
+    private $aoCitys = [
+        "wifi_good"  => [
+            "Luanda",
+            "罗安达",
+        ],
+        "wifi_average" => [
+            "卢班戈",
+        ],
+        "wifi_bad"   => [
+            "比莱尼",
+        ],
+    ];
+
+    // 莫桑比克城市
+    private $mzCitys = [
+        "wifi_good"  => [
+
+        ],
+        "wifi_average" => [
+
+        ],
+        "wifi_bad"   => [
+
+        ],
+    ];
+
 }
