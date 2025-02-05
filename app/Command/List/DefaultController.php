@@ -62,7 +62,8 @@ class DefaultController extends CommandController
             ],
             'rc'     => [
                 \App\Command\RC\DefaultController::class,
-                \App\Command\RC\ASLibController::class,
+                \App\Command\RC\LibController::class,
+                \App\Command\RC\ZipController::class,
             ],
             'redis'     => [
                 \App\Command\Redis\DefaultController::class,

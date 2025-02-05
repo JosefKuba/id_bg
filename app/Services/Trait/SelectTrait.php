@@ -4349,7 +4349,7 @@ trait SelectTrait
         "//",
     ];
 
-    // 安哥拉城市
+    // todo 安哥拉城市
     private $aoCitys = [
         "wifi_good"  => [
             "Luanda",
@@ -4360,13 +4360,17 @@ trait SelectTrait
         ],
     ];
 
-    // 莫桑比克城市
+    // todo 莫桑比克城市
     private $mzCitys = [
         "wifi_good"  => [
-            '马普托'
+            "马普托",
+            "马托拉",
+            "贝拉",
         ],
         "wifi_average" => [
-            '万达'
+            "利欣加",
+            "楠普拉",
+            "太特",
         ],
     ];
 

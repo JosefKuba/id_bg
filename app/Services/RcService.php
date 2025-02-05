@@ -184,20 +184,30 @@ class RcService implements ServiceInterface
         };
 
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " 自家专页.tsv";
-        file_put_contents($path, implode(PHP_EOL, $selfPageLines));
+        if ($selfPageLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " 自家专页.tsv";
+            file_put_contents($path, implode(PHP_EOL, $selfPageLines));
+        }
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 时间早.tsv";
-        file_put_contents($path, implode(PHP_EOL, $postEarlyLines));
+        if ($postEarlyLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 时间早.tsv";
+            file_put_contents($path, implode(PHP_EOL, $postEarlyLines));
+        }
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络好.tsv";
-        file_put_contents($path, implode(PHP_EOL, $wifiGoodLines));
+        if ($wifiGoodLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络好.tsv";
+            file_put_contents($path, implode(PHP_EOL, $wifiGoodLines));
+        }
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络一般.tsv";
-        file_put_contents($path, implode(PHP_EOL, $wifiAverageLines));
+        if ($wifiAverageLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络一般.tsv";
+            file_put_contents($path, implode(PHP_EOL, $wifiAverageLines));    
+        }
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 其余地区.tsv";
-        file_put_contents($path, implode(PHP_EOL, $otherCityLines));
+        if ($otherCityLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 其余地区.tsv";
+            file_put_contents($path, implode(PHP_EOL, $otherCityLines));    
+        }
 
 
         // 挑选出来另一个国家的ID 
@@ -205,11 +215,15 @@ class RcService implements ServiceInterface
         // 对于自家专页的新ID，这样挑选会有一些问题：其余地区的ID不一定是这个国家的
         // 但是没有更好的办法给区分开，只能用来源渠道来分开了
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络好.tsv";
-        file_put_contents($path, implode(PHP_EOL, $otherCountryWifiGoodLines));
+        if ($otherCountryWifiGoodLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络好.tsv";
+            file_put_contents($path, implode(PHP_EOL, $otherCountryWifiGoodLines));    
+        }
 
-        $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络一般.tsv";
-        file_put_contents($path, implode(PHP_EOL, $otherCountryWifiAverageLines));
+        if ($otherCountryWifiAverageLines) {
+            $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络一般.tsv";
+            file_put_contents($path, implode(PHP_EOL, $otherCountryWifiAverageLines));
+        }
     }
 
     // 将 安哥拉 和 莫桑比克 两批ID 合并 & 压缩
@@ -263,9 +277,11 @@ class RcService implements ServiceInterface
             // 将内容合并
             $outputName = $zipFolder . $type . ".tsv";
             $content = "";
+            
             foreach ($files as $file) {
                 $content .= file_get_contents($file) . PHP_EOL;
             }
+
             if ($content) {
                 file_put_contents($outputName, $content);
             }
@@ -286,6 +302,17 @@ class RcService implements ServiceInterface
             $files = glob($zipFolder . $country . "*");
             foreach ($files as $file) {
                 $zip->addFile($file, basename($file));
+            }
+
+            // 自家专页的ID打在 莫桑比克 的压缩包中
+            if ($country === "莫桑比克") {
+                $selfPageFile = $zipFolder . "自家专页.tsv";
+                if (file_exists($selfPageFile)) {
+                    $zip->addFile($selfPageFile, basename($selfPageFile));
+                    echo '自家专页: 已打包在 莫桑比克 压缩包内' . PHP_EOL;
+                } else {
+                    echo '自家专页: 未找到，跳过打包' . PHP_EOL;
+                }
             }
 
             $zip->close();
