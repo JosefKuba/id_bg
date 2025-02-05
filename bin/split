@@ -1,5 +1,7 @@
 #! /bin/bash
 
+# 处理导出的点赞留言，按照每两列进行分割，然后合并
+
 # 删除前三行
 sed -i '1,3d' data/id/input/names.tsv
 
@@ -13,7 +15,6 @@ cut -f11,12 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/na
 cut -f13,14 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_7
 cut -f15,16 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_8
 cut -f17,18 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_9
-cut -f19,20 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_10
 
 # 合并
 arg=$1
@@ -21,7 +22,8 @@ clean_arg=${arg#--}
 
 # 判断参数是否为 'merge'
 if [ "$clean_arg" = "merge" ]; then
-  cat data/id/input/names_[1-10] | sort -u > data/id/input/names_u.tsv
+  # 注: [1-9] 这里只能是 1 - 9，不能是 1 - 10，否则会只处理 names_1
+  cat data/id/input/names_[1-9] | sort -u > data/id/input/names_u.tsv
 fi
 
 echo "ID处理完成"

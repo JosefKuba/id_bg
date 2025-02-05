@@ -62,7 +62,7 @@ class GroupService implements ServiceInterface
         $groups = str_replace("\r", "", $groups);
         $groups = explode(PHP_EOL, $groups);
 
-        $groupsCount = count($groups);
+        $allGroupsCount = count($groups);
 
         $_groups = [];
         foreach ($groups as $group) {
@@ -72,36 +72,53 @@ class GroupService implements ServiceInterface
         }
         $groups = array_values($_groups);
 
-        // 3. 总库排重
+        $uniqueGroupsCount = count($groups);
+
+        // 3. 处理数据
+        
         $newGroupIds = [];
         $newGroups = [];
+        $privateGroups = [];
+        $funcsFewerGroups = [];
 
-        $funcsFewerCount = 0;
-        $privateCount = 0;
+        // 总库中不存在的小组
+        $notExistGroupIds = [];
+
+        // 计数器
+        $funcsFewerGroupsCount = 0;
+        $privateGroupsCount = 0;
+        $existGroupsCount = 0;
+        
         foreach ($groups as $group) {
             $groupArr = explode("\t", $group);
 
+            // 过滤掉格式不对的行
             if (!isset($groupArr[1])) {
                 continue;
             }
 
             $groupId  = str_replace("'", "", $groupArr[1]);
             
+            // 总库排重
             if ($this->redisClient->exists($groupId)) {
+                $existGroupsCount++;
                 continue;
+            } else {
+                $notExistGroupIds[] = $groupId;
             }
 
             // 过滤掉人数少的小组
-            $funs = $groupArr[3];
-            if ($funs < 100) {
-                $funcsFewerCount++;
+            if ($groupArr[3] < 100) {
+                $funcsFewerGroups[] = $group;
+                $funcsFewerGroupsCount++;
                 continue;
             }
 
             // 挑选出来私密小组和人数太少的小组
             $type = $this->getPublic($groupArr[4]);
             if ($type !== '公开') {
-                $privateCount++;
+                $privateGroups = [];
+                $privateGroupsCount++;
                 continue;
             }
 
@@ -110,14 +127,26 @@ class GroupService implements ServiceInterface
             $newGroupIds[] = $groupId;
         }
 
-        // 4. 保存文件
-        $this->addGroupsIntoTotal($newGroupIds);
+        // 4. 新小组加入总库
+        $this->addGroupsIntoTotal($notExistGroupIds);
 
-        // 5. 将新的专页写入 output 目录
-        $output = GROUP_OUTPUT_PATH .  CURRENT_TIME . " new groups";
+        // 保存文件
+        $output = GROUP_OUTPUT_PUBLIC_PATH .  CURRENT_TIME . " user.tsv";
         file_put_contents($output, implode(PHP_EOL, $newGroups));
 
-        $this->app->info(sprintf("小组共计 %d 个, 新小组 %d 个", $groupsCount, count($newGroups)));
+        $output = GROUP_OUTPUT_PRIVATE_PATH .  CURRENT_TIME . " user.tsv";
+        file_put_contents($output, implode(PHP_EOL, $privateGroups));
+
+        $output = GROUP_OUTPUT_FUNSLOWER_PATH .  CURRENT_TIME . " user.tsv";
+        file_put_contents($output, implode(PHP_EOL, $funcsFewerGroups));
+
+        // 输出信息
+        $this->app->info(sprintf("小组共计 %d 个, 不重复小组 %d 个", $allGroupsCount, $uniqueGroupsCount));
+        $this->app->info(sprintf("和总库重复 %d 个, 新小组 %d 个", $existGroupsCount, $uniqueGroupsCount - $existGroupsCount));
+        $this->app->info(sprintf("和总库重复 %d 个", $funcsFewerGroupsCount));
+        
+        $this->app->info(sprintf("私密小组 %d 个", $privateGroupsCount));
+        $this->app->info(sprintf("剩余小组 %d 个", count($newGroupIds)));
     }
 
     // 处理搜索的小组
@@ -274,27 +303,27 @@ class GroupService implements ServiceInterface
 
         // 保存结果
         if ($checkGroups) {
-            $newGroupsPath = GROUP_OUTPUT_PUBLIC_PATH . CURRENT_TIME . ".tsv";
+            $newGroupsPath = GROUP_OUTPUT_PUBLIC_PATH . CURRENT_TIME . " search.tsv";
             file_put_contents($newGroupsPath, implode(PHP_EOL, $checkGroups));
         }
 
         // if ($excludeGroups) {
-        //     $excludeGroupsPath = GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . ".tsv";
+        //     $excludeGroupsPath = GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " search.tsv";
         //     file_put_contents($excludeGroupsPath, implode(PHP_EOL, $excludeGroups));
         // }
 
         // if ($buddhistGroups) {
-        //     $buddhistGroupsPath =  GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " buddhist.tsv";
+        //     $buddhistGroupsPath =  GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " search buddhist.tsv";
         //     file_put_contents($buddhistGroupsPath, implode(PHP_EOL, $buddhistGroups));
         // }
 
         if ($funcsFewerGroups) {
-            $funcsGroupsPath = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . ".tsv";
+            $funcsGroupsPath = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " search.tsv";
             file_put_contents($funcsGroupsPath, implode(PHP_EOL, $funcsFewerGroups));
         }
 
         // if ($funcsFewerGroups400) {
-        //     $funcsGroupsPath400 = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " 400.tsv";
+        //     $funcsGroupsPath400 = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " search 400.tsv";
         //     file_put_contents($funcsGroupsPath400, implode(PHP_EOL, $funcsFewerGroups400));
         // }
 
