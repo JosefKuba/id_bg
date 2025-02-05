@@ -71,15 +71,25 @@ class RedisService implements ServiceInterface
         
         $result = [];
 
-        $result[$_ENV['ID_DB_NUMBER']] = $_ENV['ID_DB_DESC'];
+        if ($_ENV['ID_DB_DESC']) {
+            $result[$_ENV['ID_DB_NUMBER']] = $_ENV['ID_DB_DESC'];
+        }
 
-        if ($_ENV['IS_DUBLE_FACE_DB'] == "true") {
+        if ($_ENV['IS_DUBLE_FACE_DB'] == "true" && $_ENV['ID_DB_DESC_2']) {
             $result[$_ENV['ID_DB_NUMBER_2']] = $_ENV['ID_DB_DESC_2'];
         }
 
-        $result[$_ENV['PAGE_DB_NUMBER']] = $_ENV['PAGE_DB_DESC'];
-        $result[$_ENV['USER_GROUP_DB_NUMBER']] = $_ENV['USER_GROUP_DB_DESC'];
-        $result[$_ENV['SEARCH_GROUP_DB_NUMBER']] = $_ENV['SEARCH_GROUP_DB_DESC'];
+        if ($_ENV['PAGE_DB_DESC']) {
+            $result[$_ENV['PAGE_DB_NUMBER']] = $_ENV['PAGE_DB_DESC'];
+        }
+
+        if ($_ENV['USER_GROUP_DB_DESC']) {
+            $result[$_ENV['USER_GROUP_DB_NUMBER']] = $_ENV['USER_GROUP_DB_DESC'];
+        }
+
+        if ($_ENV['SEARCH_GROUP_DB_DESC']) {
+            $result[$_ENV['SEARCH_GROUP_DB_NUMBER']] = $_ENV['SEARCH_GROUP_DB_DESC'];
+        }
 
         return $result;
     }
