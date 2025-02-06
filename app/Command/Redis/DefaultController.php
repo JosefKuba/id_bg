@@ -41,7 +41,6 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
-        // todo 
         if ($this->hasFlag("avater")) {
             $redisClient = $this->app->redis->getAvaterClient();
             $this->db =  $this->app->redis->getAvaterDesc();

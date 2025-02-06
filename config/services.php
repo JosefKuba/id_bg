@@ -28,5 +28,7 @@ return [
         'rc'        => \App\Services\RcService::class,
         'post'      => \App\Services\PostService::class,
         'keyword'   => \App\Services\KeywordService::class,
+        'avater'    => \App\Services\AvaterService::class,
     ],
 ];
+

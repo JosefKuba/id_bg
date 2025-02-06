@@ -77,6 +77,13 @@ const FRIEND_OUTPUT_PATH = ROOT_PATH . "data/friend/output/";
 
 const FRIEND_BACKUP_PATH = ROOT_PATH . "data/friend/backup/";
 
+// 头像
+const AVATER_INPUT_PATH = ROOT_PATH . "data/avater/input/";
+
+const AVATER_OUTPUT_PATH = ROOT_PATH . "data/avater/output/";
+
+const AVATER_BACKUP_PATH = ROOT_PATH . "data/avater/backup/";
+
 // 检测信仰
 const FAITH_INPUT_PAHT = ROOT_PATH . "data/faith/input/";
 
@@ -104,7 +111,6 @@ const KEYWORD_INPUT_PATH = ROOT_PATH . "data/keyword/input/";
 const KEYWORD_OUTPUT_PATH = ROOT_PATH . "data/keyword/output/";
 
 const KEYWORD_BACKUP_PATH = ROOT_PATH . "data/keyword/backup/";
-
 
 // RC库
 const RC_INPUT_PATH = ROOT_PATH . "data/rc/input/";

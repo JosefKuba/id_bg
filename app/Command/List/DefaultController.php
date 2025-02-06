@@ -33,6 +33,29 @@ class DefaultController extends CommandController
                 \App\Command\Id\RmSelfController::class,
                 \App\Command\Id\RepeatController::class,
             ],
+            'friend' => [
+                \App\Command\Friend\DefaultController::class,
+                \App\Command\Friend\SelectController::class,
+                \App\Command\Friend\PackController::class,
+                \App\Command\Friend\RemoveController::class,
+                \App\Command\Friend\IdFIlesController::class,
+                \App\Command\Friend\IdsController::class,
+            ],
+            'rc'     => [
+                \App\Command\RC\DefaultController::class,
+                \App\Command\RC\LibController::class,
+                \App\Command\RC\PackController::class,
+                \App\Command\RC\CleanController::class,
+            ],
+            'avater'     => [
+                \App\Command\Avater\DefaultController::class,
+                \App\Command\Avater\ImportController::class,
+                \App\Command\Avater\UnTestController::class,
+            ],
+            'redis'     => [
+                \App\Command\Redis\DefaultController::class,
+                \App\Command\Redis\StartController::class,
+            ],
             'page'     => [
                 \App\Command\Page\DefaultController::class,
                 \App\Command\Page\TypeController::class,
@@ -52,24 +75,7 @@ class DefaultController extends CommandController
                 \App\Command\Fish\DefaultController::class,
                 \App\Command\Fish\FanaticController::class,
             ],
-            'friend' => [
-                \App\Command\Friend\DefaultController::class,
-                \App\Command\Friend\SelectController::class,
-                \App\Command\Friend\PackController::class,
-                \App\Command\Friend\RemoveController::class,
-                \App\Command\Friend\IdFIlesController::class,
-                \App\Command\Friend\IdsController::class,
-            ],
-            'rc'     => [
-                \App\Command\RC\DefaultController::class,
-                \App\Command\RC\LibController::class,
-                \App\Command\RC\PackController::class,
-                \App\Command\RC\CleanController::class,
-            ],
-            'redis'     => [
-                \App\Command\Redis\DefaultController::class,
-                \App\Command\Redis\StartController::class,
-            ],
+            
         ];
 
         foreach ($commands as $command => $controllers) {
