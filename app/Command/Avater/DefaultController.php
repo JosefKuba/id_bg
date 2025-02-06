@@ -49,6 +49,6 @@ class DefaultController extends CommandController
         $avaterService = $this->getApp()->avater;
         $avaterService->pick($files[0]);
 
-        // unlink($files[0]);
+        unlink($files[0]);
     }
 }

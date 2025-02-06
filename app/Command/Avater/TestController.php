@@ -12,7 +12,7 @@ class TestController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan avater untest',
+            'command'   => 'php artisan avater test',
             'desc'      => '放入一批ID，查询出还没有检测头像的ID',
         ];
     }
