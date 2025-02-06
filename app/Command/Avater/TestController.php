@@ -6,7 +6,7 @@ namespace App\Command\Avater;
 
 use Minicli\Command\CommandController;
 
-class UnTestController extends CommandController
+class TestController extends CommandController
 {
 
     public function desc()
@@ -33,6 +33,21 @@ class UnTestController extends CommandController
 
     public function exec(): void
     {
-        // todo
+        $fileService = $this->getApp()->file;
+        $files = $fileService->getCsvFiles(AVATER_INPUT_PATH);
+
+        if (empty($files)) {
+            $this->error("input 目录下没有文件");
+            exit;
+        }
+
+        // 备份文件
+        $backupService = $this->getApp()->backup;
+        $backupService->backupInput(AVATER_INPUT_PATH);
+
+        $avaterService = $this->getApp()->avater;
+        $avaterService->getUntest($files[0]);
+
+        // unlink($files[0]);
     }
 }

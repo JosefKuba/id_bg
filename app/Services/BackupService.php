@@ -57,12 +57,15 @@ class BackupService implements ServiceInterface
             case RC_INPUT_PATH:
                 $backup_path = RC_BACKUP_PATH;
                 break;
+            case AVATER_INPUT_PATH:
+                $backup_path = AVATER_BACKUP_PATH;
+                break;
         }
 
         foreach ($files as $file) {
 
             if (!file_exists($file)) {
-                echo $file . " 不存在";
+                echo $file . " 不存在" . PHP_EOL;
                 continue;
             }
 
@@ -76,10 +79,5 @@ class BackupService implements ServiceInterface
 
             copy($file, $backup_path . $newName);
         }
-    }
-
-    public function test()
-    {
-        echo "test";
     }
 }

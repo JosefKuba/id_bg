@@ -50,7 +50,7 @@ class DefaultController extends CommandController
             'avater'     => [
                 \App\Command\Avater\DefaultController::class,
                 \App\Command\Avater\ImportController::class,
-                \App\Command\Avater\UnTestController::class,
+                \App\Command\Avater\TestController::class,
             ],
             'redis'     => [
                 \App\Command\Redis\DefaultController::class,

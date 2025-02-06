@@ -11,7 +11,7 @@ class RedisService implements ServiceInterface
 
     public $client;
 
-    public $avaterClient;
+    public $pubClient;
 
     // 刷脸ID库
     private $ID_DB_NUMBER;
@@ -29,29 +29,8 @@ class RedisService implements ServiceInterface
     private $SEARCH_GROUP_DB_NUMBER;
 
     // 头像库
-    // private $AVATER_DB_NUMBER;
+    private $AVATER_DB_NUMBER;
 
-    // 整理备份时用的库
-    // private const BACKUP_DB_NUMBER = 0;
-
-    // 导深宗好友信仰ID库
-    // private const FRIENDS_DB_NUMBER = 2;
-
-    // 导过用户加入的小组的 用户ID 库
-    // private const GROUPS_USER_ID_DB_NUMBER = 4;
-
-    // 检测信仰的ID库
-    // private const TESTING_FAITH_DB_NUMBER = 5;
-
-    // 马来西亚线索ID库
-    // private const MY_DB_NUMBER = 6;
-    // private const MY_DB_NUMBER = 11;
-
-    // 检测马拉西亚信仰的ID库
-    // private const TESTING_MY_FAITH_DB_NUMBER = 7;
-
-    // 检查刷脸不合格的ID库
-    // private const GIVE_UP_ID_DB_NUMBER = 9;
 
     public function load(App $app): void
     {
@@ -66,11 +45,18 @@ class RedisService implements ServiceInterface
         $this->USER_GROUP_DB_NUMBER = $_ENV['USER_GROUP_DB_NUMBER'];
         $this->SEARCH_GROUP_DB_NUMBER = $_ENV['SEARCH_GROUP_DB_NUMBER'];
 
+        $this->AVATER_DB_NUMBER = $_ENV['AVATER_DB_NUMBER'];
+
         $this->app = $app;
 
-        // 
+        // 本项目客户端
         $this->client = new \Predis\Client([
             'port'   => $_ENV['REDIS_PORT']
+        ]);
+
+        // 公用客户端
+        $this->pubClient = new \Predis\Client([
+            'port'   => $_ENV['PUBLIC_REDIS_PORT']
         ]);
     }
 
@@ -101,7 +87,8 @@ class RedisService implements ServiceInterface
         return $result;
     }
 
-    public function getAvaterDesc() {
+    public function getAvaterDesc() 
+    {
         return [
             $_ENV['AVATER_DB_NUMBER'] => $_ENV['AVATER_DB_DESC'],
         ];
@@ -114,14 +101,10 @@ class RedisService implements ServiceInterface
     }
 
     // 头像库的客户端
-    public function getAvaterClient(){
-        $this->avaterClient = new \Predis\Client([
-            'port'   => $_ENV['PUBLIC_REDIS_PORT']
-        ]);
-        
-        $this->avaterClient->select($_ENV['AVATER_DB_NUMBER']);
-
-        return $this->avaterClient;
+    public function getAvaterClient()
+    {
+        $this->pubClient->select($this->AVATER_DB_NUMBER);
+        return $this->pubClient;
     }
 
     // 获取 ID 客户端
@@ -131,7 +114,7 @@ class RedisService implements ServiceInterface
         return $this->client;
     }
 
-    // 获取马来ID客户端
+    // 获取第二个客户端
     public function getIdClient_2()
     {
         $this->client->select($this->ID_DB_NUMBER_2);
@@ -158,41 +141,4 @@ class RedisService implements ServiceInterface
         $this->client->select($this->SEARCH_GROUP_DB_NUMBER);
         return $this->client;
     }
-
-    // ----------------------------------------
-
-    // 获取 深宗好友 客户端
-    // public function getFriendsClient()
-    // {
-    //     $this->client->select(self::FRIENDS_DB_NUMBER);
-    //     return $this->client;
-    // }
-
-    // 获取 导过用户加入的小组的 用户ID库 客户端
-    // public function getGroupUserIdClient()
-    // {
-    //     $this->client->select(self::GROUPS_USER_ID_DB_NUMBER);
-    //     return $this->client;
-    // }
-
-    // 获取 检测信仰ID库 客户端
-    // public function getTestingFaithClient()
-    // {
-    //     $this->client->select(self::TESTING_FAITH_DB_NUMBER);
-    //     return $this->client;
-    // }
-
-    // 获取 检测 马拉西亚 信仰ID库 客户端
-    // public function getTestingMyFaithClient()
-    // {
-    //     $this->client->select(self::TESTING_MY_FAITH_DB_NUMBER);
-    //     return $this->client;
-    // }
-
-    // 获取 检测 马拉西亚 信仰ID库 客户端
-    // public function getGiveUpIdClient()
-    // {
-    //     $this->client->select(self::GIVE_UP_ID_DB_NUMBER);
-    //     return $this->client;
-    // }
 }

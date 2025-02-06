@@ -33,13 +33,6 @@ class TypeController extends CommandController
 
     public function exec(): void
     {
-        /*
-        文件格式 tsv
-        */
-
-        $startTime = time();
-
-        // 合并文件
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
         $backupService->backupInput(PAGE_INPUT_PATH);
@@ -56,8 +49,5 @@ class TypeController extends CommandController
         // 4. 清空 input 文件夹
         $fileService->clearFolder(PAGE_INPUT_PATH);
 
-        $endTime = time();
-
-        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
     }
 }
