@@ -46,7 +46,10 @@ class TestController extends CommandController
         $backupService->backupInput(AVATER_INPUT_PATH);
 
         $avaterService = $this->getApp()->avater;
-        $avaterService->test($files[0]);
+
+        // skipDB 参数控制是否要将每次检测的结果加入数据库
+        $skipDB = $this->hasFlag("skip-db");
+        $avaterService->test($files[0], $skipDB);
 
         unlink($files[0]);
     }

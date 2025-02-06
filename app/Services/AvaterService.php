@@ -67,7 +67,7 @@ class AvaterService implements ServiceInterface
     }
 
     // 获取还没有测试的ID
-    public function test($file) 
+    public function test($file, $skipDB)
     {
         $this->init();
 
@@ -79,9 +79,15 @@ class AvaterService implements ServiceInterface
 
         foreach ($lines as $line) {
             $lineArr = explode("\t", $line);
-            $id = $lineArr[0];
+            $id      = $lineArr[0];
 
             if (!$this->avaterClient->exists($id)) {
+                // 为了避免多个批次之间重复检测头像，每检测一批头像，就把头像加入总库
+                // 还未检测的状态是 -1
+                if (!$skipDB) {
+                    $this->avaterClient->set($id, "-1");
+                }
+
                 $unTestIds[] = $id;
                 $unTestCount++;
             } else {
