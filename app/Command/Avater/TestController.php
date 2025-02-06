@@ -46,8 +46,8 @@ class TestController extends CommandController
         $backupService->backupInput(AVATER_INPUT_PATH);
 
         $avaterService = $this->getApp()->avater;
-        $avaterService->getUntest($files[0]);
+        $avaterService->test($files[0]);
 
-        // unlink($files[0]);
+        unlink($files[0]);
     }
 }

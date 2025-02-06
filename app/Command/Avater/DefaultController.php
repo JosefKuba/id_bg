@@ -45,9 +45,10 @@ class DefaultController extends CommandController
         $backupService = $this->getApp()->backup;
         $backupService->backupInput(AVATER_INPUT_PATH);
 
-        
+        // 录入结果
+        $avaterService = $this->getApp()->avater;
+        $avaterService->pick($files[0]);
 
         // unlink($files[0]);
-
     }
 }

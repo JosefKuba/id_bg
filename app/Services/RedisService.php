@@ -41,9 +41,9 @@ class RedisService implements ServiceInterface
             $this->ID_DB_NUMBER_2 = $_ENV['ID_DB_NUMBER_2'];
         }
 
-        $this->PAGE_DB_NUMBER = $_ENV['PAGE_DB_NUMBER'];
-        $this->USER_GROUP_DB_NUMBER = $_ENV['USER_GROUP_DB_NUMBER'];
-        $this->SEARCH_GROUP_DB_NUMBER = $_ENV['SEARCH_GROUP_DB_NUMBER'];
+        $this->PAGE_DB_NUMBER           = $_ENV['PAGE_DB_NUMBER'];
+        $this->USER_GROUP_DB_NUMBER     = $_ENV['USER_GROUP_DB_NUMBER'];
+        $this->SEARCH_GROUP_DB_NUMBER   = $_ENV['SEARCH_GROUP_DB_NUMBER'];
 
         $this->AVATER_DB_NUMBER = $_ENV['AVATER_DB_NUMBER'];
 

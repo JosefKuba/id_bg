@@ -7,22 +7,25 @@ use Minicli\ServiceInterface;
 
 class AvaterService implements ServiceInterface
 {
-    use Trait\SelectTrait;
-
     private $app;
 
     private $avaterClient;
 
     public function load(App $app): void
     {
-        $this->app = $app;
+        $this->app = $app; 
+    }
 
+    // 初始化 redis 客户端
+    public function init() 
+    {
         $this->avaterClient  = $this->app->redis->getAvaterClient();
     }
 
     // 录入检测的结果
     public function import ($file) 
     {
+        $this->init();
 
         $lines = getLine($file);
 
@@ -64,8 +67,10 @@ class AvaterService implements ServiceInterface
     }
 
     // 获取还没有测试的ID
-    public function getUntest($file) 
+    public function test($file) 
     {
+        $this->init();
+
         $lines = getLine($file);
 
         $unTestIds = [];
@@ -95,6 +100,58 @@ class AvaterService implements ServiceInterface
             $testCount,
             $unTestCount,
             number_format($unTestCount * 100 / $total, "1") . " %"
+        ));
+    }
+
+    // 从给定ID中挑选出来是是人物头像的ID
+    public function pick ($file) 
+    {
+        $this->init();
+
+        $lines = getLine($file);
+
+        $unTestIds = [];
+
+        $faceIds = $notFaceIds = [];
+        $untestIdsCount = $faceIdsCount = $notFaceIdsCount = 0;
+
+        foreach ($lines as $line) {
+            $lineArr = explode("\t", $line);
+            $id = $lineArr[0];
+
+            if (!$this->avaterClient->exists($id)) {
+                $unTestIds[] = $id;
+                $untestIdsCount++;
+            } else {
+                $res = $this->avaterClient->get($id);
+                if ($res) {
+                    $faceIds[] = $id;
+                    $faceIdsCount++;
+                } else {
+                    $notFaceids[] = $id;
+                    $notFaceIdsCount++;
+                }
+            }
+        }
+
+        $path = AVATER_OUTPUT_PATH . 'face/' . CURRENT_TIME . '.tsv';
+        file_put_contents($path, implode(PHP_EOL, $faceIds));
+
+        $path = AVATER_OUTPUT_PATH . 'notface/' . CURRENT_TIME . '.tsv';
+        file_put_contents($path, implode(PHP_EOL, $notFaceIds));
+
+        $path = AVATER_OUTPUT_PATH . 'untest/' . CURRENT_TIME . '.tsv';
+        file_put_contents($path, implode(PHP_EOL, $unTestIds));
+        
+        $total = count($lines);
+
+        $this->app->info(sprintf(
+            "ID共计 %d 个, 人物头像ID %d 个, 非人物头像ID %d 个, 未检测ID %d 个. 人物头像比例 %s",
+            $total,
+            $faceIdsCount,
+            $notFaceIdsCount,
+            $untestIdsCount,
+            number_format($faceIdsCount * 100 / $total, "1") . " %"
         ));
     }
 }
