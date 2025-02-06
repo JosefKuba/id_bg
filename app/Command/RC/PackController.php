@@ -6,7 +6,7 @@ namespace App\Command\RC;
 
 use Minicli\Command\CommandController;
 
-class ZipController extends CommandController
+class PackController extends CommandController
 {
     public function desc()
     {
