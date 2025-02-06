@@ -45,7 +45,7 @@ class DefaultController extends CommandController
         if ($this->hasFlag("avater")) {
             $redisClient = $this->app->redis->getAvaterClient();
             $this->db =  $this->app->redis->getAvaterDesc();
-            $port = $_ENV['REDIS_AVATER_PORT'];
+            $port = $_ENV['PUBLIC_REDIS_PORT'];
             $desc = $_ENV['AVATER_DB_DESC'];
         } else {
             $redisClient = $this->app->redis->getClient();

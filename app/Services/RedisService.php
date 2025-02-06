@@ -116,7 +116,7 @@ class RedisService implements ServiceInterface
     // 头像库的客户端
     public function getAvaterClient(){
         $this->avaterClient = new \Predis\Client([
-            'port'   => $_ENV['REDIS_AVATER_PORT']
+            'port'   => $_ENV['PUBLIC_REDIS_PORT']
         ]);
         
         $this->avaterClient->select($_ENV['AVATER_DB_NUMBER']);
