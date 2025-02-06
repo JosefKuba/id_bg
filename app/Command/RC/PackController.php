@@ -11,7 +11,7 @@ class PackController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan rc zip',
+            'command'   => 'php artisan rc pack',
             'desc'      => '将同一个国家的ID汇总压缩',
         ];
     }
