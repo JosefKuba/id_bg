@@ -41,17 +41,22 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
+        // todo 
         if ($this->hasFlag("avater")) {
             $redisClient = $this->app->redis->getAvaterClient();
             $this->db =  $this->app->redis->getAvaterDesc();
+            $port = $_ENV['REDIS_AVATER_PORT'];
+            $desc = $_ENV['AVATER_DB_DESC'];
         } else {
             $redisClient = $this->app->redis->getClient();
             $this->db =  $this->app->redis->getDesc();
+            $port = $_ENV['REDIS_PORT'];
+            $desc = $_ENV['REDIS_DESC'];
         }
 
         $table = new TableHelper();
         
-        $this->app->success(sprintf("目前使用的是 %s 数据库，端口: %d", $_ENV['REDIS_DESC'], $_ENV['REDIS_PORT'])); 
+        $this->app->success(sprintf("目前使用的是 %s 数据库，端口: %d", $desc, $port)); 
 
         $table->addHeader(['编号', ' 数据量', '   描述']);
 

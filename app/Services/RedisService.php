@@ -25,7 +25,11 @@ class RedisService implements ServiceInterface
     // 用户的小组库
     private $USER_GROUP_DB_NUMBER;
 
+    // 查考组的小组库
     private $SEARCH_GROUP_DB_NUMBER;
+
+    // 头像库
+    // private $AVATER_DB_NUMBER;
 
     // 整理备份时用的库
     // private const BACKUP_DB_NUMBER = 0;
@@ -68,11 +72,6 @@ class RedisService implements ServiceInterface
         $this->client = new \Predis\Client([
             'port'   => $_ENV['REDIS_PORT']
         ]);
-
-        // 头像库的客户端
-        $this->avaterClient = new \Predis\Client([
-            'port'   => $_ENV['REDIS_AVATER_PORT']
-        ]);
     }
 
     public function getDesc () {
@@ -108,12 +107,20 @@ class RedisService implements ServiceInterface
         ];
     }
 
+    // 本地库客户端
     public function getClient()
     {
         return $this->client;
     }
 
+    // 头像库的客户端
     public function getAvaterClient(){
+        $this->avaterClient = new \Predis\Client([
+            'port'   => $_ENV['REDIS_AVATER_PORT']
+        ]);
+        
+        $this->avaterClient->select($_ENV['AVATER_DB_NUMBER']);
+
         return $this->avaterClient;
     }
 

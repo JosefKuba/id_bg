@@ -14,7 +14,7 @@ class StartController extends CommandController
     public function desc()
     {
         return [
-            'command' => 'php artisan redis start (type=avater)',
+            'command' => 'php artisan redis start',
             'desc'    => '根据 env 文件中的端口号，启动 redis server',
         ];
     }
@@ -35,13 +35,8 @@ class StartController extends CommandController
 
     public function exec(): void
     {
-        // 区分头像库
-        if ($this->hasFlag("avater")) {
-            $port = $_ENV['REDIS_AVATER_PORT'];
-        } else {
-            $port = $_ENV['REDIS_PORT'];
-        }
-        
+        $port = $_ENV['REDIS_PORT'];
+
         $path     = ROOT_PATH . 'data/database/';
         $filename = 'dump.rdb';
 
