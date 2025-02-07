@@ -73,13 +73,15 @@ class AvaterService implements ServiceInterface
 
         $lines = getLine($file);
 
+        $allIds    = [];
         $unTestIds = [];
-
-        $unTestCount = $testCount = 0;
+        $testIds   = [];
 
         foreach ($lines as $line) {
             $lineArr = explode("\t", $line);
             $id      = $lineArr[0];
+
+            $allIds[] = $id;
 
             if (!$this->avaterClient->exists($id)) {
                 // 为了避免多个批次之间重复检测头像，每检测一批头像，就把头像加入总库
@@ -89,23 +91,29 @@ class AvaterService implements ServiceInterface
                 }
 
                 $unTestIds[] = $id;
-                $unTestCount++;
             } else {
-                $testCount++;
+                $testIds[] = $id;
             }
         }
 
-        $path = AVATER_OUTPUT_PATH . CURRENT_TIME . " ids.tsv";
-        file_put_contents($path, implode(PHP_EOL, $unTestIds));
+        $path = AVATER_OUTPUT_PATH . CURRENT_TIME . " untest ids.tsv";
+        file_put_contents($path, implode(PHP_EOL, array_unique($unTestIds)));
 
-        $total = count($lines);
+        $totalIdsCount  = count($lines);
+        $uniqueIdsCount = count(array_unique($allIds));
+
+        $testIdsCount = count(array_unique($testIds));
+        $unTestIdsCount = count(array_unique($unTestIds));
 
         $this->app->info(sprintf(
-            "ID 共计 %d 个, 已检测过 %d 个, 未检测 %d 个, 未检测的占比 %s",
-            $total,
-            $testCount,
-            $unTestCount,
-            number_format($unTestCount * 100 / $total, "1") . " %"
+            "ID 共计 %d 个, 不重复ID %d 个, 已检测过 %d 个, 未检测 %d 个, 未检测的占比 %s",
+            $totalIdsCount,
+            $uniqueIdsCount,
+
+            $testIdsCount,
+            $unTestIdsCount,
+            
+            number_format($unTestIdsCount * 100 / $uniqueIdsCount, "1") . " %"
         ));
     }
 
