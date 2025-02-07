@@ -289,7 +289,7 @@ class FriendService implements ServiceInterface
             $_outputStr .= PHP_EOL;
         }
 
-        $outputFileName = FRIEND_OUTPUT_PATH . CURRENT_TIME . " post id.tsv";
+        $outputFileName = FRIEND_OUTPUT_PATH . CURRENT_TIME . " left id.tsv";
         file_put_contents($outputFileName, $_outputStr);
 
         // $this->app->info("打包完成");

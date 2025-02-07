@@ -23,11 +23,10 @@ class DefaultController extends CommandController
 
     public function help()
     {
-        echo "各个库的作用说明如下：\n";
-        foreach ($this->db as $dbNumber => $dbDesc) {
-            echo "\t{$dbNumber}号库：{$dbDesc}\n";
-        }
-        echo "\n";
+        echo <<<STRING
+            php artisan redis               查看本地库中的ID数量
+            php artisan redis --avater      查看公用库中的ID数量 \n
+        STRING;
     }
 
     public function handle(): void
