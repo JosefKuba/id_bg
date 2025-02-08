@@ -109,8 +109,8 @@ class RcService implements ServiceInterface
 
             $year = $match[0];
 
-            // 自家专页 - 新的专页都是活跃ID
-            if ($year < 2022 && $lineArr[2] !== "自家专页 - 新") {
+            // 自家专页-新 都是活跃ID
+            if ($year < 2022 && $lineArr[2] !== "自家专页-新") {
                 $postEarlyLines[] = $line;
                 unset($lines[$key]);
             }
