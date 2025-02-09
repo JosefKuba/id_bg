@@ -93,18 +93,7 @@ class FishService implements ServiceInterface
             $asideCount = 0;
             $excludeCount = 0;
 
-            // var_dump($chunk);
-            // var_dump($fishes);
-            // die;
-
             foreach ($chunk as $id) {
-
-                // 先过滤掉 615 开头的账号，一般都是弟兄姊妹的账号
-                if (preg_match("/^615/", $id) && strlen($id) == 14) {
-                    $excludeIds[] = $id;
-                    $excludeCount++;
-                    continue;
-                }
 
                 // 没有标记的线索
                 if (!array_key_exists($id, $fishes)) {
@@ -114,11 +103,6 @@ class FishService implements ServiceInterface
                 }
 
                 $fish = $fishes[$id];
-
-                // if ($id == "61556099337697") {
-                //     var_dump($fish);
-                //     die;
-                // }
 
                 // 先排除不合格的主标记
                 // var_dump($fish['status']);
@@ -239,9 +223,6 @@ class FishService implements ServiceInterface
 
             $fishes = json_decode($result['body'], true);
 
-            // var_dump($fishes);
-            // die;
-
             // 3. 将获取到的标记进行分类
 
             // 中深棕
@@ -268,11 +249,6 @@ class FishService implements ServiceInterface
             foreach ($chunk as $id) {
 
                 $id = str_replace(["\n", "\r", "\r\n"], "", $id);
-
-                // 先过滤掉 615 开头的账号，一般都是弟兄姊妹的账号
-                // if (preg_match("/^615/", $id) && strlen($id) == 14) {
-                //     continue;
-                // }
 
                 // 没有标记的线索
                 if (!array_key_exists($id, $fishes)) {
@@ -438,13 +414,6 @@ class FishService implements ServiceInterface
             $_DXZM = [];
 
             foreach ($chunk as $id) {
-
-                // 过滤掉 615 开头的线索
-                if (preg_match("/^615/", $id)) {
-                    $_DXZM[] = $id;
-                    $DXZM[] = $id;
-                    continue;
-                }
 
                 // 没有标记的线索
                 if (!array_key_exists($id, $fishes)) {

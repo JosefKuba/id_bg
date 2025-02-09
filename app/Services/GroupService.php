@@ -538,4 +538,75 @@ class GroupService implements ServiceInterface
         $outputFileName = GROUP_OUTPUT_PATH . CURRENT_TIME . " not chinese.tsv";
         file_put_contents($outputFileName, implode("", $notChineseNames));
     }
+
+    // 测试小组成员所在的地区
+    public function detectArea($group, $area, $type)
+    {
+        $groupLines = getLine($group);
+        $areaLines  = getLine($area);
+
+        $groupUsers = [];
+        foreach ($groupLines as $line) {
+            $lineArr = explode("\t", $line);
+            $userId = str_replace(["'", "\r", "\n", "\r\n"], "", $lineArr[0] ?? "");
+            $groupId = str_replace(["'", "\r", "\n", "\r\n"], "", $lineArr[5] ?? "");
+
+            if (empty($groupId) || empty($userId)) {
+                continue;
+            }
+
+            $groupUsers[$groupId][] = $userId;;
+        }
+
+
+        $userAreas = [];
+        foreach ($areaLines as $line) {
+            $lineArr = explode("\t", $line);
+            $userId = str_replace(["'", "\r", "\n", "\r\n"], "", $lineArr[0] ?? "");
+            $userAreas[$userId] = $line;
+        }
+
+        // 根据地区分库
+        $cities = match ($type) {
+            'ao' => $this->aoCitys,
+            'mz' => $this->mzCitys,
+        };
+
+
+        $wifiGoodPreg = "/" . implode("|", $cities['wifi_good']) . "/";
+        $wifiAvaragePreg = "/" . implode("|", $cities['wifi_average']) . "/";
+
+        // 开始检测
+
+        $output[] = "小组ID\t网络好\t比例\t网络一般\t比例\t其余地区\t比例";
+        foreach ($groupUsers as $groupId => $userIds) {
+
+            $wifiGoodCount = $wifiAvarageCount = $wifiOtherCount = 0;
+
+            foreach ($userIds as $userId) {
+                if (preg_match($wifiGoodPreg, $userAreas[$userId])) {
+                    $wifiGoodCount++;
+                } else if (preg_match($wifiAvaragePreg, $userAreas[$userId])) {
+                    $wifiAvarageCount++;
+                } else {
+                    $wifiOtherCount++;
+                }
+            }
+            
+            $output[] = sprintf(
+                "%d\t%d\t%s\t%d\t%s\t%d\t%s",
+                $groupId,
+                $wifiGoodCount,
+                number_format($wifiGoodCount / count($userIds) * 100, "1") . "%",
+                $wifiAvarageCount,
+                number_format($wifiAvarageCount / count($userIds) * 100, "1") . "%",
+                $wifiOtherCount,
+                number_format($wifiOtherCount / count($userIds) * 100, "1") . "%",
+            );
+        }
+
+        $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " results.tsv";
+        file_put_contents($path, implode(PHP_EOL, $output));
+    }
+
 }

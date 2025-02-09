@@ -226,7 +226,7 @@ class RcService implements ServiceInterface
     }
 
     // 将 安哥拉 和 莫桑比克 两批ID 合并 & 压缩
-    public function zip () {
+    public function pack () {
 
         // 先检测 php 扩展是否安装
         if (!extension_loaded('zip')) {

@@ -42,6 +42,6 @@ class PackController extends CommandController
         }
 
         $rcServce = $this->getApp()->rc;
-        $rcServce->zip();
+        $rcServce->pack();
     }
 }
