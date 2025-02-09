@@ -4416,17 +4416,23 @@ trait SelectTrait
             "伊尼扬巴内",
             "Inhambane",
 
-            "纳卡拉",
-            "Nacala",
-
             "希莫尤",
             "Chimoio",
 
-            "克利马内",
-            "Quelimane",
-
             "太特",
             "Tete",
+
+            "Moatize",
+            "莫阿蒂泽",
+
+            "Dondo",
+            "东多市",
+
+            "Maxixe",
+            "马克西斯",
+
+            "Vilanculos",
+            "维兰库洛",
         ],
     ];
 
