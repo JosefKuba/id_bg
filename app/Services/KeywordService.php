@@ -70,7 +70,7 @@ class KeywordService implements ServiceInterface
             // 过滤 �
             $keyword = preg_replace('/[^\P{C}\n]+/u', '', $keyword);
 
-            return trim($keyword, $this->specialChars);
+            return mb_strtolower(trim($keyword, $this->specialChars));
         }, $keywords);
 
         // 最后过滤关键词长度
