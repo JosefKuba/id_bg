@@ -38,14 +38,20 @@ class DefaultController extends CommandController
     // 
     public function exec(): void
     {
+        // 需要备份的文件
+        $files = [
+            'bg'     => ROOT_PATH . "../id_bg/data/database/dump.rdb",
+            'as'     => ROOT_PATH . "../id_as/data/database/dump.rdb",
+            'public' => ROOT_PATH . "../id_public/data/database/dump.rdb",
+        ];
+
         $folderId = $_ENV['GOOGLE_DRIVE_FOLDER_ID'];
 
-        $filePath = DATA_PATH . "database/dump.rdb";
-        $fileName = CURRENT_TIME . ".rdb";
-
-        $id = $this->uploadFileToDrive($filePath, $fileName, 'application/octet-stream', $folderId);
-        
-        $this->info(sprintf("数据备份完成, ID 为: %s", $id));
+        foreach ($files as $key => $file) {
+            $fileName = CURRENT_TIME . " " . $key . " .rdb";
+            $id = $this->uploadFileToDrive($file, $fileName, 'application/octet-stream', $folderId);        
+            $this->info(sprintf("%s 数据备份完成, ID: %s", $key, $id));
+        }
     }
 
     // 1. 设置 Google 服务账号客户端
