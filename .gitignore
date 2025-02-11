@@ -6,6 +6,8 @@ composer.lock
 _dev/
 tmp
 
+secrets/
+
 # 忽略 data 下的所有文件
 data/
 
