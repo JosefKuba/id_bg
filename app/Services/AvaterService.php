@@ -47,6 +47,7 @@ class AvaterService implements ServiceInterface
                 $notFaceNumber++;
                 $avater = 0;
             } else {
+                // 检测失败的也标记为1
                 $faceNumber++;
                 $avater = 1;
             }

@@ -69,7 +69,7 @@ class IdService implements ServiceInterface
             if (empty($line)) {
                 continue;
             }
-            $ids = explode(",", $line);
+            $ids = explode("\t", $line);
             foreach ($ids as $id) {
                 $id = str_replace(array("\r", "\n", "\r\n"), "", $id);
                 if (empty($id)) {
