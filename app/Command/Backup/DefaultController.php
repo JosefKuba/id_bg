@@ -66,7 +66,6 @@ class DefaultController extends CommandController
     public function uploadFileToDrive($filePath, $fileName, $mimeType, $folderId = null) {
         $driveService = $this->getServiceClient();
 
-        // 文件元数据
         $fileMetadata = [
             'name' => $fileName
         ];
