@@ -125,10 +125,8 @@ class AvaterService implements ServiceInterface
 
         $lines = getLine($file);
 
-        $unTestIds = [];
-
-        $faceIds = $notFaceIds = [];
-        $untestIdsCount = $faceIdsCount = $notFaceIdsCount = 0;
+        $faceIds = $notFaceIds = $unTestIds = [];
+        $faceIdsCount = $notFaceIdsCount = $untestIdsCount = 0;
 
         foreach ($lines as $line) {
             $lineArr = explode("\t", $line);
@@ -143,20 +141,26 @@ class AvaterService implements ServiceInterface
                     $faceIds[] = $id;
                     $faceIdsCount++;
                 } else {
-                    $notFaceids[] = $id;
+                    $notFaceIds[] = $id;
                     $notFaceIdsCount++;
                 }
             }
         }
 
-        $path = AVATER_OUTPUT_PATH . 'face/' . CURRENT_TIME . '.tsv';
-        file_put_contents($path, implode(PHP_EOL, $faceIds));
+        if ($faceIds) {
+            $path = AVATER_OUTPUT_PATH . 'face/' . CURRENT_TIME . '.tsv';
+            file_put_contents($path, implode(PHP_EOL, $faceIds));
+        }
 
-        $path = AVATER_OUTPUT_PATH . 'notface/' . CURRENT_TIME . '.tsv';
-        file_put_contents($path, implode(PHP_EOL, $notFaceIds));
+        if ($notFaceIds) {
+            $path = AVATER_OUTPUT_PATH . 'notface/' . CURRENT_TIME . '.tsv';
+            file_put_contents($path, implode(PHP_EOL, $notFaceIds));    
+        }
 
-        $path = AVATER_OUTPUT_PATH . 'untest/' . CURRENT_TIME . '.tsv';
-        file_put_contents($path, implode(PHP_EOL, $unTestIds));
+        if ($unTestIds) {
+            $path = AVATER_OUTPUT_PATH . 'untest/' . CURRENT_TIME . '.tsv';
+            file_put_contents($path, implode(PHP_EOL, $unTestIds));    
+        }
         
         $total = count($lines);
 

@@ -6,11 +6,6 @@ namespace App\Command\Id;
 
 use Minicli\Command\CommandController;
 
-/**
- * 将 csv 文件中的 ID 汇总去重
- *  支持多个文件
- */
-
 class DefaultController extends CommandController
 {
     public function desc()
@@ -29,7 +24,7 @@ class DefaultController extends CommandController
         echo "输出：data/id/output/ 目录下的未查询彩球标记的ID 或者 是对应目录下查询过彩球标记的ID\n";
         echo "两个库之间会互相排重，避免重复刷脸。在另一个库中检测到的合格的ID，会放在 data/id/output/ 目录下\n";
 
-        echo "\t php artisan id         入台湾库\n\t php artisan id type=my 入马来库\n";
+        echo "\t php artisan id type=ao 入安哥拉库\n\t php artisan id type=my 入莫桑比克库\n";
         echo "\t php artisan id --nf    只入库，不查询彩球标记\n";
         echo "\n";
     }
@@ -38,15 +33,18 @@ class DefaultController extends CommandController
     {
         if ($this->hasFlag("help")) {
             $this->help();
-        } else {
+        } else if ($this->hasFlag("test")) {
+            if (method_exists($this, 'test')) {
+                $this->test();
+            }
+        } 
+        else {
             $this->exec();
         }
     }
 
     public function exec(): void
     {
-        $startTime = time();
-
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
         $backupService->backupInput();
@@ -96,19 +94,28 @@ class DefaultController extends CommandController
         $fishResult = $fishService->getFish($outputFileName);
 
         // 将查询好的标记保存到文件中
-        $collect_file_name = ID_OUTPUT_COLLECT_PATH . CURRENT_TIME . ".csv";
-        file_put_contents($collect_file_name, implode(PHP_EOL, $fishResult['collect']));
+        $collect_file_path = ID_OUTPUT_COLLECT_PATH . CURRENT_TIME . ".tsv";
+        file_put_contents($collect_file_path, implode(PHP_EOL, $fishResult['collect']));
 
-        $aside_file_name = ID_OUTPUT_ASIDE_PATH . CURRENT_TIME . ".csv";
-        file_put_contents($aside_file_name, implode(PHP_EOL, $fishResult['aside']));
+        $aside_file_path = ID_OUTPUT_ASIDE_PATH . CURRENT_TIME . ".tsv";
+        file_put_contents($aside_file_path, implode(PHP_EOL, $fishResult['aside']));
 
-        $exclude_file_name = ID_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . ".csv";
-        file_put_contents($exclude_file_name, implode(PHP_EOL, $fishResult['exclude']));
+        $exclude_file_path = ID_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . ".tsv";
+        file_put_contents($exclude_file_path, implode(PHP_EOL, $fishResult['exclude']));
 
         unlink($outputFileName);
 
-        $endTime = time();
+        // 再将过彩球标记剩下的ID过头像库，排除掉不是人物头像的
+        if ($this->hasFlag("no-face")) return;
 
-        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
+        $avaterServices = $this->getApp()->avater;
+        $avaterServices->pick($collect_file_path);
+    }
+
+    public function test() {
+        $avaterServices = $this->getApp()->avater;
+
+        $collect_file_path =  ID_OUTPUT_COLLECT_PATH . "2025-02-11 07-16-49.tsv";
+        $avaterServices->pick($collect_file_path);
     }
 }
