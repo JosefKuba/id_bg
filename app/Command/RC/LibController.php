@@ -18,7 +18,13 @@ class LibController extends CommandController
 
     public function help()
     {
-        echo "这是帮助手册" . PHP_EOL;
+        echo <<<STRING
+            
+            php artisan rc lib              自动检测地区 分库
+            php artisan rc lib type=ao      检测安哥拉地区 分库
+            php artisan rc lib type=mz      检测莫桑比克地区 分库
+            \n
+        STRING;
     }
 
     public function handle(): void
