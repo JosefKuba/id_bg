@@ -33,9 +33,6 @@ class FriendService implements ServiceInterface
         // 为了避免重复贴ID，先将文件整体去重
         $lines = array_unique($lines);
 
-        // 原始ID矫正
-        // 在导出的过程中，经常出现原始ID连续增加，这种情况自动修复ID
-        // 将列排序，然后再矫正
         foreach ($lines as $key => $line) {
             $lineArr = explode("\t", $line);
 
@@ -60,7 +57,6 @@ class FriendService implements ServiceInterface
         $lines = array_values($lines);
         array_multisort($sourceIdArr, $lines);
 
-        // 修复 sourceId
         $_lines = [];
         foreach ($lines as $key => $line) {
             $lineArr = explode("\t", $line);

@@ -150,7 +150,7 @@ const FRIEND_DB_FOLDER = ROOT_PATH . "data/database/friends/";
 const FRIEND_DB_FOLDER_TMP = ROOT_PATH . "data/database/friends_tmp/";
 
 // 存放所有好友ID的目录
-const FRIEND_FILES_FOLDER = ROOT_PATH . "data/database/friends_files/";
+const FRIEND_FILES_FOLDER = ROOT_PATH . "_dev/id_toolbox/friends/";
 
 // 存放过滤过线索名字的所有好友ID的目录
 const FRIEND_FILES_PURE_FOLDER = ROOT_PATH . "data/database/friends_files_pure/";

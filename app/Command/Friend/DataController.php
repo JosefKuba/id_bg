@@ -2,19 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Avater;
+namespace App\Command\Friend;
 
 use Minicli\Command\CommandController;
 
 class DataController extends CommandController
 {
-
     public function desc()
     {
-        return [
-            'command'   => 'php artisan data',
-            'desc'      => '处理头像数据',
-        ];
+        // return [
+        //     'command'   => 'php artisan friend data',
+        //     'desc'      => '将导出的好友，按照原始ID分割',
+        // ];
     }
 
     public function help()
@@ -33,18 +32,17 @@ class DataController extends CommandController
 
     public function exec(): void
     {
-        $avaterClient = $this->getApp()->redis->getAvaterClient();
+        
+        $ids = getLine(FRIEND_INPUT_PATH . "ids");
 
-        $path = AVATER_INPUT_PATH . "ids_bad";
-        $ids = getLine($path);
-
-        $count = 0;
+        $left = [];
         foreach ($ids as $id) {
-            if (!$avaterClient->exists($id)) {
-                $count++;
+            $files = glob(FRIEND_DB_FOLDER . $id . "*");
+            if (!$files) {
+                $left[] = $id;
             }
         }
-
-        $this->info(sprintf("新ID：%d 个", $count));
+        
+        file_put_contents(FRIEND_INPUT_PATH . "result", implode(PHP_EOL, $left));
     }
 }

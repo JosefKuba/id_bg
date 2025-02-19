@@ -33,7 +33,7 @@ class IdFilesController extends CommandController
     public function exec(): void
     {
         // 1. 读取一个目录下的所有 csv 文件
-        $csvFiles = glob(ROOT_PATH . "_dev/friend_ids/*");
+        $csvFiles = glob(ROOT_PATH . "_dev/id_toolbox/source/*");
 
         if (empty($csvFiles)) {
             $this->error("文件夹中缺少文件");
@@ -43,7 +43,6 @@ class IdFilesController extends CommandController
         // 拆分 ID 文件
         $friendService = $this->getApp()->friend;
 
-        // 
         $total = count($csvFiles);
         foreach ($csvFiles as $key  => $file) {
             $startTime = time();
