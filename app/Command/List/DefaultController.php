@@ -35,7 +35,6 @@ class DefaultController extends CommandController
             ],
             'friend' => [
                 \App\Command\Friend\DefaultController::class,
-                \App\Command\Friend\SelectController::class,
                 \App\Command\Friend\PackController::class,
                 \App\Command\Friend\RemoveController::class,
                 \App\Command\Friend\IdFIlesController::class,
@@ -51,6 +50,10 @@ class DefaultController extends CommandController
                 \App\Command\Avater\DefaultController::class,
                 \App\Command\Avater\ImportController::class,
                 \App\Command\Avater\TestController::class,
+            ],
+            'name'     => [
+                \App\Command\Name\ZhController::class,
+                \App\Command\Name\BgController::class,
             ],
             'redis'     => [
                 \App\Command\Redis\DefaultController::class,
@@ -76,7 +79,7 @@ class DefaultController extends CommandController
                 \App\Command\Fish\DefaultController::class,
                 \App\Command\Fish\FanaticController::class,
             ],
-            
+
         ];
 
         foreach ($commands as $command => $controllers) {

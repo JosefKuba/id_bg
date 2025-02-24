@@ -29,6 +29,6 @@ return [
         'post'      => \App\Services\PostService::class,
         'keyword'   => \App\Services\KeywordService::class,
         'avater'    => \App\Services\AvaterService::class,
+        'name'      => \App\Services\NameService::class,
     ],
 ];
-

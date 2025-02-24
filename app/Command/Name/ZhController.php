@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Friend;
+namespace App\Command\Name;
 
 use Minicli\Command\CommandController;
 
-class SelectController extends CommandController
+class ZhController extends CommandController
 {
 
     public function desc()
     {
         return [
-            'command'   => 'php artisan friend select',
-            'desc'      => '挑选中文名字的线索',
+            'command'   => 'php artisan name zh',
+            'desc'      => '挑选中文名字',
         ];
     }
 

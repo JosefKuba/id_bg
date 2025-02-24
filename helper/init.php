@@ -116,6 +116,13 @@ const RC_OUTPUT_PATH = ROOT_PATH . "data/rc/output/";
 
 const RC_BACKUP_PATH = ROOT_PATH . "data/rc/backup/";
 
+// 名字
+const NAME_INPUT_PATH = ROOT_PATH . "data/name/input/";
+
+const NAME_OUTPUT_PATH = ROOT_PATH . "data/name/output/";
+
+const NAME_BACKUP_PATH = ROOT_PATH . "data/name/backup/";
+
 
 // 已刷脸的ID
 const ID_DB_FILE = ROOT_PATH . "data/database/ids";
