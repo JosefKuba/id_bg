@@ -26,31 +26,25 @@ class RcService implements ServiceInterface
         $contentArr = explode("\t", $content);
 
         $results = [];
-        foreach ($contentArr as $item) {
-            if (!str_contains($item, "|")) {
+
+        // 每一个单元格内的数据，先用 ^ 拆分，再用 | 拆分
+        foreach ($contentArr as $_content) {
+            if (!str_contains($_content, "|")) {
                 continue;
             }
 
-            $item = trim($item, "|");
-            $item = str_replace("^", "", $item);
+            $_contentArr =  explode("^", $_content);
 
-            $itemArr = explode("|", $item);
-            $itemChunk = array_chunk($itemArr, 4);
+            foreach ($_contentArr as $key => $item) {
+                $_contentArr[$key] = explode("|", $item);
+            }
 
-            $results = array_merge($results, $itemChunk);
+            $results = array_merge($results, $_contentArr);
         }
 
         $output = "";
         $ids = [];
         foreach ($results as $item) {
-            // if (
-            //     str_contains($item[2], "佛") ||
-            //     str_contains($item[2], "伊斯兰") ||
-            //     str_contains($item[2], "印度")
-            // ) {
-            //     continue;
-            // }
-
             $ids[] = $item[0] ?? "";
 
             $output .= implode("\t", $item) . PHP_EOL;
@@ -64,7 +58,8 @@ class RcService implements ServiceInterface
     }
 
     // 将安桑的ID进行分库
-    public function ASLIb($file, $type) {
+    public function ASLIb($file, $type)
+    {
 
         $lines = getLine($file);
 
@@ -74,7 +69,7 @@ class RcService implements ServiceInterface
         // 检查文件格式 ： ID & 刷脸人
         $checkLineArr = explode("\t", $lines[5]);
         if (
-            (!preg_match("/^\d+$/", $checkLineArr[1])) || 
+            (!preg_match("/^\d+$/", $checkLineArr[1])) ||
             (!in_array($checkLineArr[3], $this->facePersion))
         ) {
             $this->app->error("未通过格式校验");
@@ -85,7 +80,7 @@ class RcService implements ServiceInterface
         // 截取所需要的列 名字 ID 来源渠道 所在地 家乡 最后发帖时间
         foreach ($lines as $key => $line) {
             $lineArr = explode("\t", $line);
-            $lines[$key] = implode("\t", [$lineArr[0],$lineArr[1],$lineArr[2],$lineArr[4],$lineArr[5],$lineArr[6], CURRENT_DATE]);
+            $lines[$key] = implode("\t", [$lineArr[0], $lineArr[1], $lineArr[2], $lineArr[4], $lineArr[5], $lineArr[6], CURRENT_DATE]);
         }
 
         // 先把自家专页的ID挑出来
@@ -200,12 +195,12 @@ class RcService implements ServiceInterface
 
         if ($wifiAverageLines) {
             $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 网络一般.tsv";
-            file_put_contents($path, implode(PHP_EOL, $wifiAverageLines));    
+            file_put_contents($path, implode(PHP_EOL, $wifiAverageLines));
         }
 
         if ($otherCityLines) {
             $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $country . " 其余地区.tsv";
-            file_put_contents($path, implode(PHP_EOL, $otherCityLines));    
+            file_put_contents($path, implode(PHP_EOL, $otherCityLines));
         }
 
 
@@ -216,7 +211,7 @@ class RcService implements ServiceInterface
 
         if ($otherCountryWifiGoodLines) {
             $path = RC_OUTPUT_PATH . CURRENT_TIME . " " . $otherCountry . " 网络好.tsv";
-            file_put_contents($path, implode(PHP_EOL, $otherCountryWifiGoodLines));    
+            file_put_contents($path, implode(PHP_EOL, $otherCountryWifiGoodLines));
         }
 
         if ($otherCountryWifiAverageLines) {
@@ -226,7 +221,8 @@ class RcService implements ServiceInterface
     }
 
     // 将 安哥拉 和 莫桑比克 两批ID 合并 & 压缩
-    public function pack () {
+    public function pack()
+    {
 
         // 先检测 php 扩展是否安装
         if (!extension_loaded('zip')) {
@@ -238,7 +234,7 @@ class RcService implements ServiceInterface
 
         // 检查要打包的格式，避免错误打包
         $files = glob(RC_OUTPUT_PATH . "*.tsv");
-        
+
         foreach ($files as $file) {
             $basename = basename($file);
             $times[] = substr($basename, 0, 19);
@@ -258,7 +254,7 @@ class RcService implements ServiceInterface
             "安哥拉 网络一般",
             "安哥拉 其余地区",
             "安哥拉 时间早",
-            
+
             "莫桑比克 网络好",
             "莫桑比克 网络一般",
             "莫桑比克 其余地区",
@@ -276,7 +272,7 @@ class RcService implements ServiceInterface
             // 将内容合并
             $outputName = $zipFolder . $type . ".tsv";
             $content = "";
-            
+
             foreach ($files as $file) {
                 $content .= file_get_contents($file) . PHP_EOL;
             }
