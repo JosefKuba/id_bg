@@ -1,8 +1,5 @@
 <?php
 
-ini_set('memory_limit', '-1');
-error_reporting(E_ALL & ~E_DEPRECATED);
-
 date_default_timezone_set('Europe/Amsterdam');
 
 define("CURRENT_TIME",  date("Y-m-d H-i-s"));
