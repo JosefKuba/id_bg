@@ -21,19 +21,19 @@ class DataController extends CommandController
 
         $ids   = getLine($file);
 
-        $newIds = [];
+        $newIds = 0;
         foreach ($ids as $id) {
             if (!$redis->exists($id)) {
-                $redis->set($id, "1");
-                $newIds[] = $id;
+                // $redis->set($id, "1");
+                $newIds++;
             }
         }
 
-        $resultPath = ID_OUTPUT_PATH . basename($file) . ".new";
-        file_put_contents($resultPath, implode(PHP_EOL, $newIds));
+        // $resultPath = ID_OUTPUT_PATH . basename($file) . ".new";
+        // file_put_contents($resultPath, implode(PHP_EOL, $newIds));
 
-        unlink($file);
+        // unlink($file);
 
-        $this->info(sprintf("新的ID %d 个", count($newIds)));
+        $this->info(sprintf("新的ID %d 个", $newIds));
     }
 }
