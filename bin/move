@@ -2,4 +2,4 @@
 
 mv data/database/friends_tmp/* data/database/friends/
 
-echo "文件已经移动到 friends 目录中"
+# echo "文件已经移动到 friends 目录中"

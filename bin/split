@@ -26,4 +26,4 @@ if [ "$clean_arg" = "merge" ]; then
   cat data/id/input/names_[1-9] | sort -u > data/id/input/names_u.tsv
 fi
 
-echo "ID处理完成"
+# echo "ID处理完成"

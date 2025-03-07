@@ -61,6 +61,6 @@ class DefaultController extends CommandController
         // 删除文件
         unlink($csvFiles[0]);
 
-        $this->info("ID 文件拆分完成");
+        // $this->info("ID 文件拆分完成");
     }
 }
