@@ -23,8 +23,8 @@ class DataController extends CommandController
 
         $newIds = 0;
         foreach ($ids as $id) {
-            if (!$redis->exists($id)) {
-                // $redis->set($id, "1");
+            if ($redis->exists($id)) {
+                $redis->del($id);
                 $newIds++;
             }
         }
