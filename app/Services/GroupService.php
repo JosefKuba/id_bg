@@ -27,7 +27,7 @@ class GroupService implements ServiceInterface
                 $this->redisClient  = $this->app->redis->getUserGroupClient();
                 $this->db_file      = USER_GROUPS_DB_FILE;
                 break;
-            
+
             case 'search':
                 $this->redisClient  = $this->app->redis->getSearchGroupClient();
                 $this->db_file      = SEARCH_GROUPS_DB_FILE;
@@ -40,8 +40,9 @@ class GroupService implements ServiceInterface
     }
 
     // 处理导出的小组
-    public function handleUserGroups() {
-        
+    public function handleUserGroups()
+    {
+
         $this->init("user");
 
         $files = glob(GROUP_INPUT_PATH . "*");
@@ -75,7 +76,7 @@ class GroupService implements ServiceInterface
         $uniqueGroupsCount = count($groups);
 
         // 3. 处理数据
-        
+
         $newGroupIds = [];
         $newGroups = [];
         $privateGroups = [];
@@ -88,7 +89,7 @@ class GroupService implements ServiceInterface
         $funcsFewerGroupsCount = 0;
         $privateGroupsCount = 0;
         $existGroupsCount = 0;
-        
+
         foreach ($groups as $group) {
             $groupArr = explode("\t", $group);
 
@@ -98,7 +99,7 @@ class GroupService implements ServiceInterface
             }
 
             $groupId  = str_replace("'", "", $groupArr[1]);
-            
+
             // 总库排重
             if ($this->redisClient->exists($groupId)) {
                 $existGroupsCount++;
@@ -144,7 +145,7 @@ class GroupService implements ServiceInterface
         $this->app->info(sprintf("小组共计 %d 个, 不重复小组 %d 个", $allGroupsCount, $uniqueGroupsCount));
         $this->app->info(sprintf("和总库重复 %d 个, 新小组 %d 个", $existGroupsCount, $uniqueGroupsCount - $existGroupsCount));
         $this->app->info(sprintf("和总库重复 %d 个", $funcsFewerGroupsCount));
-        
+
         $this->app->info(sprintf("私密小组 %d 个", $privateGroupsCount));
         $this->app->info(sprintf("剩余小组 %d 个", count($newGroupIds)));
     }
@@ -332,7 +333,7 @@ class GroupService implements ServiceInterface
         $this->app->info(sprintf("小组共计 %d 个，自身去重后 %d 个，不重复比例 %s", $totalGroupsCount, $uniqueGroupsCount, $percent));
 
         $this->app->info(sprintf("和总库重复小组共计 %d 个", $repeatGroupsCount));
-        
+
         // $this->app->info(sprintf("不合格小组共计 %d 个", count($excludeGroups)));
         // $this->app->info(sprintf("佛教小组共计 %d 个", count($buddhistGroups)));
         // $this->app->info(sprintf("外文小组共计 %d 个", $notChineseGroupsCount));
@@ -446,7 +447,10 @@ class GroupService implements ServiceInterface
     {
         $type = "";
 
-        // 判断 基督教 天主教 佛教
+        // 判断 基督教 天主教 佛教 犹太教
+        $judaismPregInclude    = "/" . implode("|", $this->judaismKeywords["include"]) . "/";
+        $judaismPregExclude    = "/" . implode("|", $this->judaismKeywords["exclude"]) . "/";
+
         $christianPregInclude          = "/" . implode("|", $this->christianKeywords["include"]) . "/";
         $christianPregExclude          = "/" . implode("|", $this->christianKeywords["exclude"]) . "/";
 
@@ -458,6 +462,8 @@ class GroupService implements ServiceInterface
 
         if (preg_match($buddhistPregInclude, $title) && !preg_match($buddhistPregExclude, $title)) {
             $type = "佛教";
+        } else if (preg_match($judaismPregInclude, $title) && !preg_match($judaismPregExclude, $title)) {
+            $type = "犹太教";
         } else if (preg_match($christianPregInclude, $title) && !preg_match($christianPregExclude, $title)) {
             $type = "基督教";
         } else if (preg_match($catholicPregInclude, $title) && !preg_match($catholicPregExclude, $title)) {
@@ -592,7 +598,7 @@ class GroupService implements ServiceInterface
                     $wifiOtherCount++;
                 }
             }
-            
+
             $output[] = sprintf(
                 "%d\t%d\t%s\t%d\t%s\t%d\t%s",
                 $groupId,
@@ -608,5 +614,4 @@ class GroupService implements ServiceInterface
         $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " results.tsv";
         file_put_contents($path, implode(PHP_EOL, $output));
     }
-
 }
