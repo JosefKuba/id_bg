@@ -45,7 +45,7 @@ class RcService implements ServiceInterface
         $output = "";
         $ids = [];
         foreach ($results as $item) {
-            $ids[] = $item[0] ?? "";
+            $ids[] = $item[1] ?? "";
 
             $output .= implode("\t", $item) . PHP_EOL;
         }

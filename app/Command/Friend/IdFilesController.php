@@ -53,6 +53,6 @@ class IdFilesController extends CommandController
             unlink($file);
         }
 
-        $this->info("ID 文件拆分完成");
+        // $this->info("ID 文件拆分完成");
     }
 }
