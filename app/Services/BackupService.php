@@ -63,6 +63,12 @@ class BackupService implements ServiceInterface
             case NAME_INPUT_PATH:
                 $backup_path = NAME_BACKUP_PATH;
                 break;
+            case IG_INPUT_PATH:
+                $backup_path = IG_BACKUP_PATH;
+                break;
+            case ZAP_INPUT_PATH:
+                $backup_path = ZAP_BACKUP_PATH;
+                break;
         }
 
         foreach ($files as $file) {

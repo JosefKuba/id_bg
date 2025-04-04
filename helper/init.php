@@ -123,6 +123,20 @@ const NAME_OUTPUT_PATH = ROOT_PATH . "data/name/output/";
 
 const NAME_BACKUP_PATH = ROOT_PATH . "data/name/backup/";
 
+// IG
+const IG_INPUT_PATH = ROOT_PATH . "data/ig/input/";
+
+const IG_OUTPUT_PATH = ROOT_PATH . "data/ig/output/";
+
+const IG_BACKUP_PATH = ROOT_PATH . "data/ig/backup/";
+
+// WhatsApp
+const ZAP_INPUT_PATH = ROOT_PATH . "data/zap/input/";
+
+const ZAP_OUTPUT_PATH = ROOT_PATH . "data/zap/output/";
+
+const ZAP_BACKUP_PATH = ROOT_PATH . "data/zap/backup/";
+
 
 // 已刷脸的ID
 const ID_DB_FILE = ROOT_PATH . "data/database/ids";

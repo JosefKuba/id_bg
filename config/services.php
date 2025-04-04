@@ -30,5 +30,7 @@ return [
         'keyword'   => \App\Services\KeywordService::class,
         'avater'    => \App\Services\AvaterService::class,
         'name'      => \App\Services\NameService::class,
+        'ig'        => \App\Services\IgService::class,
+        'zap'       => \App\Services\ZapService::class,
     ],
 ];
