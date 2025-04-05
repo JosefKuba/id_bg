@@ -16,13 +16,13 @@ class TypeController extends CommandController
     {
         return [
             'command'   => 'php artisan group type',
-            'desc'      => '根据小组的标题，将小组分类',
+            'desc'      => '根据小组或专页的中文标题，将小组专页进行分类',
         ];
     }
 
     public function help()
     {
-        echo "这是帮助手册" . PHP_EOL;
+        echo "根据中文名字进行分类，中文名字需要位于第一列. 将外语系的名字翻译成中文后，同样可以使用。" . PHP_EOL;
     }
 
     public function handle(): void

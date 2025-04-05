@@ -18,7 +18,7 @@ class DefaultController extends CommandController
 
     public function help()
     {
-        echo '先再Google中搜索 "keyword" "chat.whatsapp"，之后再进行处理' . PHP_EOL;
+        echo '先再Google中搜索 "keyword" "chat.whatsapp"，并在高级搜索中设置对应的语言。将搜索结果复制粘贴到表格之后，再用该工具进行处理' . PHP_EOL;
     }
 
     public function handle(): void
@@ -32,12 +32,6 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
-        /*
-            处理的步骤：
-                - 将个人的文件汇总
-                - 按照 第四列 拆分 成一个个的文件
-        */
-
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
         $backupService->backupInput(ZAP_INPUT_PATH);
@@ -46,7 +40,6 @@ class DefaultController extends CommandController
         $fileService = $this->getApp()->file;
         $fileService->merge(ZAP_INPUT_PATH);
 
-        // 3. 根据第四列拆分成一个个的小文件
         $csvFiles = $fileService->getCsvFiles(ZAP_INPUT_PATH);
 
         if (empty($csvFiles)) {
@@ -54,11 +47,9 @@ class DefaultController extends CommandController
             exit();
         }
 
-        // 拆分 ID 文件
         $zapService = $this->getApp()->zap;
         $zapService->parse($csvFiles[0]);
 
-        // 删除文件
         unlink($csvFiles[0]);
     }
 }

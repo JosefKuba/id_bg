@@ -12,13 +12,13 @@ class DefaultController extends CommandController
     {
         return [
             'command'   => 'php artisan ig',
-            'desc'      => '整理搜索出来的IG结果，提取出 粉丝量和专页名称',
+            'desc'      => '整理搜索出来的IG结果，提取出 粉丝量 和 专页名称',
         ];
     }
 
     public function help()
     {
-        echo "搜索关键词，选择非个性化，结果用超链接抓取插件提取出来，之后再进行处理" . PHP_EOL;
+        echo "在IG上搜索关键词，选择非个性化，结果用超链接抓取插件提取出来，之后再用该工具进行解析结果" . PHP_EOL;
     }
 
     public function handle(): void
@@ -32,12 +32,6 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
-        /*
-            处理的步骤：
-                - 将个人的文件汇总
-                - 按照 第四列 拆分 成一个个的文件
-        */
-
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
         $backupService->backupInput(IG_INPUT_PATH);
@@ -46,7 +40,6 @@ class DefaultController extends CommandController
         $fileService = $this->getApp()->file;
         $fileService->merge(IG_INPUT_PATH);
 
-        // 3. 根据第四列拆分成一个个的小文件
         $csvFiles = $fileService->getCsvFiles(IG_INPUT_PATH);
 
         if (empty($csvFiles)) {
@@ -54,11 +47,9 @@ class DefaultController extends CommandController
             exit();
         }
 
-        // 拆分 ID 文件
         $igService = $this->getApp()->ig;
         $igService->parse($csvFiles[0]);
 
-        // 删除文件
         unlink($csvFiles[0]);
     }
 }

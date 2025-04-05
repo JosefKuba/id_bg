@@ -12,7 +12,7 @@ class PackController extends CommandController
     {
         return [
             'command'   => 'php artisan rc pack',
-            'desc'      => '将同一个国家的ID汇总压缩',
+            'desc'      => '将同一个国家的ID汇总压缩(安桑使用)',
         ];
     }
 

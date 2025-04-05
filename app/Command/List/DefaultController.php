@@ -79,7 +79,12 @@ class DefaultController extends CommandController
                 \App\Command\Fish\DefaultController::class,
                 \App\Command\Fish\FanaticController::class,
             ],
-
+            'ig' => [
+                \App\Command\IG\DefaultController::class,
+            ],
+            'zap' => [
+                \App\Command\ZAP\DefaultController::class,
+            ],
         ];
 
         foreach ($commands as $command => $controllers) {
