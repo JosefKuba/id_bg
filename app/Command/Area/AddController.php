@@ -50,7 +50,5 @@ class AddController extends CommandController
         $areaService->addArea($files[0]);
 
         unlink($files[0]);
-
-        // $this->success("地区ID分类完成");
     }
 }

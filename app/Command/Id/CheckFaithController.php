@@ -6,10 +6,6 @@ namespace App\Command\Id;
 
 use Minicli\Command\CommandController;
 
-/**
- * 处理 redis 数据
- */
-
 class CheckFaithController extends CommandController
 {
     public function desc()

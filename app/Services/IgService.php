@@ -61,15 +61,12 @@ class IgService implements ServiceInterface
             // slug & title
             preg_match('/^([a-zA-Z0-9_.]+)\s+(.*)$/u', $titleSlug, $matches);
             
-            $slug = $matches[1];
             $title = $matches[2];
             
             // 粉丝量
             $funsStr = str_replace(",", "", $funsStr);
             if (str_contains($funsStr, "万")) {
-                // var_dump($funsStr);
                 $count = str_replace(" 万 位粉丝", "", $funsStr);
-                // var_dump($count);
                 $funscount = $count * 10000;        
             } else {
                 $funscount = str_replace(" 位粉丝", "", $funsStr);

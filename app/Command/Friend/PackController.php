@@ -32,13 +32,11 @@ class PackController extends CommandController
 
     public function exec(): void
     {
-        // 定义打包的文件名称
         $packFile = FRIEND_INPUT_PATH . "pack.tsv";
 
         $friendService = $this->getApp()->friend;
         $friendService->pack($packFile);
 
-        // 删除 input 目录下的文件
         unlink($packFile);
     }
 }

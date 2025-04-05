@@ -51,7 +51,5 @@ class DefaultController extends CommandController
         $faithService->selectArea($files[0], $type);
 
         unlink($files[0]);
-
-        // $this->success("地区ID分类完成");
     }
 }

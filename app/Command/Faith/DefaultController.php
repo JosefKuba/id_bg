@@ -6,11 +6,6 @@ namespace App\Command\Faith;
 
 use Minicli\Command\CommandController;
 
-/**
- * 将 output 目录下的文件查询彩球标记
- *  该文件只能一行一个ID
- */
-
 class DefaultController extends CommandController
 {
 
@@ -57,7 +52,5 @@ class DefaultController extends CommandController
         $faithService->selectType($files[0], $type);
 
         unlink($files[0]);
-
-        // $this->success("分类完成");
     }
 }

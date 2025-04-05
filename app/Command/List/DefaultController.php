@@ -79,6 +79,12 @@ class DefaultController extends CommandController
                 \App\Command\Fish\DefaultController::class,
                 \App\Command\Fish\FanaticController::class,
             ],
+            'link' => [
+                \App\Command\Link\DefaultController::class,
+            ],
+            'keyword' => [
+                \App\Command\Keyword\DefaultController::class,
+            ],
             'ig' => [
                 \App\Command\IG\DefaultController::class,
             ],

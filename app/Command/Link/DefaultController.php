@@ -6,9 +6,6 @@ namespace App\Command\Link;
 
 use Minicli\Command\CommandController;
 
-/**
- * 将带参数的链接处理成规范链接
- */
 class DefaultController extends CommandController
 {
 
@@ -16,7 +13,7 @@ class DefaultController extends CommandController
     {
         return [
             'command'   => 'php artisan link',
-            'desc'      => '将带参数的个人账号链接，处理成规范链接',
+            'desc'      => '将带参数的FB个人账号链接，处理成规范链接',
         ];
     }
 
@@ -53,7 +50,5 @@ class DefaultController extends CommandController
         $linkService->pure($files[0]);
 
         unlink($files[0]);
-
-        // $this->success("链接处理完成");
     }
 }

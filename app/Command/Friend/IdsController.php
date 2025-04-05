@@ -43,7 +43,6 @@ class IdsController extends CommandController
         $friendService = $this->getApp()->friend;
         $friendService->getFriendFilesIds($files[0]);
 
-        // 删除文件
         unlink($files[0]);
     }
 }

@@ -33,10 +33,6 @@ class ZhController extends CommandController
 
     public function exec(): void
     {
-        // 1. 备份原始文件
-        // $backupService = $this->getApp()->backup;
-        // $backupService->backupInput(FRIEND_INPUT_PATH);
-
         $fileService = $this->getApp()->file;
         $files = $fileService->getCsvFiles(FRIEND_INPUT_PATH);
 

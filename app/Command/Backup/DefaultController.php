@@ -35,13 +35,11 @@ class DefaultController extends CommandController
         }
     }
 
-    // 
     public function exec(): void
     {
         // 需要备份的文件
         $files = [
             'bg'     => ROOT_PATH . "../id_bg/data/database/dump.rdb",
-            // 'as'     => ROOT_PATH . "../id_as/data/database/dump.rdb",
             'public' => ROOT_PATH . "../id_public/data/database/dump.rdb",
         ];
 

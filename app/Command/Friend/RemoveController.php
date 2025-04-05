@@ -48,7 +48,6 @@ class RemoveController extends CommandController
         $friendService = $this->getApp()->friend;
         $count = $friendService->removeIdFiles($files[0]);
 
-        // 删除文件
         unlink($files[0]);
 
         $endTime = time();

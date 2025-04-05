@@ -23,7 +23,7 @@ class ZapService implements ServiceInterface
 
         $results = [];
         
-        foreach ($files as $key => $file) {
+        foreach ($files as $file) {
 
             $lines = getLine($file);
 

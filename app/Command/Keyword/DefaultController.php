@@ -6,9 +6,6 @@ namespace App\Command\Keyword;
 
 use Minicli\Command\CommandController;
 
-/**
- * 将带参数的链接处理成规范链接
- */
 class DefaultController extends CommandController
 {
 
@@ -16,7 +13,7 @@ class DefaultController extends CommandController
     {
         return [
             'command'   => 'php artisan keyword',
-            'desc'      => '从文本中拆分关键字',
+            'desc'      => '从文本中拆分关键字，按空格拆分，各语系都可以使用',
         ];
     }
 

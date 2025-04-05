@@ -6,11 +6,6 @@ namespace App\Command\Id;
 
 use Minicli\Command\CommandController;
 
-/**
- * 导ID的小组时
- *  - 和已经排查过的排重
- */
-
 class GroupController extends CommandController
 {
     public function desc()
@@ -41,14 +36,6 @@ class GroupController extends CommandController
 
     public function exec(): void
     {
-        /*
-            需要做什么？
-            - 给一个ID文件，排查
-            - 去掉弟兄姊妹的账号
-        */
-
-        $startTime = time();
-
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
         $backupService->backupInput();
@@ -88,9 +75,5 @@ class GroupController extends CommandController
 
         // 7. 总库排重，并且将新的ID加入总库
         $idService->removeDuplicatesAndAddIntoTotal($outputFileName, "groups");
-
-        $endTime = time();
-
-        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
     }
 }

@@ -6,11 +6,6 @@ namespace App\Command\Fish;
 
 use Minicli\Command\CommandController;
 
-/**
- * 将 output 目录下的文件查询彩球标记
- *  该文件只能一行一个ID
- */
-
 class DefaultController extends CommandController
 {
     public function desc()
@@ -37,8 +32,6 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
-        $startTime = time();
-
         $fileService = $this->getApp()->file;
         $files = $fileService->getCsvFiles(ID_OUTPUT_PATH);
 
@@ -77,9 +70,5 @@ class DefaultController extends CommandController
         file_put_contents($exclude_file_name, implode(PHP_EOL, $fishResult['exclude']));
 
         unlink($outputFileName);
-
-        $endTime = time();
-
-        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
     }
 }

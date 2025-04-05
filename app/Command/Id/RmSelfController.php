@@ -39,8 +39,6 @@ class RmSelfController extends CommandController
 
     public function exec(): void
     {
-        $startTime = time();
-
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
         $backupService->backupInput();
@@ -62,9 +60,5 @@ class RmSelfController extends CommandController
         // 排除弟兄姊妹的账号
         $fishService = $this->getApp()->fish;
         $fishService->removeDXZM($file);
-
-        $endTime = time();
-
-        // $this->success(sprintf("数据处理完成，用时 %s 秒", $endTime - $startTime));
     }
 }

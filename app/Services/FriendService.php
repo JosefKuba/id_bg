@@ -366,9 +366,6 @@ class FriendService implements ServiceInterface
         return $count;
     }
 
-    /**
-     * 获取
-     */
     public function getFriendFilesIds($file)
     {
 
