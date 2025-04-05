@@ -50,7 +50,5 @@ class TypeController extends CommandController
 
         // 删除文件
         unlink($files[0]);
-
-        $this->info("挑选完成");
     }
 }

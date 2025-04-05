@@ -67,7 +67,7 @@ class IgService implements ServiceInterface
             // 粉丝量
             $funsStr = str_replace(",", "", $funsStr);
             if (str_contains($funsStr, "万")) {
-                var_dump($funsStr);
+                // var_dump($funsStr);
                 $count = str_replace(" 万 位粉丝", "", $funsStr);
                 // var_dump($count);
                 $funscount = $count * 10000;        
@@ -75,13 +75,12 @@ class IgService implements ServiceInterface
                 $funscount = str_replace(" 位粉丝", "", $funsStr);
             }
 
-            $results[] = sprintf("%s\t%s\t%s\t%s\t%s", $link, $desc, $funscount, $title, $slug);
+            $results[] = sprintf("%s\t%s\t%s\t%s", $link, $desc, $funscount, $title);
         }
 
-        // todo fix
         $outputPath = IG_OUTPUT_PATH . CURRENT_DATE . " result";
         file_put_contents($outputPath, implode(PHP_EOL, $results));
     }
 
-
+    
 }
