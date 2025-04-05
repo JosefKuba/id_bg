@@ -540,4 +540,89 @@ class PageService implements ServiceInterface
 
         $this->app->info(sprintf("专页共计 %d 个, 新专页 %d 个", $pagesCount, count($newPages)));
     }
+
+    // 根据小闪电搜索的专页类型，挑选出来宗派专页
+    public function selectReligion ($filePath) {
+
+        $religionType = [
+            "公理教会",
+            "基督教会",
+            "上帝会",
+            "圣洁教会",
+            "天主教会",
+            "犹太教会",
+            "犹太教堂",
+            "宗教或祭祀场所",
+            "宗教机构",
+            "宗教书店",
+            "宗教书局",
+            "宗教学校",
+            "宗教用品店",
+            "宗教用品商店",
+            "宗教中心",
+            "宗教组织",
+            "公理教會",
+            "基督教會",
+            "上帝會",
+            "聖潔教會",
+            "天主教會",
+            "猶太教會",
+            "猶太教堂",
+            "宗教或祭祀場所",
+            "宗教機構",
+            "宗教書店",
+            "宗教書局",
+            "宗教學校",
+            "宗教用品店",
+            "宗教用品商店",
+            "宗教中心",
+            "宗教組織",
+            "东正教会",
+            "東正教會",
+            "跨教派教会",
+            "跨教派教會",
+            "跨派系教会",
+            "跨派系教會",
+            "路德會",
+            "路德教会",
+            "天主教會",
+            "天主教教堂",
+            "无宗派教堂",
+            "無宗派教堂",
+            "宣道会",
+            "宣道會",
+            "宗教和信仰",
+            "宗教敬拜场所",
+            "宗教敬拜場所",
+            "宗教书店",
+            "宗教書店",
+            "宗教信仰与精神信仰",
+            "宗教信仰與精神信仰",
+            "宗教学校",
+            "宗教學校",
+            "宗教组织",
+            "宗教組織",
+        ];
+
+        $lines = getLine($filePath);
+
+        foreach ($lines as $line) {
+            $lineArr = explode("\t", $line);
+            $type = $lineArr[4] ?? "";
+    
+            if (in_array($type, $religionType)) {
+                $results[] = $line;
+            } else {
+                $_results[] = $line;
+            }
+        }
+
+        // output
+        $outputPath = PAGE_OUTPUT_PATH . CURRENT_TIME . " religion";
+        file_put_contents($outputPath, implode(PHP_EOL, $results));
+
+        $outputPath = PAGE_OUTPUT_PATH . CURRENT_TIME . " not religion";
+        file_put_contents($outputPath, implode(PHP_EOL, $_results));
+    }
+
 }

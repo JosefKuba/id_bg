@@ -62,6 +62,7 @@ class DefaultController extends CommandController
             'page'     => [
                 \App\Command\Page\DefaultController::class,
                 \App\Command\Page\TypeController::class,
+                \App\Command\Page\SelectController::class,
             ],
             'group'     => [
                 \App\Command\Group\DefaultController::class,
