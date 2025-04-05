@@ -283,7 +283,7 @@ class GroupService implements ServiceInterface
             //     unset($checkGroups[$key]);
             // }
 
-            // if (!$isChristren && $funsCount < 2000) {
+            // if (!$isChristren && $funsCount < 4000) {
             //     if ($funsCount < 400) {
             //         $funcsFewerGroups400[] = $group;
             //     } else {
@@ -293,7 +293,7 @@ class GroupService implements ServiceInterface
             //     unset($checkGroups[$key]);
             // }
 
-            if ($funsCount < 2000) {
+            if ($funsCount < 4000) {
                 $funcsFewerGroups[] = $group;
                 unset($checkGroups[$key]);
             }
@@ -338,10 +338,10 @@ class GroupService implements ServiceInterface
         // $this->app->info(sprintf("佛教小组共计 %d 个", count($buddhistGroups)));
         // $this->app->info(sprintf("外文小组共计 %d 个", $notChineseGroupsCount));
 
-        $this->app->info(sprintf("2000以下新小组共计 %d 个", count($funcsFewerGroups)));
+        $this->app->info(sprintf("4000以下新小组共计 %d 个", count($funcsFewerGroups)));
 
         $percent = number_format(count($checkGroups) / $uniqueGroupsCount * 100, "1") . "%";
-        $this->app->info(sprintf("2000以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
+        $this->app->info(sprintf("4000以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
     }
 
     // 给一个ID文件，将该文件中的ID加入总库

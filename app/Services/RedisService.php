@@ -41,8 +41,8 @@ class RedisService implements ServiceInterface
             $this->ID_DB_NUMBER_2 = $_ENV['ID_DB_NUMBER_2'];
         }
 
-        $this->PAGE_DB_NUMBER           = $_ENV['PAGE_DB_NUMBER'];
-        $this->USER_GROUP_DB_NUMBER     = $_ENV['USER_GROUP_DB_NUMBER'];
+        $this->PAGE_DB_NUMBER           = $_ENV['PAGE_DB_NUMBER'] ?? "";
+        $this->USER_GROUP_DB_NUMBER     = $_ENV['USER_GROUP_DB_NUMBER'] ?? "";
         $this->SEARCH_GROUP_DB_NUMBER   = $_ENV['SEARCH_GROUP_DB_NUMBER'];
 
         $this->AVATER_DB_NUMBER = $_ENV['AVATER_DB_NUMBER'];
@@ -72,11 +72,11 @@ class RedisService implements ServiceInterface
             $result[$_ENV['ID_DB_NUMBER_2']] = $_ENV['ID_DB_DESC_2'];
         }
 
-        if ($_ENV['PAGE_DB_DESC']) {
+        if ($_ENV['PAGE_DB_DESC'] ?? "") {
             $result[$_ENV['PAGE_DB_NUMBER']] = $_ENV['PAGE_DB_DESC'];
         }
 
-        if ($_ENV['USER_GROUP_DB_DESC']) {
+        if ($_ENV['USER_GROUP_DB_DESC'] ?? "") {
             $result[$_ENV['USER_GROUP_DB_NUMBER']] = $_ENV['USER_GROUP_DB_DESC'];
         }
 

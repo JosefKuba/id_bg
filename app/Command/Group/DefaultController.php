@@ -12,7 +12,7 @@ class DefaultController extends CommandController
     {
         return [
             'command'   => 'php artisan group',
-            'desc'      => '将闪电导出的小组和总库 去重 入库',
+            'desc'      => '将闪电导出的用户加入的小组和总库 去重 入库',
         ];
     }
 

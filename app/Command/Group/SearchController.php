@@ -12,7 +12,7 @@ class SearchController extends CommandController
     {
         return [
             'command'   => 'php artisan group search',
-            'desc'      => '将查考组的小组去重 入库',
+            'desc'      => '将搜索关键词搜出来的小组去重 入库 [查考组用]',
         ];
     }
 
