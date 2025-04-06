@@ -44,7 +44,7 @@ class ZapService implements ServiceInterface
             }
         }
 
-        $outputPath = ZAP_OUTPUT_PATH . CURRENT_DATE . " result";
+        $outputPath = ZAP_OUTPUT_PATH . CURRENT_TIME . " result";
         file_put_contents($outputPath, implode(PHP_EOL, array_unique($results)));
     }
 

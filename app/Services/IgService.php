@@ -73,7 +73,7 @@ class IgService implements ServiceInterface
             $results[] = sprintf("%s\t%s\t%s\t%s", $link, $desc, $funscount, $title);
         }
 
-        $outputPath = IG_OUTPUT_PATH . CURRENT_DATE . " result";
+        $outputPath = IG_OUTPUT_PATH . CURRENT_TIME . " result";
         file_put_contents($outputPath, implode(PHP_EOL, $results));
     }
 
