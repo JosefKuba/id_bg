@@ -46,8 +46,6 @@ class IgService implements ServiceInterface
 
             $descArr = explode("•", $desc);
 
-            var_dump($descArr);
-
             // 处理有多个 • 的情况:  "yuval_eliasi יובל אליאסי • מאמן כושר • יועץ תזונה • 1,833 位粉丝";
             $titleSlug =  trim($descArr[0]);
             $funsStr   = trim($descArr[1]);
@@ -61,7 +59,7 @@ class IgService implements ServiceInterface
             // slug & title
             preg_match('/^([a-zA-Z0-9_.]+)\s+(.*)$/u', $titleSlug, $matches);
             
-            $title = $matches[2];
+            $title = $matches[2] ?? "";
             
             // 粉丝量
             $funsStr = str_replace(",", "", $funsStr);
