@@ -1,6 +1,3 @@
 #! /bin/bash
 
 cat data/id/output/*unique | sort -u > tmp
-
-
-# echo "ID 已经收集到 tmp 文件中"

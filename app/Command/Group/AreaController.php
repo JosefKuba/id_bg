@@ -12,7 +12,7 @@ class AreaController extends CommandController
     {
         return [
             'command'   => 'php artisan group area',
-            'desc'      => '检测小组成员所在地区的比例',
+            'desc'      => '按照地区分类以色列的小组，世俗派地区 阿拉伯语地区 俄语地区',
         ];
     }
 
@@ -20,10 +20,7 @@ class AreaController extends CommandController
     {
         echo <<<STRING
 
-            安桑地区的ID有一部分需要从外邦小组中导出，该命令的作用是检测外邦小组中不同地区的人群比例。
-        
-            php artisan group area --ao      检测 安哥拉 小组
-            php artisan group area --mz      检测 莫桑比克 小组
+            小组名称位于第一列，小组地区位于第8列
             \n
         STRING;
     }
@@ -39,22 +36,15 @@ class AreaController extends CommandController
 
     public function exec(): void
     {
-        /*
-            需要有两个文件
-                - 一个是不同的小组中导出的用户
-                - 一个是用户的地区
-        */
-        
-        $groups = GROUP_INPUT_PATH . "groups";
-        $area   = GROUP_INPUT_PATH . "areas";
-
-        $type = $this->getParam("type");
-        if (empty($type) || !in_array($type, ["ao", "mz"])) {
-            $this->error("缺少 type 参数");
+        $files = glob(GROUP_INPUT_PATH . "*");
+        if (empty($files)) {
+            $this->app->error("input 目录下缺少文件");
             exit;
         }
 
         $groupServce = $this->getApp()->group;
-        $groupServce->detectArea($groups, $area, $type);
+        $groupServce->detectArea($files[0]);
+
+        unlink($files[0]);
     }
 }

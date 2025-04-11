@@ -204,7 +204,7 @@ class FishService implements ServiceInterface
         // 2. 发送请求获取标记
         $this->app->info(sprintf("开始查询彩球标记，共需查询 %s 次", count($chunks)));
 
-        $endpoint = "http://localhost:1752/query";
+        $endpoint = $_ENV['FISH_URL'];
         foreach ($chunks as $_key => $chunk) {
 
             $paramters = [
@@ -391,7 +391,7 @@ class FishService implements ServiceInterface
         $notDXZM = [];
         $DXZM = [];
 
-        $endpoint = "http://localhost:1752/query";
+        $endpoint  = $_ENV['FISH_URL'];
         foreach ($chunks as $_key => $chunk) {
 
             $paramters = [

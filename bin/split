@@ -25,5 +25,3 @@ if [ "$clean_arg" = "merge" ]; then
   # 注: [1-9] 这里只能是 1 - 9，不能是 1 - 10，否则会只处理 names_1
   cat data/id/input/names_[1-9] | sort -u > data/id/input/names_u.tsv
 fi
-
-# echo "ID处理完成"

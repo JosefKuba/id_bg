@@ -15,6 +15,8 @@ class GroupService implements ServiceInterface
 
     private $db_file;
 
+    private $funsCount = 2000;
+
     public function load(App $app): void
     {
         $this->app = $app;
@@ -40,19 +42,12 @@ class GroupService implements ServiceInterface
     }
 
     // 处理导出的小组
-    public function handleUserGroups()
+    public function handleUserGroups($filePath)
     {
 
         $this->init("user");
 
-        $files = glob(GROUP_INPUT_PATH . "*");
-
-        if (empty($files)) {
-            $this->app->error("input 目录下缺少文件");
-            exit;
-        }
-
-        $groups = file_get_contents($files[0]);
+        $groups = file_get_contents($filePath);
 
         // 1. 替换链接
         $groups = str_replace("https://facebook", "https://www.facebook", $groups);
@@ -151,7 +146,7 @@ class GroupService implements ServiceInterface
     }
 
     // 处理搜索的小组
-    public function handleSearchGroups()
+    public function handleSearchGroups($filePath)
     {
         /*
             1. 删除掉 小闪电 ✖️ 的小组
@@ -161,14 +156,7 @@ class GroupService implements ServiceInterface
 
         $this->init("search");
 
-        $files = glob(GROUP_INPUT_PATH . "*");
-
-        if (empty($files)) {
-            $this->app->error("input 目录下缺少文件");
-            exit;
-        }
-
-        $groups = file_get_contents($files[0]);
+        $groups = file_get_contents($filePath);
 
         // 0. 替换链接
         $groups = str_replace("https://facebook", "https://www.facebook", $groups);
@@ -190,14 +178,12 @@ class GroupService implements ServiceInterface
         $uniqueGroupsCount = count($groups);
 
         // 收集统计数据
-        $funcsFewerGroups = [];
-        // $funcsFewerGroups400 = [];
-        // $excludeGroups = [];
-        $checkGroups = [];
-        $checkGroupIds = [];
+        $funcsFewerGroups   = [];
+        $checkGroups        = [];
+        $privateGroups      = [];
+        $checkGroupIds      = [];
 
         $repeatGroupsCount = 0;
-        // $notChineseGroupsCount = 0;
 
         foreach ($groups as $group) {
 
@@ -219,18 +205,6 @@ class GroupService implements ServiceInterface
                 continue;
             }
 
-            // 排除掉标题中没有中文的专页 或者 标题中有日文的专页
-            // if (!$this->isChinese($title)) {
-            //     $notChineseGroupsCount++;
-            //     continue;
-            // }
-
-            // 过滤掉不传到教派 & 反面关键词
-            // if ($this->isNegative($title)) {
-            //     $excludeGroups[] = $group;
-            //     continue;
-            // }
-
             $checkGroups[]   = $group;
             $checkGroupIds[] = $id;
         }
@@ -249,53 +223,32 @@ class GroupService implements ServiceInterface
             $link       = $groupArr[2] ?? "";
             $funs       = $groupArr[3] ?? "";
             $public     = $groupArr[4] ?? "";
-            // $type       = "";
+            $desc       = $groupArr[5] ?? "";
 
             // 统一 public
             $public = $this->getPublic($public);
 
-            // 判断 小组类别
-            // $type = $this->getType($title);
-
             // 重新构建 checkGroups
-            $checkGroups[$key] = implode("\t", [$title, $id, $link, $funs, $public]);
+            $checkGroups[$key] = implode("\t", [$title, $id, $link, $funs, $public, $desc]);
         }
 
-        // 把人数少的小组挑出来
-        // $buddhistGroups = [];
+        // 分类：公开人数多、公开人数少、私密小组
         foreach ($checkGroups as $key => $group) {
-            // group
             $groupArr   = explode("\t", $group);
+            
             $funsCount  = $groupArr[3] ?? "";
-            // $sect       = str_replace(["\r", "\n", "\r\n"], "", $groupArr[0] ?? "");
+            $public     = $groupArr[4] ?? "";
 
-            // 先把佛教挑出来
-            // if ($sect === "佛教") {
-            //     $buddhistGroups[] = $group;
-            //     unset($checkGroups[$key]);
-            //     continue;
-            // }
+            if ($public !== "公开") {
+                $privateGroups[] = $group;
+                unset($checkGroups[$key]);
+                continue;
+            }
 
-            // $isChristren = in_array($sect, ["基督教", "天主教"]);
-
-            // if ($isChristren && $funsCount < 500) {
-            //     $funcsFewerGroups[] = $group;
-            //     unset($checkGroups[$key]);
-            // }
-
-            // if (!$isChristren && $funsCount < 4000) {
-            //     if ($funsCount < 400) {
-            //         $funcsFewerGroups400[] = $group;
-            //     } else {
-            //         $funcsFewerGroups[] = $group;
-            //     }
-
-            //     unset($checkGroups[$key]);
-            // }
-
-            if ($funsCount < 4000) {
+            if ($funsCount < $this->funsCount) {
                 $funcsFewerGroups[] = $group;
                 unset($checkGroups[$key]);
+                continue;
             }
         }
 
@@ -304,29 +257,19 @@ class GroupService implements ServiceInterface
 
         // 保存结果
         if ($checkGroups) {
-            $newGroupsPath = GROUP_OUTPUT_PUBLIC_PATH . CURRENT_TIME . " search.tsv";
-            file_put_contents($newGroupsPath, implode(PHP_EOL, $checkGroups));
+            $path = GROUP_OUTPUT_PUBLIC_PATH . CURRENT_TIME . " search.tsv";
+            file_put_contents($path, implode(PHP_EOL, $checkGroups));
         }
 
-        // if ($excludeGroups) {
-        //     $excludeGroupsPath = GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " search.tsv";
-        //     file_put_contents($excludeGroupsPath, implode(PHP_EOL, $excludeGroups));
-        // }
-
-        // if ($buddhistGroups) {
-        //     $buddhistGroupsPath =  GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " search buddhist.tsv";
-        //     file_put_contents($buddhistGroupsPath, implode(PHP_EOL, $buddhistGroups));
-        // }
+        if ($privateGroups) {
+            $path = GROUP_OUTPUT_PRIVATE_PATH . CURRENT_TIME . " search.tsv";
+            file_put_contents($path, implode(PHP_EOL, $privateGroups));
+        }
 
         if ($funcsFewerGroups) {
-            $funcsGroupsPath = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " search.tsv";
-            file_put_contents($funcsGroupsPath, implode(PHP_EOL, $funcsFewerGroups));
+            $path = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " search.tsv";
+            file_put_contents($path, implode(PHP_EOL, $funcsFewerGroups));
         }
-
-        // if ($funcsFewerGroups400) {
-        //     $funcsGroupsPath400 = GROUP_OUTPUT_FUNSLOWER_PATH . CURRENT_TIME . " search 400.tsv";
-        //     file_put_contents($funcsGroupsPath400, implode(PHP_EOL, $funcsFewerGroups400));
-        // }
 
         // 打印结果
         $percent = number_format($uniqueGroupsCount / $totalGroupsCount * 100, "1") . "%";
@@ -334,14 +277,12 @@ class GroupService implements ServiceInterface
 
         $this->app->info(sprintf("和总库重复小组共计 %d 个", $repeatGroupsCount));
 
-        // $this->app->info(sprintf("不合格小组共计 %d 个", count($excludeGroups)));
-        // $this->app->info(sprintf("佛教小组共计 %d 个", count($buddhistGroups)));
-        // $this->app->info(sprintf("外文小组共计 %d 个", $notChineseGroupsCount));
+        $this->app->info(sprintf("私密小组共计 %d 个", count($privateGroups)));
 
-        $this->app->info(sprintf("4000以下新小组共计 %d 个", count($funcsFewerGroups)));
+        $this->app->info(sprintf("{$this->funsCount}以下新小组共计 %d 个", count($funcsFewerGroups)));
 
         $percent = number_format(count($checkGroups) / $uniqueGroupsCount * 100, "1") . "%";
-        $this->app->info(sprintf("4000以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
+        $this->app->info(sprintf("{$this->funsCount}以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
     }
 
     // 给一个ID文件，将该文件中的ID加入总库
@@ -546,7 +487,7 @@ class GroupService implements ServiceInterface
     }
 
     // 测试小组成员所在的地区
-    public function detectArea($group, $area, $type)
+    public function detectUser($group, $area, $type)
     {
         $groupLines = getLine($group);
         $areaLines  = getLine($area);
@@ -613,5 +554,162 @@ class GroupService implements ServiceInterface
 
         $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " results.tsv";
         file_put_contents($path, implode(PHP_EOL, $output));
+    }
+
+    // 按照地区分类小组
+    public function detectArea($filePath) {
+                
+        // 世俗派地区
+        $worldArea = [
+            "Tel Aviv",
+            "Haifa",
+            "Herzliya",
+            "Eilat",
+            "Ramat Gan",
+            "Petah Tikva",
+            "Rishon Lezion",
+            "Ashkelon",
+            "Kfar Saba",
+            "Nahariya",
+            "Kiryat Motzkin",
+            "Kiryat Yam",
+            "Beersheba",
+            "特拉维夫",
+            "海法",
+            "赫兹利亚",
+            "埃拉特",
+            "拉马特甘",
+            "佩塔提克瓦",
+            "里雄莱锡安",
+            "阿什克隆",
+            "卡法尔萨巴",
+            "纳哈里亚",
+            "基利亚特莫兹金",
+            "基利亚特亚姆",
+            "贝尔谢巴",
+        ];
+
+        // 阿拉伯语地区
+        $arabArea = [
+            "Nazareth",
+            "Rahat",
+            "Umm al-Fahm",
+            "Tayibe",
+            "Shefa-Amr",
+            "Shefar'am",
+            "Tamra",
+            "Sakhnin",
+            "Baqa al-Gharbiyye",
+            "Tira",
+            "Ar'ara",
+            "Arraba",
+            "Kafr Qasim",
+            "Maghar",
+            "Qalansawe",
+            "Qalansuwa",
+            "Kafr Kanna",
+            // 
+            "拿撒勒",
+            "拉哈特",
+            "乌姆·法赫姆",
+            "塔耶贝",
+            "谢法·阿姆尔",
+            "谢法尔·阿姆",
+            "塔姆拉",
+            "萨赫尼因",
+            "巴卡·阿尔-加尔比耶",
+            "提拉",
+            "阿尔阿拉",
+            "阿尔拉巴",
+            "卡夫尔·卡西姆",
+            "马赫尔",
+            "卡兰萨韦",
+            "卡兰苏瓦",
+            "卡夫尔·卡纳",
+        ];
+
+        // 俄语地区
+        $ruArea = [
+            "特拉维夫",
+            "Tel Aviv",
+            "阿什杜德",
+            "Ashdod",
+            "海法",
+            "Haifa",
+            "内坦亚",
+            "Netanya",
+            "巴特亚姆",
+            "Bat Yam",
+            "阿里耶尔",
+            "Ariel",
+        ];
+
+                
+        $groups = getLine($filePath);
+
+        $areaGroups = [];
+        foreach ($groups as $key => $group) {
+            
+            // 小组类型
+            $type = [];
+
+            $groupArr   = explode("\t", $group);
+            $name       = $groupArr[0];
+            $areas      = $groupArr[7];
+
+            $areasArr = explode(", ", $areas);
+
+            $areasArr = array_map(function($area){
+                return trim($area);
+            }, $areasArr);
+
+            // 排查 世俗派 小组
+            foreach ($worldArea as $area) {
+                if (str_contains($name, $area)) {
+                    $type[] = "世俗派";
+                }
+            }
+
+            foreach ($areasArr as $area) {
+                if (in_array($area, $worldArea)) {
+                    $type[] = "世俗派";
+                }
+            }
+
+            // 排查 阿拉伯语言 小组
+            foreach ($arabArea as $area) {
+                if (str_contains($name, $area)) {
+                    $type[] = "阿拉伯语地区";
+                }
+            }
+
+            foreach ($areasArr as $area) {
+                if (in_array($area, $arabArea)) {
+                    $type[] = "阿拉伯语地区";
+                }
+            }
+
+            // 排查 俄语 小组
+            foreach ($ruArea as $area) {
+                if (str_contains($name, $area)) {
+                    $type[] = "俄语地区";
+                }
+            }
+
+            foreach ($areasArr as $area) {
+                if (in_array($area, $ruArea)) {
+                    $type[] = "俄语地区";
+                }
+            }
+
+            $type = array_unique($type);
+
+            if ($type) {
+                $areaGroups[$key] = $group . "\t" . implode(", ", $type);
+            }
+        }
+
+        $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " area.tsv";
+        file_put_contents($path, implode(PHP_EOL, $areaGroups));
     }
 }

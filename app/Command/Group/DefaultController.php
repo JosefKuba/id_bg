@@ -40,11 +40,17 @@ class DefaultController extends CommandController
         $fileService = $this->getApp()->file;
         $fileService->merge(GROUP_INPUT_PATH);
 
+        $files = glob(GROUP_INPUT_PATH . "*");
+        if (empty($files)) {
+            $this->app->error("input 目录下缺少文件");
+            exit;
+        }
+
         // 3. 处理数据文件
         $groupServce = $this->getApp()->group;
-        $groupServce->handleUserGroups();
+        $groupServce->handleUserGroups($files[0]);
 
         // 4. 清空 input 文件夹
-        $fileService->clearFolder(GROUP_INPUT_PATH);
+        unlink($files[0]);
     }
 }
