@@ -86,6 +86,10 @@ class GroupService implements ServiceInterface
         $existGroupsCount = 0;
 
         foreach ($groups as $group) {
+
+            // 去掉 " 对 Google 表格的影响
+            $group = str_replace('"', "", $group);
+
             $groupArr = explode("\t", $group);
 
             // 过滤掉格式不对的行
@@ -183,10 +187,14 @@ class GroupService implements ServiceInterface
         $privateGroups      = [];
         $checkGroupIds      = [];
         $excludeGroups      = [];
+        $arabGroups         = [];
 
         $repeatGroupsCount = 0;
 
         foreach ($groups as $group) {
+
+            // 去掉 " 对 Google 表格的影响
+            $group = str_replace('"', "", $group);
 
             $groupArr = explode("\t", $group);
 
@@ -238,12 +246,17 @@ class GroupService implements ServiceInterface
             $checkGroups[$key] = implode("\t", [$title, $id, $link, $funs, $public, $desc]);
         }
 
-        // 分类：公开人数多、公开人数少、私密小组
+        // 分类：公开人数多、公开人数少、私密小组 阿拉伯小组
         foreach ($checkGroups as $key => $group) {
             $groupArr   = explode("\t", $group);
             
             $funsCount  = $groupArr[3] ?? "";
             $public     = $groupArr[4] ?? "";
+
+            // 单独保留下来所有的标题中有 阿拉伯语的小组
+            if (containsArabic($group)) {
+                $arabGroups[] = $group;
+            }
 
             if ($public !== "公开") {
                 $privateGroups[] = $group;
@@ -282,6 +295,11 @@ class GroupService implements ServiceInterface
             file_put_contents($path, implode(PHP_EOL, $funcsFewerGroups));
         }
 
+        if ($arabGroups) {
+            $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " arab.tsv";
+            file_put_contents($path, implode(PHP_EOL, $arabGroups));
+        }
+
         // 打印结果
         $percent = number_format($uniqueGroupsCount / $totalGroupsCount * 100, "1") . "%";
         $this->app->info(sprintf("小组共计 %d 个，自身去重后 %d 个，不重复比例 %s", $totalGroupsCount, $uniqueGroupsCount, $percent));
@@ -296,6 +314,8 @@ class GroupService implements ServiceInterface
 
         $percent = number_format(count($checkGroups) / $uniqueGroupsCount * 100, "1") . "%";
         $this->app->info(sprintf("{$this->funsCount}以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
+
+        $this->app->info(sprintf("阿拉伯小组共计 %d 个", count($arabGroups)));
     }
 
     // 给一个ID文件，将该文件中的ID加入总库
