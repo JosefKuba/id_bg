@@ -182,12 +182,12 @@ class GroupService implements ServiceInterface
         $checkGroups        = [];
         $privateGroups      = [];
         $checkGroupIds      = [];
+        $excludeGroups      = [];
 
         $repeatGroupsCount = 0;
 
         foreach ($groups as $group) {
 
-            // group
             $groupArr = explode("\t", $group);
 
             $title      = $groupArr[0] ?? "";
@@ -196,6 +196,12 @@ class GroupService implements ServiceInterface
 
             // 过滤掉不是小组数据的行
             if (!preg_match("/^\d+$/", $id)) {
+                continue;
+            }
+
+            // 过滤掉不是希伯来语小组的行
+            if (!containsHebrew($title)) {
+                $excludeGroups[] = $group;
                 continue;
             }
 
@@ -256,6 +262,11 @@ class GroupService implements ServiceInterface
         $checkGroups = array_values($checkGroups);
 
         // 保存结果
+        if ($excludeGroups) {
+            $path = GROUP_OUTPUT_EXCLUDE_PATH . CURRENT_TIME . " search.tsv";
+            file_put_contents($path, implode(PHP_EOL, $excludeGroups));
+        }
+
         if ($checkGroups) {
             $path = GROUP_OUTPUT_PUBLIC_PATH . CURRENT_TIME . " search.tsv";
             file_put_contents($path, implode(PHP_EOL, $checkGroups));
@@ -274,6 +285,8 @@ class GroupService implements ServiceInterface
         // 打印结果
         $percent = number_format($uniqueGroupsCount / $totalGroupsCount * 100, "1") . "%";
         $this->app->info(sprintf("小组共计 %d 个，自身去重后 %d 个，不重复比例 %s", $totalGroupsCount, $uniqueGroupsCount, $percent));
+
+        $this->app->info(sprintf("非希伯来小组共计 %d 个", count($excludeGroups)));
 
         $this->app->info(sprintf("和总库重复小组共计 %d 个", $repeatGroupsCount));
 
