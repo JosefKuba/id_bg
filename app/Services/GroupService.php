@@ -55,16 +55,13 @@ class GroupService implements ServiceInterface
         $lines = getLine($filePath);
 
         $groupIds = array_map(function($line){
-            $lineArr = explode("\t", $line);
-            $groupLink = $lineArr[9] ?? "";
-
             // https://fb.com/379113791949410_122127553976399699
-            if (str_contains($groupLink, '_')) {
+            if (preg_match("/https:\/\/fb\.com\/\d+_\d+/", $line)) {
                 return "";
             }
 
             // https://fb.com/groups/1664744957127087/posts/3979659835635576
-            preg_match("/https:\/\/fb\.com\/groups\/([^\/]+)/", $groupLink, $matches);
+            preg_match("/https:\/\/fb\.com\/groups\/([^\/]+)/", $line, $matches);
 
             return $matches[1] ?? "";
         }, $lines);
