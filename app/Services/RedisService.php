@@ -28,6 +28,9 @@ class RedisService implements ServiceInterface
     // 查考组的小组库
     private $SEARCH_GROUP_DB_NUMBER;
 
+    // 推广小组库
+    private $PROMOTE_GROUP_DB_NUMBER;
+
     // 头像库
     private $AVATER_DB_NUMBER;
 
@@ -44,6 +47,7 @@ class RedisService implements ServiceInterface
         $this->PAGE_DB_NUMBER           = $_ENV['PAGE_DB_NUMBER'] ?? "";
         $this->USER_GROUP_DB_NUMBER     = $_ENV['USER_GROUP_DB_NUMBER'] ?? "";
         $this->SEARCH_GROUP_DB_NUMBER   = $_ENV['SEARCH_GROUP_DB_NUMBER'];
+        $this->PROMOTE_GROUP_DB_NUMBER   = $_ENV['PROMOTE_GROUP_DB_NUMBER'] ?? "";
 
         $this->AVATER_DB_NUMBER = $_ENV['AVATER_DB_NUMBER'];
 
@@ -82,6 +86,10 @@ class RedisService implements ServiceInterface
 
         if ($_ENV['SEARCH_GROUP_DB_DESC']) {
             $result[$_ENV['SEARCH_GROUP_DB_NUMBER']] = $_ENV['SEARCH_GROUP_DB_DESC'];
+        }
+
+        if ($_ENV['PROMOTE_GROUP_DB_DESC']) {
+            $result[$_ENV['PROMOTE_GROUP_DB_NUMBER']] = $_ENV['PROMOTE_GROUP_DB_DESC'];
         }
 
         return $result;
@@ -135,10 +143,18 @@ class RedisService implements ServiceInterface
         return $this->client;
     }
     
-    // 获取 用户的小组 客户端
+    // 获取 搜索的小组 客户端
     public function getSearchGroupClient()
     {
         $this->client->select($this->SEARCH_GROUP_DB_NUMBER);
         return $this->client;
     }
+
+    // 获取推广的小组客户端
+    public function getPromoteGroupClient()
+    {
+        $this->client->select($this->PROMOTE_GROUP_DB_NUMBER);
+        return $this->client;
+    }
+
 }

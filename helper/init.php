@@ -156,6 +156,8 @@ const USER_GROUPS_DB_FILE = ROOT_PATH . "data/database/groups_user";
 // 查考小组的备份文件
 const SEARCH_GROUPS_DB_FILE = ROOT_PATH . "data/database/groups_search";
 
+// 可推广小组备份文件
+const PROMOTE_GROUPS_DB_FILE = ROOT_PATH . "data/database/groups_promote";
 
 
 // 导用户的好友，用户ID备份文件

@@ -29,3 +29,9 @@ function containsHebrew($text)
 {
     return preg_match('/[\x{0590}-\x{05FF}]/u', $text);
 }
+
+// 检测阿拉伯语
+function containsArabic($text)
+{
+    return preg_match('/[\x{0600}-\x{06FF}\x{0750}-\x{077F}\x{08A0}-\x{08FF}\x{FB50}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $text);
+}

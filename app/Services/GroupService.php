@@ -35,11 +35,55 @@ class GroupService implements ServiceInterface
                 $this->db_file      = SEARCH_GROUPS_DB_FILE;
                 break;
 
+            case 'promote':
+                $this->redisClient  = $this->app->redis->getPromoteGroupClient();
+                $this->db_file      = PROMOTE_GROUPS_DB_FILE;
+                break;
+                
             default:
                 $this->app->error("未设置 redis 客户端");
                 exit;
         }
     }
+
+    // 处理推广小组
+    public function handlePromoteGroups($filePath)
+    {
+        $this->init("promote");
+
+        // 提取链接
+        $lines = getLine($filePath);
+
+        $groupIds = array_map(function($line){
+            $lineArr = explode("\t", $line);
+            $groupLink = $lineArr[9] ?? "";
+
+            // https://fb.com/379113791949410_122127553976399699
+            if (str_contains($groupLink, '_')) {
+                return "";
+            }
+
+            // https://fb.com/groups/1664744957127087/posts/3979659835635576
+            preg_match("/https:\/\/fb\.com\/groups\/([^\/]+)/", $groupLink, $matches);
+
+            return $matches[1] ?? "";
+        }, $lines);
+
+        $groupIds = array_unique($groupIds);
+
+        $newGroupIds = array_filter($groupIds, function($groupId) {
+            return $groupId && !$this->redisClient->exists($groupId);
+        });
+
+        // 新小组加入总库
+        $this->addGroupsIntoTotal($newGroupIds);
+
+        $output = GROUP_OUTPUT_PATH .  CURRENT_TIME . " new groups";
+        file_put_contents($output, implode(PHP_EOL, $newGroupIds));
+
+        $this->app->info(sprintf("新小组 %d 个", count($newGroupIds)));
+    }
+
 
     // 处理导出的小组
     public function handleUserGroups($filePath)

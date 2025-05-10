@@ -67,6 +67,7 @@ class DefaultController extends CommandController
             'group'     => [
                 \App\Command\Group\DefaultController::class,
                 \App\Command\Group\SearchController::class,
+                \App\Command\Group\PromoteController::class,
                 \App\Command\Group\TypeController::class,
                 \App\Command\Group\AreaController::class,
                 \App\Command\Group\UserController::class,

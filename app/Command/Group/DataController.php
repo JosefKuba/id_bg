@@ -16,7 +16,7 @@ class DataController extends CommandController
     {
         $ids = getLine(GROUP_INPUT_PATH . "ids");
 
-        $redis = $this->getApp()->redis->getUserGroupClient();
+        $redis = $this->getApp()->redis->getPromoteGroupClient();
 
         $count = 0;
         foreach ($ids as $id) {
