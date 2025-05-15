@@ -34,7 +34,7 @@ class PackController extends CommandController
     {
 
         $fileService = $this->getApp()->file;
-        $csvFiles = $fileService->getCsvFiles(RC_OUTPUT_PATH);
+        $csvFiles = $fileService->getFiles(RC_OUTPUT_PATH);
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

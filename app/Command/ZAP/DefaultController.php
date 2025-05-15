@@ -40,7 +40,7 @@ class DefaultController extends CommandController
         $fileService = $this->getApp()->file;
         $fileService->merge(ZAP_INPUT_PATH);
 
-        $csvFiles = $fileService->getCsvFiles(ZAP_INPUT_PATH);
+        $csvFiles = $fileService->getFiles(ZAP_INPUT_PATH);
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

@@ -34,7 +34,7 @@ class ImportController extends CommandController
     public function exec(): void
     {
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(AVATER_INPUT_PATH);
+        $files = $fileService->getFiles(AVATER_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下没有文件");

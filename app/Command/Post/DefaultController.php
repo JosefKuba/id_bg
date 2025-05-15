@@ -15,7 +15,7 @@ class DefaultController extends CommandController
         $backupService->backupInput(POST_INPUT_PATH);
 
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(POST_INPUT_PATH);
+        $files = $fileService->getFiles(POST_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 文件夹中缺少文件");

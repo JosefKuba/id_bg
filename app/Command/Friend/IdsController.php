@@ -33,7 +33,7 @@ class IdsController extends CommandController
     public function exec(): void
     {
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(FRIEND_INPUT_PATH);
+        $files = $fileService->getFiles(FRIEND_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下缺少文件");

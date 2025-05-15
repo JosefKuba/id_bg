@@ -33,7 +33,7 @@ class RepeatController extends CommandController
     public function exec(): void
     {
         $fileService = $this->getApp()->file;
-        $csvFiles = $fileService->getCsvFiles();
+        $csvFiles = $fileService->getFiles();
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

@@ -37,7 +37,7 @@ class BgController extends CommandController
         $backupService->backupInput(NAME_INPUT_PATH);
 
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(NAME_INPUT_PATH);
+        $files = $fileService->getFiles(NAME_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下没有文件");

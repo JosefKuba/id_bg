@@ -33,7 +33,7 @@ class DefaultController extends CommandController
     public function exec(): void
     {
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(ID_OUTPUT_PATH);
+        $files = $fileService->getFiles(ID_OUTPUT_PATH);
 
         foreach ($files as $key => $file) {
             if (is_dir($file)) {

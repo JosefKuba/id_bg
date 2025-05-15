@@ -165,8 +165,6 @@ class FishService implements ServiceInterface
                 $excludeCount,
                 $endTime - $startTime
             ));
-
-            // sleep(3);
         }
 
         $percent = number_format(count($collectIds) * 100 / count($idLines), "1") . '%';
@@ -461,5 +459,161 @@ class FishService implements ServiceInterface
             count($DXZM),
             count($notDXZM),
         ));
+    }
+
+    // 统计鱼标记的次数
+    public function fishCount($filePath)
+    {
+        $idContent = file_get_contents($filePath);
+        $idLines = explode(PHP_EOL, $idContent);
+
+        // 去掉换行符号
+        $idLines = array_map(function ($id) {
+            return str_replace(["\n", "\r", "\r\n"], "", $id);
+        }, $idLines);
+
+        $chunks = array_chunk($idLines, $this->chunkNumber);
+
+        // 2. 发送请求获取标记
+
+        $this->app->info(sprintf("开始查询彩球标记，共需查询 %s 次", count($chunks)));
+
+        $endpoint = $_ENV['FISH_URL'];
+        
+        // 计数器
+        $zeroCount = 0;
+        $oneFishCount   = 0;
+        $fourFishCount = 0;
+        $sevenFishCount = 0;
+
+        $oneGreetingCount = 0;
+        $fourGreetingCount = 0;
+        $sevenGreetingCount = 0;
+
+        foreach ($chunks as $_key => $chunk) {
+
+            $startTime = time();
+
+            $paramters = [
+                "platform"  => "facebook",
+                "userID"    => "100087880793542",
+                "userName"  => "李志",
+                "ids"       => $chunk,
+            ];
+
+            $result = $this->httpClient->post($endpoint, $paramters);
+
+            if ($result['code'] != 200) {
+                $this->app->error("查询彩球标记失败");
+                exit;
+            }
+
+            $fishes = json_decode($result['body'], true);
+
+            if (array_key_exists("error", $fishes)) {
+                $this->app->error($fishes["error"]);
+                exit;
+            }
+
+            // 3. 将获取到的标记进行分类
+            foreach ($chunk as $id) {
+
+                // 没有标记的线索
+                if (!array_key_exists($id, $fishes)) {
+                    $zeroCount++;
+                    continue;
+                }
+
+                $fish = $fishes[$id];
+
+                if (in_array($fish['status'], [20, 21, 22])) {
+                    // 统计鱼标记的次数
+                    if ($fish['number'] <= 3) {
+                        $oneFishCount++;
+                    } elseif ($fish['number'] <= 6) {
+                        $fourFishCount++;
+                    } else {
+                        $sevenFishCount++;
+                    }
+
+                    // 统计打招呼的次数
+                    if (array_key_exists("sys_data", $fish)) {
+                        if (array_key_exists("number", $fish["sys_data"])) {
+                            if ($fish['number'] <= 3) {
+                                $oneGreetingCount++;
+                            } elseif ($fish['number'] <= 6) {
+                                $fourGreetingCount++;
+                            } else {
+                                $sevenGreetingCount++;
+                            }
+                        }
+                    }
+                }
+
+                // 排除 👋 标记的 天数 和 次数 限制
+                if ($fish['status'] == 110) {
+                    if ($fish['number'] <= 3) {
+                        $oneGreetingCount++;
+                    } elseif ($fish['number'] <= 6) {
+                        $fourGreetingCount++;
+                    } else {
+                        $sevenGreetingCount++;
+                    }
+                }
+            }
+
+            $endTime = time();
+
+            $this->app->info(sprintf(
+                "第 %d 次查询完成 耗时 %d s",
+                $_key + 1,
+                $endTime - $startTime
+            ));
+        }
+
+        $idsCount = count($idLines);
+
+        $this->app->info(sprintf(
+            "全部查询完成, ID共计 %d 个, 0次标记ID %d 个, 1-3次🐟标记ID %d 个, 4-6次🐟标记ID %d 个, 6+次🐟标记ID %d 个, 1-3次👋标记ID %d 个, 4-6次👋标记ID %d 个, 6+次👋标记ID %d 个",
+            $idsCount,
+            
+            $zeroCount,
+            
+            $oneFishCount,
+            $fourFishCount,
+            $sevenFishCount,
+
+            $oneGreetingCount,
+            $fourGreetingCount,
+            $sevenGreetingCount
+        ));
+
+        file_put_contents(
+            ID_OUTPUT_PATH . CURRENT_TIME . ' count',
+            implode("\t", 
+                [
+                    count($idLines),
+
+                    $zeroCount,
+                    number_format($zeroCount * 100 / $idsCount, "1") . '%',
+                    
+                    $oneFishCount,
+                    number_format($oneFishCount * 100 / $idsCount, "1") . '%',
+
+                    $fourFishCount,
+                    number_format($fourFishCount * 100 / $idsCount, "1") . '%',
+
+                    $sevenFishCount,
+                    number_format($sevenFishCount * 100 / $idsCount, "1") . '%',
+
+                    $oneGreetingCount,
+                    number_format($oneGreetingCount * 100 / $idsCount, "1") . '%',
+
+                    $fourGreetingCount,
+                    number_format($fourGreetingCount * 100 / $idsCount, "1") . '%',
+
+                    $sevenGreetingCount,
+                    number_format($sevenGreetingCount * 100 / $idsCount, "1") . '%',
+                ]));
     }
 }

@@ -2,24 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Avater;
+namespace App\Command\Name;
 
 use Minicli\Command\CommandController;
 
-class DefaultController extends CommandController
+class HuController extends CommandController
 {
-
     public function desc()
     {
         return [
-            'command'   => 'php artisan avater',
-            'desc'      => '放入一批ID，查询出来有头像的ID',
+            'command'   => 'php artisan name hu',
+            'desc'      => '挑选匈牙利名字',
         ];
     }
 
     public function help()
     {
-        echo "这是帮助手册" . PHP_EOL;
+        echo "这是帮助手册\n";
     }
 
     public function handle(): void
@@ -33,21 +32,20 @@ class DefaultController extends CommandController
 
     public function exec(): void
     {
+        // 1. 备份原始文件
+        $backupService = $this->getApp()->backup;
+        $backupService->backupInput(NAME_INPUT_PATH);
+
         $fileService = $this->getApp()->file;
-        $files = $fileService->getFiles(AVATER_INPUT_PATH);
+        $files = $fileService->getFiles(NAME_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下没有文件");
             exit;
         }
 
-        // 备份文件
-        $backupService = $this->getApp()->backup;
-        $backupService->backupInput(AVATER_INPUT_PATH);
-
-        // 录入结果
-        $avaterService = $this->getApp()->avater;
-        $avaterService->pick($files[0]);
+        $nameServce = $this->getApp()->name;
+        $nameServce->selectHuName($files[0]);
 
         unlink($files[0]);
     }

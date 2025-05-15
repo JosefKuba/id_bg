@@ -47,7 +47,7 @@ class DefaultController extends CommandController
         $fileService->merge(FRIEND_INPUT_PATH);
 
         // 3. 根据第四列拆分成一个个的小文件
-        $csvFiles = $fileService->getCsvFiles(FRIEND_INPUT_PATH);
+        $csvFiles = $fileService->getFiles(FRIEND_INPUT_PATH);
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

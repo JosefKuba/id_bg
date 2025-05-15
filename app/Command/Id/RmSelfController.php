@@ -48,7 +48,7 @@ class RmSelfController extends CommandController
         $fileService->merge();
 
         // 3. 处理ID
-        $csvFiles = $fileService->getCsvFiles();
+        $csvFiles = $fileService->getFiles();
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

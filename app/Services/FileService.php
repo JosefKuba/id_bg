@@ -15,7 +15,7 @@ class FileService implements ServiceInterface
     }
 
     // 获取要处理的 csv 文件
-    public function getCsvFiles($path = ID_INPUT_PATH)
+    public function getFiles($path = ID_INPUT_PATH)
     {
         return glob($path . "*");
     }

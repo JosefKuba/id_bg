@@ -81,6 +81,7 @@ class DefaultController extends CommandController
             'fish'  => [
                 \App\Command\Fish\DefaultController::class,
                 \App\Command\Fish\FanaticController::class,
+                \App\Command\Fish\CountController::class,
             ],
             'link' => [
                 \App\Command\Link\DefaultController::class,

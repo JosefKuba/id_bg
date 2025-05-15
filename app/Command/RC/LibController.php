@@ -43,7 +43,7 @@ class LibController extends CommandController
         $backupService->backupInput(RC_INPUT_PATH);
 
         $fileService = $this->getApp()->file;
-        $csvFiles = $fileService->getCsvFiles(RC_INPUT_PATH);
+        $csvFiles = $fileService->getFiles(RC_INPUT_PATH);
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

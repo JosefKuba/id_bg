@@ -44,7 +44,7 @@ class CollectController extends CommandController
         $fileService = $this->getApp()->file;
         $fileService->merge(ID_INPUT_PATH, false);
 
-        $csvFiles = $fileService->getCsvFiles();
+        $csvFiles = $fileService->getFiles();
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

@@ -34,7 +34,7 @@ class DefaultController extends CommandController
     public function exec(): void
     {
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(AREA_INPUT_PATH);
+        $files = $fileService->getFiles(AREA_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下没有文件");

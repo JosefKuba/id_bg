@@ -37,7 +37,7 @@ class RemoveController extends CommandController
         $startTime = time();
 
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(FRIEND_INPUT_PATH);
+        $files = $fileService->getFiles(FRIEND_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下缺少文件");

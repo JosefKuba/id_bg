@@ -37,7 +37,7 @@ class TypeController extends CommandController
     public function exec(): void
     {
         $fileService = $this->getApp()->file;
-        $files = $fileService->getCsvFiles(GROUP_INPUT_PATH);
+        $files = $fileService->getFiles(GROUP_INPUT_PATH);
 
         if (empty($files)) {
             $this->error("input 目录下缺少文件");

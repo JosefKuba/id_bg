@@ -40,7 +40,7 @@ class DefaultController extends CommandController
         $fileService = $this->getApp()->file;
         $fileService->merge(IG_INPUT_PATH);
 
-        $csvFiles = $fileService->getCsvFiles(IG_INPUT_PATH);
+        $csvFiles = $fileService->getFiles(IG_INPUT_PATH);
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");

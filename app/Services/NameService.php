@@ -7,6 +7,9 @@ use Minicli\ServiceInterface;
 
 class NameService implements ServiceInterface
 {
+
+    use Trait\NameTrait;
+
     private $app;
 
     // 定义保加利亚、塞尔维亚、马其顿、土耳其、希腊的姓氏特征
@@ -81,6 +84,74 @@ class NameService implements ServiceInterface
             count($error),
             count($notSure),
             number_format(count($right) * 100 / count($lines), 1) . '%'
+        ));
+    }
+
+    // 挑选匈牙利名字
+    public function selectHuName($file)
+    {
+        $lines = getLine($file);
+
+        $huLines = [];
+        $huIds   = [];
+        $notHuLines = [];
+
+        foreach ($lines as $line) {
+            $lineArr = explode("\t", $line);
+
+            $id     = $lineArr[0];
+            $name   = $lineArr[1];
+
+            $nameArr = explode(" ", $name);
+
+            // 匹配匈牙利姓氏
+            foreach ($nameArr as $item) {
+                if (in_array($item, $this->huFirstName)) {
+                    $huLines[] = $line;
+                    $huIds[] = $id;
+                    continue 2;
+                }
+            }
+
+            // 匹配匈牙利特殊字符
+            $hungarianPatterns = [
+                '/cs/i', '/sz/i', '/zs/i', '/gy/i', '/ny/i', '/ty/i',
+                '/á/i', '/é/i', '/í/i', '/ó/i', '/ö/i', '/ő/i',
+                '/ú/i', '/ü/i', '/ű/i',
+                '/i$/i', '/szki$/i', '/czki$/i', '/fi$/i'
+            ];
+        
+            foreach ($hungarianPatterns as $pattern) {
+                $nameArr = explode(" ", $name);
+                foreach ($nameArr as $item) {
+                    if (preg_match($pattern, $item)) {
+                        $huLines[] = $line;
+                        $huIds[] = $id;
+                        continue 3;
+                    }
+                }
+                
+            }
+
+            $notHuLines[] = $line;
+        }
+
+        // 保存结果
+        $outputPath = NAME_OUTPUT_PATH . CURRENT_TIME . " hu.tsv";
+        file_put_contents($outputPath, implode(PHP_EOL, $huLines));
+
+        $outputPath = NAME_OUTPUT_PATH . CURRENT_TIME . " hu id.tsv";
+        file_put_contents($outputPath, implode(PHP_EOL, $huIds));
+
+        $outputPath = NAME_OUTPUT_PATH . CURRENT_TIME . " not hu.tsv";
+        file_put_contents($outputPath, implode(PHP_EOL, $notHuLines));
+
+        $this->app->info(sprintf(
+            "ID共计 %d 个，匈牙利ID %d 个，非匈牙利ID %d 个，合格比例 %s",
+            count($lines),
+            count($huIds),
+            count($notHuLines),
+            number_format(count($huIds) * 100 / count($lines), 1) . '%'
         ));
     }
 
