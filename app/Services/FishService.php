@@ -518,8 +518,14 @@ class FishService implements ServiceInterface
             // 3. 将获取到的标记进行分类
             foreach ($chunk as $id) {
 
-                // 没有标记的线索
-                if (!array_key_exists($id, $fishes)) {
+                // var_dump($fishes);
+                // die;
+                
+                // todo 没有标记的线索
+                if (
+                    !array_key_exists($id, $fishes) ||
+                    $fishes[$id]['status'] == '-1'
+                ) {
                     $zeroCount++;
                     continue;
                 }

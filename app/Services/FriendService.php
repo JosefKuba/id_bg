@@ -137,13 +137,18 @@ class FriendService implements ServiceInterface
             $friendIds = array_unique($friendIds);
 
             if ($fileNameDate) {
-                $idFilePath = FRIEND_DB_FOLDER_TMP . $sourceId . " " . CURRENT_TIME;
+                $idFilePath = FRIEND_DB_FOLDER_TMP . $sourceId;
             } else {
                 $idFilePath = FRIEND_FILES_FOLDER . $sourceId;
             }
 
-            // 重复导出的ID，后导的会覆盖前面的，因此能保证ID是新的
-            file_put_contents($idFilePath, implode(PHP_EOL, $friendIds));
+            // 避免后续导的时候受限，导出来的数量不够导致ID数量少
+            if (file_exists($idFilePath)) {
+                $_friendIds = getLine($idFilePath);
+                file_put_contents($idFilePath, implode(PHP_EOL, array_unique($friendIds + $_friendIds)));
+            } else {
+                file_put_contents($idFilePath, implode(PHP_EOL, $friendIds));
+            }
         }
     }
 
@@ -205,13 +210,14 @@ class FriendService implements ServiceInterface
                     continue;
                 }
 
-                $files = glob(FRIEND_DB_FOLDER . $id . " 20*");
-                if (empty($files)) {
+                $filePath = FRIEND_DB_FOLDER . $id;
+
+                if (!file_exists($filePath)) {
                     $unPackArr[$providerId][] = $id;
                     continue;
                 }
 
-                $packIds = array_merge($packIds, file($files[0]));
+                $packIds = array_merge($packIds, file($filePath));
             }
 
             // 去掉尾随的换行符
