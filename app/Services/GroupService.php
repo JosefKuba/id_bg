@@ -228,11 +228,15 @@ class GroupService implements ServiceInterface
         $privateGroups      = [];
         $checkGroupIds      = [];
         $excludeGroups      = [];
-        $arabGroups         = [];
+        // $arabGroups         = [];
 
         $repeatGroupsCount = 0;
 
-        foreach ($groups as $group) {
+
+        echo "不重复小组 {$uniqueGroupsCount} 个" . PHP_EOL;
+
+        // 先过滤掉和总库重复的行 和 不是小组的行
+        foreach ($groups as $key => $group) {
 
             // 去掉 " 对 Google 表格的影响
             $group = str_replace('"', "", $group);
@@ -245,20 +249,56 @@ class GroupService implements ServiceInterface
 
             // 过滤掉不是小组数据的行
             if (!preg_match("/^\d+$/", $id)) {
-                continue;
-            }
-
-            // 过滤掉不是希伯来语小组的行
-            if (!containsHebrew($title)) {
-                $excludeGroups[] = $group;
+                unset($groups[$key]);
                 continue;
             }
 
             // 过滤掉总库中有的行
             if ($this->redisClient->exists($id)) {
                 $repeatGroupsCount++;
+                unset($groups[$key]);
                 continue;
             }
+        }
+
+        $groups = array_values($groups);
+
+        $newSearchCount = count($groups);
+
+         echo "新搜索小组 {$newSearchCount} 个" . PHP_EOL;
+
+        // 检测标题语言
+        $startTime = time();
+        $isHu = $notHu = 0;
+
+        foreach ($groups as $key => $group) {
+            
+            // 去掉 " 对 Google 表格的影响
+            $group = str_replace('"', "", $group);
+
+            $groupArr = explode("\t", $group);
+
+            $title      = $groupArr[0] ?? "";
+            $id         = str_replace(["\r", "\n", "\r\n", "'"], "", $groupArr[1] ?? "");
+            $funsCount  = $groupArr[3] ?? "";
+
+            if ($key % 100 == 0 && $key > 1) {
+                $endTime = time();
+                echo $key . " / " . $uniqueGroupsCount . "; 耗时 " . ($endTime - $startTime) . " 秒; "  . "{$isHu} / ${notHu}" .  PHP_EOL;
+                $startTime = time();
+
+                $isHu = $notHu = 0;
+            }
+
+            // 过滤掉标题不是匈牙利语的小组
+            if (detectLanguage($title) !== "hu") {
+                $excludeGroups[] = $group;
+                $notHu++;
+                continue;
+            } else {
+                $isHu++;
+            }
+            
 
             $checkGroups[]   = $group;
             $checkGroupIds[] = $id;
@@ -295,9 +335,9 @@ class GroupService implements ServiceInterface
             $public     = $groupArr[4] ?? "";
 
             // 单独保留下来所有的标题中有 阿拉伯语的小组
-            if (containsArabic($group)) {
-                $arabGroups[] = $group;
-            }
+            // if (containsArabic($group)) {
+            //     $arabGroups[] = $group;
+            // }
 
             if ($public !== "公开") {
                 $privateGroups[] = $group;
@@ -336,10 +376,10 @@ class GroupService implements ServiceInterface
             file_put_contents($path, implode(PHP_EOL, $funcsFewerGroups));
         }
 
-        if ($arabGroups) {
-            $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " arab.tsv";
-            file_put_contents($path, implode(PHP_EOL, $arabGroups));
-        }
+        // if ($arabGroups) {
+        //     $path = GROUP_OUTPUT_PATH . CURRENT_TIME . " arab.tsv";
+        //     file_put_contents($path, implode(PHP_EOL, $arabGroups));
+        // }
 
         // 打印结果
         $percent = number_format($uniqueGroupsCount / $totalGroupsCount * 100, "1") . "%";
@@ -356,7 +396,7 @@ class GroupService implements ServiceInterface
         $percent = number_format(count($checkGroups) / $uniqueGroupsCount * 100, "1") . "%";
         $this->app->info(sprintf("{$this->funsCount}以上新小组 %d 个，剩存比例 %s", count($checkGroups), $percent));
 
-        $this->app->info(sprintf("阿拉伯小组共计 %d 个", count($arabGroups)));
+        // $this->app->info(sprintf("阿拉伯小组共计 %d 个", count($arabGroups)));
     }
 
     // 给一个ID文件，将该文件中的ID加入总库

@@ -84,11 +84,11 @@ class RedisService implements ServiceInterface
             $result[$_ENV['USER_GROUP_DB_NUMBER']] = $_ENV['USER_GROUP_DB_DESC'];
         }
 
-        if ($_ENV['SEARCH_GROUP_DB_DESC']) {
+        if ($_ENV['SEARCH_GROUP_DB_DESC'] ?? "") {
             $result[$_ENV['SEARCH_GROUP_DB_NUMBER']] = $_ENV['SEARCH_GROUP_DB_DESC'];
         }
 
-        if ($_ENV['PROMOTE_GROUP_DB_DESC']) {
+        if ($_ENV['PROMOTE_GROUP_DB_DESC'] ?? "") {
             $result[$_ENV['PROMOTE_GROUP_DB_NUMBER']] = $_ENV['PROMOTE_GROUP_DB_DESC'];
         }
 

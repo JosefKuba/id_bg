@@ -106,12 +106,12 @@ class DefaultController extends CommandController
         unlink($outputFileName);
 
         // 再将过彩球标记剩下的ID过头像库，排除掉不是人物头像的
-        if ($this->hasFlag("no-face")) return;
+        // if ($this->hasFlag("no-face")) return;
 
-        $this->info("检测头像中...");
+        // $this->info("检测头像中...");
 
-        $avaterServices = $this->getApp()->avater;
-        $avaterServices->pick($collect_file_path);
+        // $avaterServices = $this->getApp()->avater;
+        // $avaterServices->pick($collect_file_path);
     }
 
     public function test() {

@@ -291,8 +291,8 @@ class FriendService implements ServiceInterface
             $_outputStr .= PHP_EOL;
         }
 
-        $outputFileName = FRIEND_OUTPUT_PATH . CURRENT_TIME . " left id.tsv";
-        file_put_contents($outputFileName, $_outputStr);
+        // $outputFileName = FRIEND_OUTPUT_PATH . CURRENT_TIME . " left id.tsv";
+        // file_put_contents($outputFileName, $_outputStr);
     }
 
     // 挑选中文名，中文名需要位于第二位

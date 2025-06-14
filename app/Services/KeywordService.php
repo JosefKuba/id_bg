@@ -12,7 +12,7 @@ class KeywordService implements ServiceInterface
 
     private $app;
 
-    private $specialChars = " .️.()“”<^>!:;÷=—_~[]#«»…1234567890️“️„*'$@%^*&/+-’\"";
+    private $specialChars = "?(– .️.()“”<^>!:;÷=—_~[]#«»…1234567890️“️„*'$@%^*&/+-’\"";
 
     public function load(App $app): void
     {
