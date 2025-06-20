@@ -137,6 +137,13 @@ const ZAP_OUTPUT_PATH = ROOT_PATH . "data/zap/output/";
 
 const ZAP_BACKUP_PATH = ROOT_PATH . "data/zap/backup/";
 
+// google 表格
+const TABLE_INPUT_PATH = ROOT_PATH . "data/table/input/";
+
+const TABLE_OUTPUT_PATH = ROOT_PATH . "data/table/output/";
+
+const TABLE_BACKUP_PATH = ROOT_PATH . "data/table/backup/";
+
 
 // 已刷脸的ID
 const ID_DB_FILE = ROOT_PATH . "data/database/ids";
