@@ -12,22 +12,22 @@ class TableService implements ServiceInterface
 
     private $app;
 
-
     // 汇总各类表格链接的仪表盘
     private $indexSheetUrl = "https://docs.google.com/spreadsheets/d/16Ry0Fca7gNVLawRohgr1Tbp1kzzXtrwxBJo3DvDkgac/edit?gid=1151949234#gid=1151949234";
 
     /**
      * 需要带有参数
      *  - type
-     *      - page_post         下载一览表专页帖文信息
-     *      - group_post        下载一览表小组帖文信息
-     *      - post_auto_fill    下载帖文填表工具
-     *      - signal_sheet      下载单个分页中所有的数据
-     *      - upload            上传数据
+     *      - page_post                 下载一览表专页帖文信息
+     *      - group_post                下载一览表小组帖文信息
+     *      - post_auto_fill            下载帖文填表工具
+     *      - post_auto_fill_unique     帖文填表工具去重
+     *      - signal_sheet              下载单个分页中所有的数据
+     *      - upload                    上传数据
      *  - url
      *  - sheetName             下载单个分页中所有的数据 时，需要指定 分页名称
      */
-    private $indexSheetApi = "https://script.google.com/macros/s/AKfycbzc6mAHN_7WQ0Pxq-k7NHEl1yF58_Qi9GXqYbh3S4m23vYgrfF0wHPEuGm25ESWSBba/exec";
+    private $indexSheetApi = "https://script.google.com/macros/s/AKfycbzhWMTcR_ZS0Ox3wxfhJCBDR-BLDeOQHGyGPbDtveu6Njh6Rfji3OebDBMF2nC0/exec";
 
     private $postFillFormSheetName = "发帖登记表";
 
@@ -59,23 +59,76 @@ class TableService implements ServiceInterface
         $this->app = $app;
     }
 
-    // 下载发帖表
-    public function handlePostFillFormTable()
+    // 发帖表内容去重
+    public function postFillFormTableUnique()
     {
-        // 1. 获取发帖登记表的链接
         $startTime = time();
 
-        $content = file_get_contents($this->getApiUrl('signal_sheet', $this->indexSheetUrl, $this->postFillFormSheetName));
+        $content = $this->fetchWithRetry($this->getApiUrl('signal_sheet', $this->indexSheetUrl, $this->postFillFormSheetName));
 
+        // 请求失败，比如 404、超时、DNS 错误等
         if ($content === false) {
-            // 请求失败，比如 404、超时、DNS 错误等
             $this->app->error("获取发帖登记表 链接 失败");
             die;
         }
 
         $endTime = time();
 
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
+        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
+
+        file_put_contents($path, $content);
+        
+        $this->app->info(sprintf("获取发帖表链接完成; 用时 %s 秒", $endTime - $startTime));
+
+        // 2. 下载每一个链接
+        $lines = getLine($path);
+
+        foreach ($lines as $key => $line) {
+            
+            $lineArr = explode("\t", $line);
+
+            $name   = $lineArr[0] ?? ""; 
+            $url    = $lineArr[1] ?? "";
+
+            if (!str_contains($url, "https")) {
+                $this->app->info(sprintf("%d / %d; 链接不符合要求 跳过", ($key+1), count($lines)));
+                continue;
+            }
+
+            $startTime = time();
+
+            $_url = $this->getApiUrl('post_auto_fill_unique', $url);
+            $content = $this->fetchWithRetry($_url);
+
+            if ($content === false) {
+                $this->app->error(sprintf("获取发帖登记表: %s 内容失败", $name));
+                continue;
+            }
+
+            $endTime = time();
+
+            $this->app->info(sprintf("%d / %d; %s 数据处理完成; 用时 %d 秒", ($key+1), count($lines), $name, ($endTime - $startTime)));
+        
+        }
+    }
+
+    // 下载发帖表
+    public function handlePostFillFormTable()
+    {
+        // 1. 获取发帖登记表的链接
+        $startTime = time();
+
+        $content = $this->fetchWithRetry($this->getApiUrl('signal_sheet', $this->indexSheetUrl, $this->postFillFormSheetName));
+
+        // 请求失败，比如 404、超时、DNS 错误等
+        if ($content === false) {
+            $this->app->error("获取发帖登记表 链接 失败");
+            die;
+        }
+
+        $endTime = time();
+
+        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
 
         file_put_contents($path, $content);
         
@@ -94,14 +147,15 @@ class TableService implements ServiceInterface
             if (str_contains($url, "https")) {
                 $startTime = time();
 
-                $content = file_get_contents($this->getApiUrl('post_auto_fill', $url));
+                $_url = $this->getApiUrl('post_auto_fill', $url);
+                $content = $this->fetchWithRetry($_url);
 
                 if ($content === false) {
                     $this->app->error(sprintf("获取发帖登记表: %s 内容失败", $name));
                     continue;
                 }
 
-                $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
+                $path = TABLE_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
                 file_put_contents($path, $content);
 
                 $this->postFillFormPaths[] = $path;
@@ -116,22 +170,24 @@ class TableService implements ServiceInterface
         $this->statisticGroupsPost();
     }
 
+    // 下载chatbot表
     public function handleChatbotTable()
     {
         // 1. 获取发帖登记表的链接
         $startTime = time();
 
-        $content = file_get_contents($this->getApiUrl('signal_sheet', $this->indexSheetUrl, $this->chatbotSheetName));
+        $_url = $this->getApiUrl('signal_sheet', $this->indexSheetUrl, $this->chatbotSheetName);
+        $content = $this->fetchWithRetry($_url);
 
+        // 请求失败，比如 404、超时、DNS 错误等
         if ($content === false) {
-            // 请求失败，比如 404、超时、DNS 错误等
             $this->app->error("获取发帖登记表 链接 失败");
             die;
         }
 
         $endTime = time();
 
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " 引流表.tsv";
+        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 引流表.tsv";
 
         file_put_contents($path, $content);
         
@@ -150,14 +206,15 @@ class TableService implements ServiceInterface
             if (str_contains($url, "https")) {
                 $startTime = time();
 
-                $content = file_get_contents($this->getApiUrl('post_auto_fill', $url));
+                $_url = $this->getApiUrl('post_auto_fill', $url);
+                $content = $this->fetchWithRetry($_url);
 
                 if ($content === false) {
                     $this->app->error(sprintf("获取引流表: %s 内容失败", $name));
                     continue;
                 }
 
-                $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
+                $path = TABLE_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
                 file_put_contents($path, $content);
 
                 $this->chatbotPahts[] = $path;
@@ -393,6 +450,32 @@ class TableService implements ServiceInterface
     }
 
 
+    // 重新尝试获取失败的链接
+    private function fetchWithRetry($url, $context = [], $maxRetries = 3, $waitTime = 2) {
+
+        if (empty($context)) {
+            $context = stream_context_create([
+                'http' => [
+                    'timeout' => 300  // 超时时间（秒）
+                ]
+            ]);
+        }
+
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            $content = file_get_contents($url, false, $context);
+            
+            if ($content !== false) {
+                return $content;
+            }
+            
+            if ($attempt < $maxRetries) {
+                sleep($waitTime);
+            }
+        }
+        
+        return false;
+    }
+
 
     // 获取访问api的完整链接
     private function getApiUrl($type, $url, $sheetName = "")
@@ -410,7 +493,7 @@ class TableService implements ServiceInterface
             $this->app->error("未匹配到表格ID");
         }
 
-        return $matches[0];
+        return $matches[0] ?? "";
     }
 
     // 计算时间与当前时间的差距
