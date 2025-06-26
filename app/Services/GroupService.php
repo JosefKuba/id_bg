@@ -290,8 +290,9 @@ class GroupService implements ServiceInterface
                 $isHu = $notHu = 0;
             }
 
-            // 过滤掉标题不是匈牙利语的小组
-            if (detectLanguage($title) !== "hu") {
+            // 过滤掉标题不是荷兰语的小组
+            // if (detectLanguage($title) !== "nl") {
+            if (detectLanguage($title) !== "sv") {
                 $excludeGroups[] = $group;
                 $notHu++;
                 continue;

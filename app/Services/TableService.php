@@ -27,7 +27,7 @@ class TableService implements ServiceInterface
      *  - url
      *  - sheetName             下载单个分页中所有的数据 时，需要指定 分页名称
      */
-    private $indexSheetApi = "https://script.google.com/macros/s/AKfycbzhWMTcR_ZS0Ox3wxfhJCBDR-BLDeOQHGyGPbDtveu6Njh6Rfji3OebDBMF2nC0/exec";
+    private $indexSheetApi = "https://script.google.com/macros/s/AKfycbyP_PCxK80d5CtwhSiRbFrDNDXWrZJ97fFwvDmI0lMIn6hd9oHaCufuWbxT9Db57DZj/exec";
 
     private $postFillFormSheetName = "发帖登记表";
 
@@ -410,6 +410,61 @@ class TableService implements ServiceInterface
     }
 
 
+    // 备份 chatbot 表格
+    public function backupChatbotTable()
+    {
+        // 1. 获取发帖登记表的链接
+        $startTime = time();
+
+        $_url = $this->getApiUrl('signal_sheet', $this->indexSheetUrl, $this->chatbotSheetName);
+        $content = $this->fetchWithRetry($_url);
+
+        // 请求失败，比如 404、超时、DNS 错误等
+        if ($content === false) {
+            $this->app->error("获取发帖登记表 链接 失败");
+            die;
+        }
+
+        $endTime = time();
+
+        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 引流表.tsv";
+
+        file_put_contents($path, $content);
+        
+        $this->app->info(sprintf("引流表链接完成; 用时 %s 秒", $endTime - $startTime));
+
+        // 2. 下载每一个链接
+        $lines = getLine($path);
+
+        foreach ($lines as $key => $line) {
+            
+            $lineArr = explode("\t", $line);
+
+            $name   = $lineArr[1] ?? ""; 
+            $url    = $lineArr[2] ?? "";
+
+            if (str_contains($url, "https")) {
+                $startTime = time();
+
+                $_url = $this->getApiUrl('backup_chatbot', $url);
+                $content = $this->fetchWithRetry($_url);
+
+                if ($content === false) {
+                    $this->app->error(sprintf("获取引流表: %s 内容失败", $name));
+                    continue;
+                }
+
+                $endTime = time();
+
+                $this->app->info(sprintf("%d / %d; %s 处理完成; 用时 %d 秒", ($key+1), count($lines), $name, ($endTime - $startTime)));
+            }
+
+            die;
+        }
+
+    }
+
+
     // 将数据写入 Google Sheet
     public function uploadGoogleSheet($url, $sheetName, $data)
     {
@@ -438,15 +493,6 @@ class TableService implements ServiceInterface
         $response = file_get_contents($this->indexSheetApi, false, $context);
 
         $this->app->info("上传信息: " . $response);
-    }
-
-
-    public function downloadPostDetailsTable()
-    {
-        // 1. 获取帖文库的链接
-        
-        
-        // 2. 下载每一个贴文库链接
     }
 
 
@@ -497,7 +543,7 @@ class TableService implements ServiceInterface
     }
 
     // 计算时间与当前时间的差距
-    public function daysSinceJsDate(string $jsDateStr)
+    private function daysSinceJsDate(string $jsDateStr)
     {
         // 1. 清除括号中的本地时区描述
         $cleaned = preg_replace('/\s*\(.*\)$/', '', $jsDateStr);
@@ -523,4 +569,8 @@ class TableService implements ServiceInterface
 
         return (int)$diff->format('%a'); // 正负天数
     }
+
+    // 
+
+
 }
