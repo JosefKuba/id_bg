@@ -291,8 +291,7 @@ class GroupService implements ServiceInterface
             }
 
             // 过滤掉标题不是荷兰语的小组
-            // if (detectLanguage($title) !== "nl") {
-            if (detectLanguage($title) !== "sv") {
+            if (detectLanguage($title) !== "nl") {
                 $excludeGroups[] = $group;
                 $notHu++;
                 continue;
@@ -300,7 +299,6 @@ class GroupService implements ServiceInterface
                 $isHu++;
             }
             
-
             $checkGroups[]   = $group;
             $checkGroupIds[] = $id;
         }

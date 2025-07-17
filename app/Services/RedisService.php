@@ -49,7 +49,7 @@ class RedisService implements ServiceInterface
         $this->SEARCH_GROUP_DB_NUMBER   = $_ENV['SEARCH_GROUP_DB_NUMBER'];
         $this->PROMOTE_GROUP_DB_NUMBER   = $_ENV['PROMOTE_GROUP_DB_NUMBER'] ?? "";
 
-        $this->AVATER_DB_NUMBER = $_ENV['AVATER_DB_NUMBER'];
+        // $this->AVATER_DB_NUMBER = $_ENV['AVATER_DB_NUMBER'];
 
         $this->app = $app;
 
@@ -59,9 +59,9 @@ class RedisService implements ServiceInterface
         ]);
 
         // 公用客户端
-        $this->pubClient = new \Predis\Client([
-            'port'   => $_ENV['PUBLIC_REDIS_PORT']
-        ]);
+        // $this->pubClient = new \Predis\Client([
+        //     'port'   => $_ENV['PUBLIC_REDIS_PORT']
+        // ]);
     }
 
     public function getDesc () {
@@ -98,7 +98,7 @@ class RedisService implements ServiceInterface
     public function getAvaterDesc() 
     {
         return [
-            $_ENV['AVATER_DB_NUMBER'] => $_ENV['AVATER_DB_DESC'],
+            $_ENV['AVATER_DB_NUMBER'] => $_ENV['AVATER_DB_DESC'] ?? "",
         ];
     }
 
@@ -154,6 +154,13 @@ class RedisService implements ServiceInterface
     public function getPromoteGroupClient()
     {
         $this->client->select($this->PROMOTE_GROUP_DB_NUMBER);
+        return $this->client;
+    }
+
+    // 获取自定义的客户端
+    public function getCustomerClient($dbIndex)
+    {
+        $this->client->select($dbIndex);
         return $this->client;
     }
 
