@@ -23,16 +23,10 @@ class DataController extends CommandController
 
         $newIds = 0;
         foreach ($ids as $id) {
-            if ($redis->exists($id)) {
-                $redis->del($id);
+            if (!$redis->exists($id)) {
                 $newIds++;
             }
         }
-
-        // $resultPath = ID_OUTPUT_PATH . basename($file) . ".new";
-        // file_put_contents($resultPath, implode(PHP_EOL, $newIds));
-
-        // unlink($file);
 
         $this->info(sprintf("新的ID %d 个", $newIds));
     }

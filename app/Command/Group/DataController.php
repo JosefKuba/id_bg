@@ -16,13 +16,13 @@ class DataController extends CommandController
     {
         $ids = getLine(GROUP_INPUT_PATH . "ids");
 
-        $redis = $this->getApp()->redis->getCustomerClient(9);
+        $redis = $this->getApp()->redis->getCustomerClient(8);
 
         $count = 0;
         $results = [];
         foreach ($ids as $id) {
             if (!$redis->exists($id)) {
-                $redis->set($id, "1");
+                // $redis->set($id, "1");
                 $results[] = $id;
                 $count++;
             }
