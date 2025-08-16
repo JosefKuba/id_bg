@@ -3,7 +3,7 @@
 # 处理导出的点赞留言，按照每两列进行分割，然后合并
 
 # 删除前三行
-sed -i '1,3d' data/id/input/names.tsv
+sed -i '1,2d' data/id/input/names.tsv
 
 # 每两列分割成一个文件
 cut -f1,2 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_1
@@ -15,6 +15,16 @@ cut -f11,12 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/na
 cut -f13,14 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_7
 cut -f15,16 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_8
 cut -f17,18 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_9
+
+# cut -f1-3 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_1
+# cut -f4-6 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_2
+# cut -f7-9 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_3
+# cut -f10-12 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_4
+# cut -f13-15 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_5
+# cut -f16-18 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_6
+# cut -f19-21 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_7
+# cut -f22-24 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_8
+# cut -f25-27 data/id/input/names.tsv | sed 's/\r//g' | sort -u > data/id/input/names_9
 
 # 合并
 arg=$1

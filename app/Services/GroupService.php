@@ -284,14 +284,15 @@ class GroupService implements ServiceInterface
 
             if ($key % 100 == 0 && $key > 1) {
                 $endTime = time();
-                echo $key . " / " . $uniqueGroupsCount . "; 耗时 " . ($endTime - $startTime) . " 秒; "  . "{$isHu} / ${notHu}" .  PHP_EOL;
+                echo $key . " / " . $newSearchCount . "; 耗时 " . ($endTime - $startTime) . " 秒; "  . "{$isHu} / {$notHu}" .  PHP_EOL;
                 $startTime = time();
 
                 $isHu = $notHu = 0;
             }
 
-            // 过滤掉标题不是荷兰语的小组
-            if (detectLanguage($title) !== "nl") {
+            // 过滤掉标题不是匈牙利语的小组
+            // if (detectLanguage($title) !== "hu") {
+            if (false) {
                 $excludeGroups[] = $group;
                 $notHu++;
                 continue;

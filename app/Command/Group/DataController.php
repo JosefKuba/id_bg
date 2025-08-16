@@ -21,8 +21,8 @@ class DataController extends CommandController
         $count = 0;
         $results = [];
         foreach ($ids as $id) {
-            if (!$redis->exists($id)) {
-                // $redis->set($id, "1");
+            if ($redis->exists($id)) {
+                // $redis->del($id);
                 $results[] = $id;
                 $count++;
             }
