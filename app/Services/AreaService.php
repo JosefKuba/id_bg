@@ -80,4 +80,66 @@ class AreaService implements ServiceInterface
         $path = AREA_OUTPUT_PATH . CURRENT_TIME . " add";
         file_put_contents($path, implode(PHP_EOL, $result));
     }
+
+    // 根据地区获取国家名称
+    public function getCountry($file) 
+    {
+        $allAreas = getLine($file);
+
+        $areaChunks = array_chunk($allAreas, 100);
+
+        $results = [];
+        
+        $i = 0;
+
+        foreach ($areaChunks as $areas) {
+
+            foreach ($areas as $area) {
+
+                $query = urlencode($area);
+                
+                $url = "https://nominatim.openstreetmap.org/search?format=json&accept-language=en&q=" . $query;
+
+                $opts = [
+                    "http" => [
+                        "header" => "User-Agent: PHP-Geocoder/1.0\r\n"
+                    ]
+                ];
+                $context = stream_context_create($opts);
+
+                $start = time();
+
+                $result = file_get_contents($url, false, $context);
+
+                $end = time();
+
+                if ($result === FALSE) {
+                    $results[] = $area . "\t" . "--";
+                    continue;
+                }
+
+                $data = json_decode($result, true);
+
+                if (!empty($data)) {
+                    $display_name = $data[0]['display_name'];
+                    $parts = explode(",", $display_name);
+                    $country = trim(end($parts));
+
+                    $results[] = $area . "\t" . $country;
+                    continue;
+                }
+
+                $results[] = $area . "\t" . "--";
+            
+                // 写入文件
+                $path = AREA_OUTPUT_PATH . CURRENT_TIME . " country.tsv";
+                file_put_contents($path, $area . "\t" . $country . PHP_EOL, FILE_APPEND);
+
+                $i++;
+
+                echo $i . " / " . count($allAreas) . "; " . $country . " 耗时: " . ($end - $start) . " 秒" . PHP_EOL;
+            }
+        }
+    }
+
 }

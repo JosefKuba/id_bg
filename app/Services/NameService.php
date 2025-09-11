@@ -25,6 +25,32 @@ class NameService implements ServiceInterface
     // 希腊字母检测（用于判断是否是希腊名字）
     private $greek_letters_pattern = "/[Α-Ωα-ω]/u";
 
+    // 塞尔维亚 常见的名字
+    private $srNames = [
+        // 塞尔维亚男性名字
+        "Đorđe", "Nemanja", "Vuk", "Slobodan", "Dragan",
+        "Miloš", "Dušan", "Željko", "Zoran", "Goran",
+        "Bogdan", "Branislav", "Veljko", "Svetozar", "Momčilo",
+        "Radovan", "Mladen", "Saša", "Predrag", "Vladimir",
+        "Darko", "Radoslav", "Veselin", "Nenad", "Ljubiša",
+        "Rade", "Dejan", "Srđan", "Žarko", "Milovan",
+
+        // 塞尔维亚女性名字
+        "Milica", "Jelena", "Dragana", "Svetlana", "Radmila",
+        "Gordana", "Snežana", "Ljiljana", "Mira", "Branka",
+        "Danijela", "Tatjana", "Biljana", "Vesna", "Slavica",
+        "Olivera", "Mirjana", "Anđelka", "Ružica", "Stanislava",
+        "Nataša", "Radica", "Božana", "Zorica", "Ivanka",
+
+        // 塞尔维亚姓氏
+        "Jovanović", "Petrović", "Stanković", "Marković", "Đorđević",
+        "Nikolić", "Milošević", "Milenković", "Mitrović", "Radovanović",
+        "Stevanović", "Aleksić", "Lukić", "Bogdanović", "Ilić",
+        "Zdravković", "Vasiljević", "Matić", "Obradović", "Kostić",
+        "Pantelić", "Ristić", "Mihajlović", "Mladenović", "Perišić",
+        "Cvjetićanin", "Ćirić", "Stojković", "Krstić", "Živković",
+    ];
+
     public function load(App $app): void
     {
         $this->app = $app;
@@ -152,6 +178,55 @@ class NameService implements ServiceInterface
             count($huIds),
             count($notHuLines),
             number_format(count($huIds) * 100 / count($lines), 1) . '%'
+        ));
+    }
+
+    // 挑选克罗地亚名字
+    public function selectHrName($file)
+    {
+        // 从克罗地亚的名字中，去掉 塞尔维亚的 名字
+        $lines = getLine($file);
+
+        $hrLines = [];
+        $hrIds   = [];
+        $notHrLines = [];
+
+        foreach ($lines as $line) {
+            $lineArr = explode("\t", $line);
+
+            $id     = $lineArr[0];
+            $name   = $lineArr[1];
+
+            $nameArr = explode(" ", $name);
+
+            // 匹配塞尔维亚 常见 姓氏 和 名称
+            foreach ($nameArr as $item) {
+                if (in_array($item, $this->srNames)) {
+                    $notHrLines[] = $line;
+                    continue 2;
+                }
+            }
+
+            $hrLines[] = $line;
+            $hrIds[] = $id;
+        }
+
+        // 保存结果
+        $outputPath = NAME_OUTPUT_PATH . CURRENT_TIME . " hr.tsv";
+        file_put_contents($outputPath, implode(PHP_EOL, $hrLines));
+
+        $outputPath = NAME_OUTPUT_PATH . CURRENT_TIME . " hr id.tsv";
+        file_put_contents($outputPath, implode(PHP_EOL, $hrIds));
+
+        $outputPath = NAME_OUTPUT_PATH . CURRENT_TIME . " not hr.tsv";
+        file_put_contents($outputPath, implode(PHP_EOL, $notHrLines));
+
+        $this->app->info(sprintf(
+            "ID共计 %d 个，克罗地亚ID %d 个，非克罗地亚ID %d 个，合格比例 %s",
+            count($lines),
+            count($hrIds),
+            count($notHrLines),
+            number_format(count($hrIds) * 100 / count($lines), 1) . '%'
         ));
     }
 

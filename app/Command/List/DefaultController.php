@@ -95,7 +95,11 @@ class DefaultController extends CommandController
             'zap' => [
                 \App\Command\ZAP\DefaultController::class,
             ],
+            'youtube' => [
+                \App\Command\Youtube\DefaultController::class,
+            ],
         ];
+
 
         foreach ($commands as $command => $controllers) {
 

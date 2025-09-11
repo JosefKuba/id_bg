@@ -33,5 +33,6 @@ return [
         'ig'        => \App\Services\IgService::class,
         'zap'       => \App\Services\ZapService::class,
         'table'     => \App\Services\TableService::class,
+        'youtube'   => \App\Services\YoutubeService::class,
     ],
 ];

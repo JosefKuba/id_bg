@@ -14,7 +14,10 @@ class DataController extends CommandController
 {
     public function handle(): void
     {
-        $redis = $this->getApp()->redis->getIdClient();
+        // $redis = $this->getApp()->redis->getIdClient();
+
+        // HR 跑地区库
+        $redis = $this->getApp()->redis->getCustomerClient(1);
 
         $files = glob(ID_INPUT_PATH . "*");
         $file  = $files[0];
@@ -24,7 +27,7 @@ class DataController extends CommandController
         $newIds = 0;
         foreach ($ids as $id) {
             if (!$redis->exists($id)) {
-                // $redis->set($id, "1");
+                $redis->set($id, "1");
                 $newIds++;
             }
         }

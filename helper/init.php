@@ -144,6 +144,13 @@ const TABLE_OUTPUT_PATH = ROOT_PATH . "data/table/output/";
 
 const TABLE_BACKUP_PATH = ROOT_PATH . "data/table/backup/";
 
+// YTB
+const YTB_INPUT_PATH = ROOT_PATH . "data/youtube/input/";
+
+const YTB_OUTPUT_PATH = ROOT_PATH . "data/youtube/output/";
+
+const YTB_BACKUP_PATH = ROOT_PATH . "data/youtube/backup/";
+
 
 // 已刷脸的ID
 const ID_DB_FILE = ROOT_PATH . "data/database/ids";
