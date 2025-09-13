@@ -144,4 +144,72 @@ class YoutubeService implements ServiceInterface
         
         return (int)$totalSeconds;
     }
+
+    public function shorts($files) 
+    {
+        foreach ( $files as $file ) {
+
+            $html = file_get_contents($file);
+
+            // 创建 DOMDocument 实例
+            $doc = new \DOMDocument();
+
+            // 忽略格式错误的 HTML 警告
+            libxml_use_internal_errors(true);
+            $doc->loadHTML($html);
+            libxml_clear_errors();
+
+            // 创建数组存储提取的 Shorts 数据
+            $shorts = [];
+
+            // 使用 XPath 查询包含 Shorts 链接的 <a> 标签
+            $xpath = new \DOMXPath($doc);
+            //$nodes = $xpath->query('//a[contains(@href, "/shorts/")]');
+
+            // 找到所有 shorts 链接
+            $links = $xpath->query("//a[contains(@href, '/shorts/')]");
+
+            foreach ($links as $a) {
+                $href = $a->getAttribute("href");
+                if (strpos($href, "/shorts/") === false) continue;
+
+                // 视频 ID
+                preg_match("#/shorts/([^/?&]+)#", $href, $m);
+                if (!$m) continue;
+                $videoId = $m[1];
+
+                // 链接
+                $link = strpos($href, "http") === 0 ? $href : "https://www.youtube.com" . $href;
+
+                // 标题
+                $title = $a->getAttribute("title");
+                if (!$title) {
+                    $span = $a->getElementsByTagName("span")->item(0);
+                    if ($span) $title = trim($span->textContent);
+                }
+
+                // 观看量（查找相邻的 div）
+                $views = "";
+                $nextDiv = $a->parentNode->parentNode->getElementsByTagName("div");
+                foreach ($nextDiv as $d) {
+                    if (strpos($d->getAttribute("class"), "shortsLockupViewModelHostOutsideMetadataSubhead") !== false) {
+                        $views = trim($d->textContent);
+                        break;
+                    }
+                }
+
+                $views = str_replace("次观看", "", $views);
+                if (str_contains($views, "万")) {
+                    $views = str_replace("万", "", $views) * 10000;
+                }
+
+                $thumbnail = "https://i.ytimg.com/vi/" . $videoId . "/oar2.jpg";
+
+                $shorts[$videoId] = $title . "\t" . $link . "\t" . $thumbnail . "\t" . $views;
+            }
+
+            $outputpath = YTB_OUTPUT_PATH . CURRENT_TIME . " shorts.tsv";
+            file_put_contents($outputpath, implode(PHP_EOL, $shorts), FILE_APPEND);
+        }
+    }
 }
