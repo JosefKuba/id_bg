@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Table;
+namespace App\Command\Sheet;
 
 use Minicli\Command\CommandController;
 
-class CleanController extends CommandController
+class PostController extends CommandController
 {
     public function desc()
     {
         return [
-            'command'   => 'php artisan table clean',
-            'desc'      => '清理表格内容',
+            'command'   => 'php artisan sheet post',
+            'desc'      => '统计帖文引流量',
         ];
     }
 
     public function help()
     {
-        echo '根据传入的URL和sheetName和startRow清理对应的分页' . PHP_EOL;
+        echo '下载 chatbot 表格，并统计帖文的引流数量' . PHP_EOL;
     }
 
     public function handle(): void
@@ -35,18 +35,19 @@ class CleanController extends CommandController
     public function exec(): void
     {
         // 先清空所有之前的记录
-        $fileService = $this->getApp()->file;
-        $fileService->clearFolder(TABLE_INPUT_PATH);
-
         $tableService = $this->getApp()->table;
 
-        // 清理表格数据
-        $tableService->cleanTable();
+        // 下载 chatbot 引流表
+        if (!$this->hasFlag("skip-download")) {
+            $tableService->downloadChatbotTable();
+        }
+
+        // 统计每个帖文的引流数据
+        $tableService->statisticPostEffect();
     }
 
     public function test() {
-        
-        // 
+        // todo
     }
 }
 

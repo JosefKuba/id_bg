@@ -54,6 +54,7 @@ class DefaultController extends CommandController
             'name'     => [
                 \App\Command\Name\ZhController::class,
                 \App\Command\Name\BgController::class,
+                \App\Command\Name\HuController::class,
             ],
             'redis'     => [
                 \App\Command\Redis\DefaultController::class,
@@ -74,6 +75,7 @@ class DefaultController extends CommandController
             ],
             'faith' => [
                 \App\Command\Faith\DefaultController::class,
+                \App\Command\Faith\FriendController::class,
             ],
             'area' => [
                 \App\Command\Area\DefaultController::class,
@@ -92,11 +94,22 @@ class DefaultController extends CommandController
             'ig' => [
                 \App\Command\IG\DefaultController::class,
             ],
+            'fb' => [
+                \App\Command\FB\ReelsController::class,
+            ],
             'zap' => [
                 \App\Command\ZAP\DefaultController::class,
             ],
-            'youtube' => [
-                \App\Command\Youtube\DefaultController::class,
+            'ytb' => [
+                \App\Command\YTB\DefaultController::class,
+                \App\Command\YTB\ReelsController::class,
+            ],
+            'sheet' => [
+                \App\Command\Sheet\BackupChatbotController::class,
+                \App\Command\Sheet\CleanController::class,
+                \App\Command\Sheet\GroupController::class,
+                \App\Command\Sheet\PostController::class,
+                \App\Command\Sheet\PostUniqueController::class,
             ],
         ];
 

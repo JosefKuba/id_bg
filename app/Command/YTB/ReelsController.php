@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Youtube;
+namespace App\Command\YTB;
 
 use Minicli\Command\CommandController;
 
@@ -11,7 +11,7 @@ class ReelsController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan youtube reels',
+            'command'   => 'php artisan ytb reels',
             'desc'      => '从YouTube的 html 结构中提取 reels 相关的信息',
         ];
     }

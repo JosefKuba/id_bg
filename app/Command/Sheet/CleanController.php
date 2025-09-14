@@ -2,23 +2,23 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Table;
+namespace App\Command\Sheet;
 
 use Minicli\Command\CommandController;
 
-class GroupController extends CommandController
+class CleanController extends CommandController
 {
     public function desc()
     {
         return [
-            'command'   => 'php artisan table group',
-            'desc'      => '处理小组的发帖和引流数据',
+            'command'   => 'php artisan sheet clean',
+            'desc'      => '清理表格内容',
         ];
     }
 
     public function help()
     {
-        echo '统计每个小组的 发帖量 和 引流量。下载 chatbot表 和 发帖登记表 在本地统计数据' . PHP_EOL;
+        echo '根据传入的URL和sheetName和startRow清理对应的分页' . PHP_EOL;
     }
 
     public function handle(): void
@@ -40,15 +40,13 @@ class GroupController extends CommandController
 
         $tableService = $this->getApp()->table;
 
-        // 处理 发帖登记表 数据
-        $tableService->handlePostFillFormTable();
-
-        // 处理 chatbot表 数据
-        $tableService->handleChatbotTable();
+        // 清理表格数据
+        $tableService->cleanTable();
     }
 
     public function test() {
-        // todo
+        
+        // 
     }
 }
 

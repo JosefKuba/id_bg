@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Youtube;
+namespace App\Command\YTB;
 
 use Minicli\Command\CommandController;
 
@@ -11,7 +11,7 @@ class DefaultController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan youtube',
+            'command'   => 'php artisan ytb',
             'desc'      => '根据关键词搜索YouTube视频',
         ];
     }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Table;
+namespace App\Command\Sheet;
 
 use Minicli\Command\CommandController;
 
@@ -11,7 +11,7 @@ class BackupChatbotController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan table backupchatbot',
+            'command'   => 'php artisan sheet backupchatbot',
             'desc'      => '备份chatbot表格中的数据',
         ];
     }

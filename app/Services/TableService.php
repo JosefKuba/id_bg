@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Minicli\App;
 use Minicli\ServiceInterface;
-use tidy;
 
 class TableService implements ServiceInterface
 {
