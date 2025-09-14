@@ -171,9 +171,6 @@ class TableService implements ServiceInterface
                 $this->app->info(sprintf("%d / %d; %s 下载完成; 用时 %d 秒", ($key+1), count($lines), $name, ($endTime - $startTime)));
             }
         }
-
-        // 统计发帖数据
-        // $this->statisticGroupsPost();
     }
 
     // 下载chatbot表格
@@ -436,7 +433,7 @@ class TableService implements ServiceInterface
                 $dateToNow = $this->daysSinceJsDate($date);
                 
                 // todo 每次使用需要修改
-                if ( $dateToNow < 1 || $dateToNow >= 60 ) {
+                if ( $dateToNow < 1 || $dateToNow >= 23 ) {
                     continue;
                 }
 
@@ -474,60 +471,6 @@ class TableService implements ServiceInterface
         file_put_contents($path, implode(PHP_EOL, $collectPosts));
 
         $this->app->info("引流帖文统计完成");
-    }
-
-    // 下载帖文果效表
-    public function downloadPostEffectTable()
-    {
-        // 1. 获取发帖登记表的链接
-        $startTime = time();
-
-        $_url = $this->getApiUrl('signal_sheet', $this->indexSheetUrl, "帖文果效表");
-        $content = $this->fetchWithRetry($_url);
-
-        // 请求失败，比如 404、超时、DNS 错误等
-        if ($content === false) {
-            $this->app->error("获取发帖登记表 链接 失败");
-            die;
-        }
-
-        $endTime = time();
-
-        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 帖文果效表.tsv";
-
-        file_put_contents($path, $content);
-        
-        $this->app->info(sprintf("帖文果效表下载完成; 用时 %s 秒", $endTime - $startTime));
-
-        // 2. 下载每一个链接
-        $lines = getLine($path);
-
-        foreach ($lines as $key => $line) {
-            
-            $lineArr = explode("\t", $line);
-
-            $name   = $lineArr[1] ?? ""; 
-            $url    = $lineArr[2] ?? "";
-
-            if (str_contains($url, "https")) {
-                $startTime = time();
-
-                $_url = $this->getApiUrl('post_effect', $url);
-                $content = $this->fetchWithRetry($_url);
-
-                if ($content === false) {
-                    $this->app->error(sprintf("获取帖文果效表: %s 内容失败", $name));
-                    continue;
-                }
-
-                $path = TABLE_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
-                file_put_contents($path, $content);
-
-                $endTime = time();
-
-                $this->app->info(sprintf("%d / %d; %s 下载完成; 用时 %d 秒", ($key+1), count($lines), $name, ($endTime - $startTime)));
-            }
-        }
     }
 
     // 备份 chatbot 表格
@@ -747,42 +690,6 @@ class TableService implements ServiceInterface
                 $this->app->info(sprintf("%d / %d; %s 小组帖文下载完成; 用时 %d 秒", ($key+1), count($lines), $name, ($endTime - $startTime)));
             }
         }
-    }
-
-    // 匹配帖文信息
-    public function matchPostDetails()
-    {
-        // if (empty($this->namePath)) {
-        //     $this->namePath = TABLE_INPUT_PATH . 
-        // }
-        // $lines = getLine($this->namePath);
-
-        $files = glob(TABLE_INPUT_PATH . "*帖文.tsv");
-
-        $postCollections = [];
-        foreach ($files as $file) {
-            $lines = getLine($file);
-            foreach ($lines as $line) {
-                $lineArr = explode("\t", $line);
-                $id = $lineArr[0];
-
-                if (!array_key_exists($id, $postCollections)) {
-                    $postCollections[$id] = $line;
-                }
-            }
-        }
-
-        $ids = getLine( TABLE_INPUT_PATH . "ids" );
-        
-        $results = [];
-        foreach ($ids as $id) {
-            $results[$id] = $postCollections[$id] ?? "";
-        }
-
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " result.tsv";
-        file_put_contents($path, implode(PHP_EOL, $results));
-
-        $this->app->info("帖文匹配完成");
     }
 
     // 重新尝试获取失败的链接

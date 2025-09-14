@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace App\Command\Youtube;
+namespace App\Command\FB;
 
 use Minicli\Command\CommandController;
 
-class ShortsController extends CommandController
+class ReelsController extends CommandController
 {
     public function desc()
     {
         return [
-            'command'   => 'php artisan youtube shorts',
-            'desc'      => '从YouTube的 html 结构中提取 shorts 相关的信息',
+            'command'   => 'php artisan fb reels',
+            'desc'      => '从FB的 html 结构中提取 reels 相关的信息',
         ];
     }
 

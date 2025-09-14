@@ -48,25 +48,7 @@ class GroupController extends CommandController
     }
 
     public function test() {
-        
-        $tableService = $this->getApp()->table;
-
-        $files = glob(TABLE_OUTPUT_PATH . "*匈牙利*");
-
-        // var_dump($files);die;
-
-        $tableService->statisticChatbot($files);
-
-        exit;
-        
-
-        // $str = "Thu Jun 20 2025 00:00:00 GMT+0200 (Midden-Europese zomertijd)";
-        // $str = "Fri Jun 20 2025 00:00:00 GMT+0200 (Midden-Europese zomertijd)";
-        // $str = "Thu Jun 19 2025 00:00:00 GMT+0200 (Midden-Europese zomertijd)";
-        // $res = $tableService->daysSinceJsDate($str);
-    
-        // // todo 
-        // echo $res . PHP_EOL;
+        // todo
     }
 }
 
