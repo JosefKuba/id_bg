@@ -5,7 +5,7 @@ namespace App\Services;
 use Minicli\App;
 use Minicli\ServiceInterface;
 
-class TableService implements ServiceInterface
+class SheetService implements ServiceInterface
 {
     use Trait\SelectTrait;
 
@@ -79,7 +79,7 @@ class TableService implements ServiceInterface
 
         $endTime = time();
 
-        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
+        $path = SHEET_INPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
 
         file_put_contents($path, $content);
         
@@ -133,7 +133,7 @@ class TableService implements ServiceInterface
 
         $endTime = time();
 
-        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
+        $path = SHEET_INPUT_PATH . CURRENT_TIME . " 发帖表.tsv";
 
         file_put_contents($path, $content);
         
@@ -160,7 +160,7 @@ class TableService implements ServiceInterface
                     continue;
                 }
 
-                $path = TABLE_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
+                $path = SHEET_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
                 file_put_contents($path, $content);
 
                 $this->postFillFormPaths[] = $path;
@@ -189,7 +189,7 @@ class TableService implements ServiceInterface
 
         $endTime = time();
 
-        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 引流表.tsv";
+        $path = SHEET_INPUT_PATH . CURRENT_TIME . " 引流表.tsv";
 
         file_put_contents($path, $content);
         
@@ -216,7 +216,7 @@ class TableService implements ServiceInterface
                     continue;
                 }
 
-                $path = TABLE_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
+                $path = SHEET_INPUT_PATH . CURRENT_TIME . " " . $name . ".tsv";
                 file_put_contents($path, $content);
 
                 $this->chatbotPahts[] = $path;
@@ -303,7 +303,7 @@ class TableService implements ServiceInterface
         }
 
         // 本地保存数据
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " group results.tsv";
+        $path = SHEET_OUTPUT_PATH . CURRENT_TIME . " group results.tsv";
         file_put_contents($path, $results);
 
         // 上传数据
@@ -394,7 +394,7 @@ class TableService implements ServiceInterface
             $result .= implode("\t", [$groupId, $count]) . "\n";
         }
 
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " chatbot results.tsv";
+        $path = SHEET_OUTPUT_PATH . CURRENT_TIME . " chatbot results.tsv";
         file_put_contents($path, $result);
 
         // 上传数据
@@ -411,7 +411,7 @@ class TableService implements ServiceInterface
     // 统计每个帖文的引流量
     public function statisticPostEffect()
     {
-        $files = glob(TABLE_INPUT_PATH . "*");
+        $files = glob(SHEET_INPUT_PATH . "*");
 
         $results = [];
         $collectPosts = [];
@@ -463,10 +463,10 @@ class TableService implements ServiceInterface
             $output .= $id . "\t" . $item['count']  . "\t" . $item['link'] . "\n";
         }
 
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " result.tsv";
+        $path = SHEET_OUTPUT_PATH . CURRENT_TIME . " result.tsv";
         file_put_contents($path, $output);
 
-        $path = TABLE_OUTPUT_PATH . CURRENT_TIME . " posts.tsv";
+        $path = SHEET_OUTPUT_PATH . CURRENT_TIME . " posts.tsv";
         file_put_contents($path, implode(PHP_EOL, $collectPosts));
 
         $this->app->info("引流帖文统计完成");
@@ -489,7 +489,7 @@ class TableService implements ServiceInterface
 
         $endTime = time();
 
-        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 引流表.tsv";
+        $path = SHEET_INPUT_PATH . CURRENT_TIME . " 引流表.tsv";
 
         file_put_contents($path, $content);
         
@@ -577,7 +577,7 @@ class TableService implements ServiceInterface
 
         $endTime = time();
 
-        $path = TABLE_INPUT_PATH . CURRENT_TIME . " 清理链接.tsv";
+        $path = SHEET_INPUT_PATH . CURRENT_TIME . " 清理链接.tsv";
 
         file_put_contents($path, $content);
         
@@ -630,7 +630,7 @@ class TableService implements ServiceInterface
 
         $endTime = time();
 
-        $namePath = TABLE_INPUT_PATH . CURRENT_TIME . " 帖文链接.tsv";
+        $namePath = SHEET_INPUT_PATH . CURRENT_TIME . " 帖文链接.tsv";
 
         $this->namePath = $namePath;
 
@@ -660,7 +660,7 @@ class TableService implements ServiceInterface
                     continue;
                 }
 
-                $path = TABLE_INPUT_PATH . CURRENT_TIME . " " . $name . " 专页帖文.tsv";
+                $path = SHEET_INPUT_PATH . CURRENT_TIME . " " . $name . " 专页帖文.tsv";
                 file_put_contents($path, $content);
 
                 $endTime = time();
@@ -681,7 +681,7 @@ class TableService implements ServiceInterface
                     continue;
                 }
 
-                $path = TABLE_INPUT_PATH . CURRENT_TIME  . " " . $name . " 小组帖文.tsv";
+                $path = SHEET_INPUT_PATH . CURRENT_TIME  . " " . $name . " 小组帖文.tsv";
                 file_put_contents($path, $content);
 
                 $endTime = time();

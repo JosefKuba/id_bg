@@ -22,7 +22,6 @@ const ID_OUTPUT_ASIDE_PATH = ID_OUTPUT_PATH . "aside/";
 const ID_OUTPUT_EXCLUDE_PATH = ID_OUTPUT_PATH . "exclude/";
 
 // page const
-
 const PAGE_INPUT_PATH = ROOT_PATH . "data/page/input/";
 
 const PAGE_OUTPUT_PATH = ROOT_PATH . "data/page/output/";
@@ -42,7 +41,6 @@ const PAGE_OUTPUT_B_CLASS_PATH = ROOT_PATH . "data/page/output/B/";
 const PAGE_OUTPUT_C_CLASS_PATH = ROOT_PATH . "data/page/output/C/";
 
 // group const
-
 const GROUP_INPUT_PATH = ROOT_PATH . "data/group/input/";
 
 const GROUP_OUTPUT_PATH = ROOT_PATH . "data/group/output/";
@@ -59,7 +57,6 @@ const GROUP_OUTPUT_EXCLUDE_PATH = ROOT_PATH . "data/group/output/exclude/";
 
 
 // post const
-
 const POST_INPUT_PATH = ROOT_PATH . "data/post/input/";
 
 const POST_OUTPUT_PATH = ROOT_PATH . "data/post/output/";
@@ -124,25 +121,25 @@ const NAME_OUTPUT_PATH = ROOT_PATH . "data/name/output/";
 const NAME_BACKUP_PATH = ROOT_PATH . "data/name/backup/";
 
 // IG
-const IG_INPUT_PATH = ROOT_PATH . "data/ig/input/";
+const IG_INPUT_PATH = ROOT_PATH . "data/instagram/input/";
 
-const IG_OUTPUT_PATH = ROOT_PATH . "data/ig/output/";
+const IG_OUTPUT_PATH = ROOT_PATH . "data/instagram/output/";
 
-const IG_BACKUP_PATH = ROOT_PATH . "data/ig/backup/";
+const IG_BACKUP_PATH = ROOT_PATH . "data/instagram/backup/";
 
 // WhatsApp
-const ZAP_INPUT_PATH = ROOT_PATH . "data/zap/input/";
+const WAP_INPUT_PATH = ROOT_PATH . "data/whatsapp/input/";
 
-const ZAP_OUTPUT_PATH = ROOT_PATH . "data/zap/output/";
+const WAP_OUTPUT_PATH = ROOT_PATH . "data/whatsapp/output/";
 
-const ZAP_BACKUP_PATH = ROOT_PATH . "data/zap/backup/";
+const WAP_BACKUP_PATH = ROOT_PATH . "data/whatsapp/backup/";
 
 // google 表格
-const TABLE_INPUT_PATH = ROOT_PATH . "data/table/input/";
+const SHEET_INPUT_PATH = ROOT_PATH . "data/sheet/input/";
 
-const TABLE_OUTPUT_PATH = ROOT_PATH . "data/table/output/";
+const SHEET_OUTPUT_PATH = ROOT_PATH . "data/sheet/output/";
 
-const TABLE_BACKUP_PATH = ROOT_PATH . "data/table/backup/";
+const SHEET_BACKUP_PATH = ROOT_PATH . "data/sheet/backup/";
 
 // YTB
 const YTB_INPUT_PATH = ROOT_PATH . "data/youtube/input/";
@@ -151,6 +148,12 @@ const YTB_OUTPUT_PATH = ROOT_PATH . "data/youtube/output/";
 
 const YTB_BACKUP_PATH = ROOT_PATH . "data/youtube/backup/";
 
+// FB
+const FB_INPUT_PATH = ROOT_PATH . "data/facebook/input/";
+
+const FB_OUTPUT_PATH = ROOT_PATH . "data/facebook/output/";
+
+const FB_BACKUP_PATH = ROOT_PATH . "data/facebook/backup/";
 
 // 已刷脸的ID
 const ID_DB_FILE = ROOT_PATH . "data/database/ids";

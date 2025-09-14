@@ -66,8 +66,8 @@ class BackupService implements ServiceInterface
             case IG_INPUT_PATH:
                 $backup_path = IG_BACKUP_PATH;
                 break;
-            case ZAP_INPUT_PATH:
-                $backup_path = ZAP_BACKUP_PATH;
+            case WAP_INPUT_PATH:
+                $backup_path = WAP_BACKUP_PATH;
                 break;
         }
 

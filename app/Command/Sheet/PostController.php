@@ -35,7 +35,7 @@ class PostController extends CommandController
     public function exec(): void
     {
         // 先清空所有之前的记录
-        $tableService = $this->getApp()->table;
+        $tableService = $this->getApp()->sheet;
 
         // 下载 chatbot 引流表
         if (!$this->hasFlag("skip-download")) {

@@ -36,17 +36,16 @@ class CleanController extends CommandController
     {
         // 先清空所有之前的记录
         $fileService = $this->getApp()->file;
-        $fileService->clearFolder(TABLE_INPUT_PATH);
+        $fileService->clearFolder(SHEET_INPUT_PATH);
 
-        $tableService = $this->getApp()->table;
+        $tableService = $this->getApp()->sheet;
 
         // 清理表格数据
         $tableService->cleanTable();
     }
 
     public function test() {
-        
-        // 
+        // todo
     }
 }
 

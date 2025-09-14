@@ -36,9 +36,9 @@ class PostUniqueController extends CommandController
     {
         // 先清空所有之前的记录
         $fileService = $this->getApp()->file;
-        $fileService->clearFolder(TABLE_INPUT_PATH);
+        $fileService->clearFolder(SHEET_INPUT_PATH);
 
-        $tableService = $this->getApp()->table;
+        $tableService = $this->getApp()->sheet;
 
         // 处理 发帖登记表 数据
         $tableService->postFillFormTableUnique();
@@ -46,9 +46,9 @@ class PostUniqueController extends CommandController
 
     public function test() {
         
-        $tableService = $this->getApp()->table;
+        $tableService = $this->getApp()->sheet;
 
-        $files = glob(TABLE_OUTPUT_PATH . "*匈牙利*");
+        $files = glob(SHEET_OUTPUT_PATH . "*匈牙利*");
 
         // var_dump($files);die;
 

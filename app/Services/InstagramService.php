@@ -5,7 +5,7 @@ namespace App\Services;
 use Minicli\App;
 use Minicli\ServiceInterface;
 
-class IgService implements ServiceInterface
+class InstagramService implements ServiceInterface
 {
     use Trait\SelectTrait;
 

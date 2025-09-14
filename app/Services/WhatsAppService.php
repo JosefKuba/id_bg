@@ -5,7 +5,7 @@ namespace App\Services;
 use Minicli\App;
 use Minicli\ServiceInterface;
 
-class ZapService implements ServiceInterface
+class WhatsAppService implements ServiceInterface
 {
     use Trait\SelectTrait;
 
@@ -19,7 +19,7 @@ class ZapService implements ServiceInterface
     // 从搜索结果中提取 zap 小组链接
     public function parse () {
 
-        $files = glob(ZAP_INPUT_PATH . "*");
+        $files = glob(WAP_INPUT_PATH . "*");
 
         $results = [];
         
@@ -49,7 +49,7 @@ class ZapService implements ServiceInterface
             }
         }
 
-        $outputPath = ZAP_OUTPUT_PATH . CURRENT_TIME . " result";
+        $outputPath = WAP_OUTPUT_PATH . CURRENT_TIME . " result";
         file_put_contents($outputPath, implode(PHP_EOL, array_unique($results)));
     }
 

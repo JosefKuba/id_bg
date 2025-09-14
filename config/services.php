@@ -30,9 +30,9 @@ return [
         'keyword'   => \App\Services\KeywordService::class,
         'avater'    => \App\Services\AvaterService::class,
         'name'      => \App\Services\NameService::class,
-        'ig'        => \App\Services\IgService::class,
-        'zap'       => \App\Services\ZapService::class,
-        'table'     => \App\Services\TableService::class,
+        'instagram' => \App\Services\InstagramService::class,
+        'whatsapp'  => \App\Services\WhatsAppService::class,
+        'sheet'     => \App\Services\SheetService::class,
         'youtube'   => \App\Services\YoutubeService::class,
     ],
 ];

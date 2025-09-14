@@ -34,20 +34,20 @@ class DefaultController extends CommandController
     {
         // 1. 备份原始文件
         $backupService = $this->getApp()->backup;
-        $backupService->backupInput(ZAP_INPUT_PATH);
+        $backupService->backupInput(WAP_INPUT_PATH);
 
         // 2. 将数据文件汇总
         $fileService = $this->getApp()->file;
-        $fileService->merge(ZAP_INPUT_PATH);
+        $fileService->merge(WAP_INPUT_PATH);
 
-        $csvFiles = $fileService->getFiles(ZAP_INPUT_PATH);
+        $csvFiles = $fileService->getFiles(WAP_INPUT_PATH);
 
         if (empty($csvFiles)) {
             $this->error("input 文件夹中缺少文件");
             exit();
         }
 
-        $zapService = $this->getApp()->zap;
+        $zapService = $this->getApp()->whatsapp;
         $zapService->parse($csvFiles[0]);
 
         unlink($csvFiles[0]);
