@@ -117,8 +117,8 @@ class SheetService implements ServiceInterface
         }
     }
 
-    // 下载发帖表
-    public function downloadPostFillFormTable()
+    // 下载发帖表列表
+    public function downloadPostFillFormTableList()
     {
         // 1. 获取发帖登记表的链接
         $startTime = time();
@@ -139,6 +139,12 @@ class SheetService implements ServiceInterface
         
         $this->app->info(sprintf("获取发帖表链接完成; 用时 %s 秒", $endTime - $startTime));
 
+        return $path;
+    }
+
+    // 下载每一个发帖登记表
+    public function downloadPostFillFormTable($path)
+    {
         // 2. 下载每一个链接
         $lines = getLine($path);
 
@@ -172,7 +178,7 @@ class SheetService implements ServiceInterface
         }
     }
 
-    // 下载chatbot表格
+    // 下载chatbot列表
     public function downloadChatbotTableList()
     {
         // 1. 获取发帖登记表的链接
@@ -198,7 +204,7 @@ class SheetService implements ServiceInterface
         return $path;
     }
 
-    // 下载
+    // 下载每一个 chatbot 表
     public function downloadChatbotTable($path)
     {
         // 2. 下载每一个链接
@@ -727,15 +733,6 @@ class SheetService implements ServiceInterface
     // 获取访问api的完整链接
     public function getApiUrl($type, $url, $sheetName = "", $startRow=0)
     {
-        $id = $this->getIdFromeSheetUrl($url);
-        return $this->indexSheetApi . sprintf("?type=%s&url=%s&sheetName=%s&token=%s&startRow=%s", $type, $id, $sheetName, $this->token, $startRow);
-    }
-
-    // 获取访问api的完整链接
-    private function getApiUrlNew($args)
-    {
-        $url = $args['url'] ?? "";
-
         $id = $this->getIdFromeSheetUrl($url);
         return $this->indexSheetApi . sprintf("?type=%s&url=%s&sheetName=%s&token=%s&startRow=%s", $type, $id, $sheetName, $this->token, $startRow);
     }

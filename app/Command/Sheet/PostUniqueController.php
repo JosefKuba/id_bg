@@ -43,27 +43,5 @@ class PostUniqueController extends CommandController
         // 处理 发帖登记表 数据
         $tableService->postFillFormTableUnique();
     }
-
-    public function test() {
-        
-        $tableService = $this->getApp()->sheet;
-
-        $files = glob(SHEET_OUTPUT_PATH . "*匈牙利*");
-
-        // var_dump($files);die;
-
-        $tableService->statisticChatbot($files);
-
-        exit;
-        
-
-        // $str = "Thu Jun 20 2025 00:00:00 GMT+0200 (Midden-Europese zomertijd)";
-        // $str = "Fri Jun 20 2025 00:00:00 GMT+0200 (Midden-Europese zomertijd)";
-        // $str = "Thu Jun 19 2025 00:00:00 GMT+0200 (Midden-Europese zomertijd)";
-        // $res = $tableService->daysSinceJsDate($str);
-    
-        // // todo 
-        // echo $res . PHP_EOL;
-    }
 }
 
