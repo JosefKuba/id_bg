@@ -39,7 +39,8 @@ class PostController extends CommandController
 
         // 下载 chatbot 引流表
         if (!$this->hasFlag("skip-download")) {
-            $tableService->downloadChatbotTable();
+            $path = $tableService->downloadChatbotTableList();
+            $tableService->downloadChatbotTable($path);
         }
 
         // 统计每个帖文的引流数据

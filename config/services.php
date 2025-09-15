@@ -34,5 +34,6 @@ return [
         'whatsapp'  => \App\Services\WhatsAppService::class,
         'sheet'     => \App\Services\SheetService::class,
         'youtube'   => \App\Services\YoutubeService::class,
+        'chatbot'   => \App\Services\ChatbotService::class,
     ],
 ];

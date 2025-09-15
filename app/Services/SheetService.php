@@ -173,7 +173,7 @@ class SheetService implements ServiceInterface
     }
 
     // 下载chatbot表格
-    public function downloadChatbotTable()
+    public function downloadChatbotTableList()
     {
         // 1. 获取发帖登记表的链接
         $startTime = time();
@@ -195,6 +195,12 @@ class SheetService implements ServiceInterface
         
         $this->app->info(sprintf("引流表链接完成; 用时 %s 秒", $endTime - $startTime));
 
+        return $path;
+    }
+
+    // 下载
+    public function downloadChatbotTable($path)
+    {
         // 2. 下载每一个链接
         $lines = getLine($path);
 
@@ -719,7 +725,7 @@ class SheetService implements ServiceInterface
 
 
     // 获取访问api的完整链接
-    private function getApiUrl($type, $url, $sheetName = "", $startRow=0)
+    public function getApiUrl($type, $url, $sheetName = "", $startRow=0)
     {
         $id = $this->getIdFromeSheetUrl($url);
         return $this->indexSheetApi . sprintf("?type=%s&url=%s&sheetName=%s&token=%s&startRow=%s", $type, $id, $sheetName, $this->token, $startRow);

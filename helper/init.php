@@ -155,6 +155,14 @@ const FB_OUTPUT_PATH = ROOT_PATH . "data/facebook/output/";
 
 const FB_BACKUP_PATH = ROOT_PATH . "data/facebook/backup/";
 
+// Chatbot
+const CHATBOT_INPUT_PATH = ROOT_PATH . "data/chatbot/input/";
+
+const CHATBOT_OUTPUT_PATH = ROOT_PATH . "data/chatbot/output/";
+
+const CHATBOT_BACKUP_PATH = ROOT_PATH . "data/chatbot/backup/";
+
+
 // 已刷脸的ID
 const ID_DB_FILE = ROOT_PATH . "data/database/ids";
 

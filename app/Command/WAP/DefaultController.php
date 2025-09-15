@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command\ZAP;
+namespace App\Command\WAP;
 
 use Minicli\Command\CommandController;
 
@@ -11,7 +11,7 @@ class DefaultController extends CommandController
     public function desc()
     {
         return [
-            'command'   => 'php artisan zap',
+            'command'   => 'php artisan wap',
             'desc'      => '整理搜索出来的zap结果，提取出zap小组链接',
         ];
     }
